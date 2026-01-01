@@ -1,1 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linha do Tempo</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-timeline"></i> Linha do Tempo</h1>
+            <p class="subtitle">Eventos e momentos importantes</p>
+        </header>
 
+        <div class="timeline-controls">
+            <button id="prevBtn"><i class="fas fa-chevron-left"></i> Anterior</button>
+            <button id="addEventBtn"><i class="fas fa-plus"></i> Adicionar Evento</button>
+            <button id="nextBtn">Próximo <i class="fas fa-chevron-right"></i></button>
+        </div>
+
+        <div class="timeline-container">
+            <div class="timeline" id="timeline">
+                <!-- Os eventos serão adicionados aqui pelo JavaScript -->
+            </div>
+        </div>
+
+        <div class="current-date" id="currentDate">
+            Exibindo todos os eventos
+        </div>
+
+        <footer>
+            <p>© 2024 - Projeto Linha do Tempo | <a href="https://github.com/aherculanof1958" target="_blank">GitHub</a></p>
+        </footer>
+    </div>
+
+    <!-- Modal para adicionar novo evento -->
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2><i class="fas fa-calendar-plus"></i> Novo Evento</h2>
+            <form id="eventForm">
+                <div class="form-group">
+                    <label for="eventDate"><i class="fas fa-calendar"></i> Data:</label>
+                    <input type="date" id="eventDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="eventTitle"><i class="fas fa-heading"></i> Título:</label>
+                    <input type="text" id="eventTitle" placeholder="Digite o título do evento" required>
+                </div>
+                <div class="form-group">
+                    <label for="eventDescription"><i class="fas fa-align-left"></i> Descrição:</label>
+                    <textarea id="eventDescription" placeholder="Descreva o evento..." rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="eventImage"><i class="fas fa-image"></i> Imagem (URL):</label>
+                    <input type="url" id="eventImage" placeholder="https://exemplo.com/imagem.jpg">
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-save"></i> Salvar Evento
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/timeline.js"></script>
+</body>
+</html>
