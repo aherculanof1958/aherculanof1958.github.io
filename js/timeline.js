@@ -1,4 +1,3 @@
-
 // Configurações principais
 const CONFIG = {
   ANO_INICIAL: 1886,
