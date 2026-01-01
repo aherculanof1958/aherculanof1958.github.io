@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site do aherculanof</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+            padding: 0;
+        }
+        header {
+            background: #24292e;
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        h1 {
+            margin: 0 0 10px 0;
+            color: #58a6ff;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            color: #8b949e;
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+        .content {
+            padding: 40px;
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+        h3 {
+            color: #667eea;
+            margin-top: 25px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin: 10px 0;
+            padding-left: 10px;
+        }
+        footer {
+            background: #f8f9fa;
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 14px;
+            border-top: 1px solid #eee;
+        }
+        a {
+            color: #0366d6;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .site-url {
+            background: #f1f8ff;
+            padding: 12px;
+            border-radius: 5px;
+            border-left: 4px solid #0366d6;
+            font-family: monospace;
+            font-size: 16px;
+        }
+        .github-badge {
+            display: inline-block;
+            background: #333;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Site do aherculanof</h1>
+            <p class="subtitle">Hospedado com GitHub Pages</p>
+        </header>
+        
+        <div class="content">
+            <h2>Olá! 👋</h2>
+            <p>Esta é minha primeira página web hospedada no GitHub.</p>
+            
+            <h3>Meu site está online em:</h3>
+            <p class="site-url">
+                <a href="https://aherculanof1958.github.io" target="_blank">
+                    https://aherculanof1958.github.io
+                </a>
+            </p>
+            
+            <h3>Próximos passos:</h3>
+            <ul>
+                <li>Adicionar mais conteúdo e páginas</li>
+                <li>Personalizar design e cores</li>
+                <li>Configurar domínio personalizado</li>
+                <li>Adicionar portfólio ou blog</li>
+                <li>Implementar recursos responsivos</li>
+            </ul>
+            
+            <h3>Visite meu GitHub:</h3>
+            <p>
+                <a href="https://github.com/aherculanof1958" target="_blank" class="github-badge">
+                    github.com/aherculanof1958
+                </a>
+            </p>
+            
+            <h3>Tecnologias utilizadas:</h3>
+            <p>
+                <strong>HTML5</strong> • <strong>CSS3</strong> • <strong>JavaScript</strong> • <strong>GitHub Pages</strong>
+            </p>
+        </div>
+        
+        <footer>
+            <p>© 2024 aherculanof | GitHub Pages</p>
+            <p>Atualizado em: <span id="data-atual"></span></p>
+            <p>Status do site: <span style="color: green;">● Online</span></p>
+        </footer>
+    </div>
+    
+    <script>
+        // Data atual
+        const data = new Date();
+        const opcoes = { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        };
+        document.getElementById('data-atual').textContent = 
+            data.toLocaleDateString('pt-BR', opcoes);
+        
+        // Mensagem no console
+        console.log('Site carregado com sucesso!');
+        console.log('Domínio: aherculanof1958.github.io');
+        
+        // Efeito de fade-in simples
+        document.body.style.opacity = '0';
+        document.body.style.transition = 'opacity 0.5s';
+        setTimeout(() => {
+            document.body.style.opacity = '1';
+        }, 100);
+    </script>
+</body>
+</html>
