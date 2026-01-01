@@ -1,109 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Linha do Tempo - Joaquim Moreira da Silva</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <meta name="description" content="Linha do tempo interativa de Joaquim Moreira da Silva (1886-1960)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linha do Tempo - Joaquim Moreira da Silva</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div class="cabecalho-fixo">
-    <div class="linha-tempo-container">
-      <!-- Rótulos de idade -->
-      <div class="rotulos-idade">
-        <span>1</span><span>10</span><span>20</span><span>30</span>
-        <span>40</span><span>50</span><span>60</span><span>70</span><span>74</span>
-      </div>
-      
-      <!-- Linha História -->
-      <div class="linha-wrapper">
-        <div class="rotulo-linha-esquerda">História</div>
-        <div class="linha linha-historia" id="linha-historia"></div>
-        <div class="rotulo-linha-direita">História</div>
-      </div>
-      
-      <!-- Linha Vida -->
-      <div class="linha-wrapper">
-        <div class="rotulo-linha-esquerda">Vida</div>
-        <div class="linha linha-vida" id="linha-vida"></div>
-        <div class="rotulo-linha-direita">Vida</div>
-      </div>
-      
-      <!-- Linha Obra -->
-      <div class="linha-wrapper">
-        <div class="rotulo-linha-esquerda">Obra</div>
-        <div class="linha linha-obra" id="linha-obra"></div>
-        <div class="rotulo-linha-direita">Obra</div>
-      </div>
-
-      <!-- Rótulos de anos -->
-      <div class="rotulos-anos">
-        <span class="rotulo-ano">1886</span>
-        <span class="rotulo-ano">1896</span>
-        <span class="rotulo-ano">1906</span>
-        <span class="rotulo-ano">1916</span>
-        <span class="rotulo-ano">1926</span>
-        <span class="rotulo-ano">1936</span>
-        <span class="rotulo-ano">1946</span>
-        <span class="rotulo-ano">1956</span>
-        <span class="rotulo-ano">1960</span>
-      </div>
-
-      <!-- Seletor -->
-      <div class="seletor" id="seletor">
-        <div class="seletor-idades" id="seletor-idades">
-          <span class="seletor-idade" id="seletor-idade-inicio">47</span>
-          <span class="seletor-idade" id="seletor-idade-fim">56</span>
-        </div>
-        <div class="seletor-anos" id="seletor-anos">
-          <span class="seletor-ano" id="seletor-ano-inicio">1933</span>
-          <span class="seletor-ano" id="seletor-ano-fim">1942</span>
-        </div>
-      </div>
-    </div>  
-
-    <!-- Cabeçalho com filtros -->
-    <div class="cabecalho-filtros">
-      <div class="cabecalho-grid">
-        <div class="cabecalho-titulo">
-          <h4>Eventos do Período Selecionado:</h4>
-        </div>
-        <div class="cabecalho-controles">
-          <div class="filtros">
-            <fieldset>
-              <legend>Filtros</legend>
-              <input type="checkbox" id="filtro-historia" checked>
-              <label for="filtro-historia">História</label>
-              <input type="checkbox" id="filtro-vida" checked>
-              <label for="filtro-vida">Vida</label>
-              <input type="checkbox" id="filtro-obra" checked>
-              <label for="filtro-obra">Obra</label>
-            </fieldset>
-          </div>
-          <button class="btn-reset" id="btn-reset">↺ Reposicionar</button>
-        </div>
-      </div>
-    </div>
-  </div>
- 
-  <!-- Conteúdo rolável -->
-  <div class="conteudo-rolavel">	
-    <div class="eventos-container">
-      <div class="lista-eventos" id="lista-eventos"></div>
-    </div>
-  </div>
-
-  <!-- Modal para imagem ampliada -->
-  <div id="modal-imagem" class="modal">
-    <span class="modal-fechar">&times;</span>
-    <img class="modal-conteudo" id="modal-img">
-    <div id="modal-legenda" class="modal-legenda"></div>
-  </div>
-
-  <script src="js/timeline.js"></script>
+    <h1>Linha do Tempo - Joaquim Moreira da Silva</h1>
+    <p>Esta é a página inicial. A linha do tempo será carregada aqui.</p>
+    <div id="linha-tempo"></div>
+    <script src="js/timeline.js"></script>
 </body>
 </html>
