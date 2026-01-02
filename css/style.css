@@ -242,9 +242,11 @@ body {
 .linha-tempo-container {
   position: relative;
   margin: 0 var(--margin-linha-container);
-  width: var(--largura-util);
+  width: 100%;
+  min-width: 1200px;   /* 🔴 FUNDAMENTAL */
   padding: 10px 0 15px 0;
 }
+
 
 .linha-wrapper,
 .rotulos-idade,
