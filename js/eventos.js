@@ -1,1 +1,13 @@
 
+
+const eventos = {
+  historia: [
+    // TODOS os eventos de história
+  ],
+  vida: [
+    // TODOS os eventos de vida
+  ],
+  obra: [
+    // TODOS os eventos de obra
+  ]
+};
