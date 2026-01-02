@@ -1,208 +1,183 @@
-// ==================================================
-// EVENTOS — Joaquim Moreira da Silva (1886–1960)
-// Estrutura ÚNICA de dados (sem lógica)
-// ==================================================
-
 const eventos = {
 
-  // ================================================
-  // HISTÓRIA (contexto político e social)
-  // ================================================
   historia: [
-    {
-      idade: "0",
-      "ano civil": 1886,
-      "dia-mês": "",
-      titulo: "Nascimento de Joaquim Moreira da Silva",
-      descricao: "Nasce em Vilar, Vila do Conde."
-    },
-    {
-      idade: "5",
-      "ano civil": 1891,
-      "dia-mês": "31.JAN.",
-      titulo: "Revolta Republicana do 31 de Janeiro",
-      descricao: "Primeira tentativa de implantação da República no Porto."
-    },
-    {
-      idade: "22",
-      "ano civil": 1908,
-      "dia-mês": "1.FEV.",
-      titulo: "Regicídio",
-      descricao: "Assassinato do rei D. Carlos e do príncipe Luís Filipe."
-    },
-    {
-      idade: "24",
-      "ano civil": 1910,
-      "dia-mês": "5.OUT.",
-      titulo: "Implantação da República",
-      descricao: "Fim da Monarquia e início da Primeira República."
-    },
-    {
-      idade: "25",
-      "ano civil": 1911,
-      "dia-mês": "20.ABR.",
-      titulo: "Separação da Igreja do Estado",
-      descricao: "Aprovação da Lei da Separação."
-    },
-    {
-      idade: "31",
-      "ano civil": 1917,
-      "dia-mês": "",
-      titulo: "Crise das subsistências",
-      descricao: "Escassez de cereais e motins populares no Norte do país."
-    }
+    { idade: "0", ano: 1886, titulo: "Início da atividade anarquista em Portugal" },
+
+    { idade: "5", ano: 1891, titulo: "Revolta do 31 de Janeiro no Porto" },
+
+    { idade: "10", ano: 1896, titulo: "Lei da Bomba contra os anarquistas" },
+
+    { idade: "22", ano: 1908, titulo: "Regicídio" },
+
+    { idade: "24", ano: 1910, titulo: "Implantação da República" },
+
+    { idade: "25", ano: 1911, titulo: "Separação da Igreja do Estado" },
+
+    { idade: "25", ano: 1911, titulo: "Explosão do Movimento Anarquista" },
+
+    { idade: "26", ano: 1912, titulo: "Fundação da Federação Anarquista do Norte" },
+
+    { idade: "27", ano: 1913, titulo: "Fundação da CULTUAL" },
+
+    { idade: "28", ano: 1914, titulo: "Início da I Guerra Mundial" },
+
+    { idade: "31", ano: 1917, titulo: "Revolta da Batata" },
+
+    { idade: "32", ano: 1918, titulo: "Fim da I Guerra Mundial" },
+
+    { idade: "35", ano: 1921, titulo: "Fundação do Partido Comunista Português" },
+
+    { idade: "37", ano: 1923, titulo: "Criação da União Anarquista Portuguesa" },
+
+    { idade: "40", ano: 1926, titulo: "Golpe Militar de 28 de Maio" },
+
+    { idade: "41", ano: 1927, titulo: "Fundação da FAI" },
+
+    { idade: "47", ano: 1933, titulo: "Estado Novo – Censura" },
+
+    { idade: "48", ano: 1934, titulo: "Jornal A Batalha passa à clandestinidade" },
+
+    { idade: "51", ano: 1937, titulo: "Atentado a Salazar" }
   ],
 
-  // ================================================
-  // VIDA (biografia pessoal e cívica)
-  // ================================================
   vida: [
     {
-      idade: "7",
-      "ano civil": 1893,
-      "dia-mês": "",
-      titulo: "Início do trabalho agrícola",
-      descricao: "Começa a trabalhar como moço de lavoura."
+      idade: "0",
+      ano: 1886,
+      titulo: "Nascimento de Joaquim Moreira da Silva"
     },
+
     {
       idade: "7",
-      "ano civil": 1893,
-      "dia-mês": "",
-      titulo: "Acidente com foice",
-      descricao: "Perde a visão de um olho."
+      ano: 1893,
+      titulo: "Começa a trabalhar como moço de lavoura"
     },
+
     {
       idade: "18",
-      "ano civil": 1904,
-      "dia-mês": "",
-      titulo: "Aprende a ler e escrever",
-      descricao: "Frequenta curso noturno enquanto trabalha como carpinteiro."
+      ano: 1904,
+      titulo: "Aprendiz de carpinteiro no Porto; escola noturna"
     },
+
     {
-      idade: "24",
-      "ano civil": 1910,
-      "dia-mês": "22.MAI.",
-      titulo: "Nascimento do primeiro filho",
-      descricao: ""
+      idade: "23",
+      ano: 1909,
+      titulo: "Casamento com Maria Rosa Marques"
     },
-    {
-      idade: "24",
-      "ano civil": 1910,
-      "dia-mês": "13.OUT.",
-      titulo: "Morte do primeiro filho",
-      descricao: ""
-    },
-    {
-      idade: "26",
-      "ano civil": 1912,
-      "dia-mês": "17.FEV.",
-      titulo: "Nascimento do filho Alberto Moreira",
-      descricao: ""
-    },
+
     {
       idade: "30",
-      "ano civil": 1916,
-      "dia-mês": "5.MAR.",
-      titulo: "Comício à saída da missa",
-      descricao: "Protesto público contra a distribuição do milho."
+      ano: 1916,
+      titulo: "Comício à saída da missa sobre a distribuição do milho",
+      imagem: "docs/oficios/informacao-do-regedor-mar1916.png"
     },
+
     {
       idade: "31",
-      "ano civil": 1917,
-      "dia-mês": "30.MAI.",
-      titulo: "Assalto à tulha",
-      descricao: "Ação popular de protesto contra o açambarcamento de milho."
+      ano: 1917,
+      titulo: "Assalto à Tulha de Manuel Gonçalves Dias"
     },
+
     {
       idade: "35",
-      "ano civil": 1921,
-      "dia-mês": "4.SET.",
-      titulo: "Eleição para Comissão do Milho",
-      descricao: "Eleito em comício popular."
+      ano: 1921,
+      titulo: "Eleito para a Comissão do milho",
+      imagem: "docs/oficios/oficio-ao-administrador-set1921.png"
     },
+
     {
       idade: "36",
-      "ano civil": 1922,
-      "dia-mês": "",
+      ano: 1922,
       titulo: "Fotografia publicada em A Lira do Povo",
-      descricao: `
-        <div class="imagem-evento">
-          <img src="docs/fotos/jms-aos-36-anos-2.jpeg"
-               alt="Joaquim Moreira da Silva aos 36 anos">
-        </div>
-      `
+      imagem: "docs/fotos/jms-aos-36-anos-2.jpeg"
+    },
+
+    {
+      idade: "63",
+      ano: 1949,
+      titulo: "Morte da esposa Maria Rosa de Jesus"
+    },
+
+    {
+      idade: "74",
+      ano: 1960,
+      titulo: "Falecimento de Joaquim Moreira da Silva"
     }
   ],
 
-  // ================================================
-  // OBRA (produção literária)
-  // ================================================
   obra: [
     {
       idade: "28",
-      "ano civil": 1914,
-      "dia-mês": "28.JAN.",
-      titulo: "Grupo Anticlerical I",
-      descricao: `
-        <div class="imagem-evento">
-          <img src="docs/poemas/grupo-anti-clerical-i.png">
-        </div>
-      `
+      ano: 1914,
+      titulo: "Grupo Anti-Clerical I",
+      imagem: "docs/poemas/grupo-anti-clerical-i.png"
     },
     {
-      idade: "30",
-      "ano civil": 1916,
-      "dia-mês": "23.ABR.",
-      titulo: "À memória de Cristo",
-      descricao: `
-        <div class="imagem-evento">
-          <img src="docs/poemas/a-memoria-de-cristo.png">
-        </div>
-      `
+      idade: "28",
+      ano: 1914,
+      titulo: "Grupo Anti-Clerical II",
+      imagem: "docs/poemas/grupo-anti-clerical-ii.png"
     },
+    {
+      idade: "28",
+      ano: 1914,
+      titulo: "Grupo Anti-Clerical III",
+      imagem: "docs/poemas/grupo-anti-clerical-iii.png"
+    },
+    {
+      idade: "28",
+      ano: 1914,
+      titulo: "Grupo Anti-Clerical IV",
+      imagem: "docs/poemas/grupo-anti-clerical-iv.png"
+    },
+
     {
       idade: "32",
-      "ano civil": 1918,
-      "dia-mês": "15.AGO.",
+      ano: 1918,
       titulo: "O Milho a 30 Réis",
-      descricao: `
-        <div class="imagem-evento">
-          <img src="docs/poemas/o-milho-a-30-reis.png">
-        </div>
-      `
+      imagem: "docs/poemas/o-milho-a-30-reis.png"
     },
-    {
-      idade: "33",
-      "ano civil": 1919,
-      "dia-mês": "31.AGO.",
-      titulo: "Uma viagem ao céu",
-      descricao: `
-        <div class="imagem-evento">
-          <img src="docs/poemas/uma-viagem-ao-ceu.png">
-        </div>
-      `
-    },
-    {
-      idade: "33",
-      "ano civil": 1919,
-      "dia-mês": "31.AGO.",
-      titulo: "Uma viagem ao inferno",
-      descricao: `
-        <div class="imagem-evento">
-          <img src="docs/poemas/uma-viagem-ao-inferno.png">
-        </div>
-      `
-    },
+
     {
       idade: "34",
-      "ano civil": 1920,
-      "dia-mês": "15.FEV.",
+      ano: 1920,
       titulo: "A Alma dum Caloteiro",
-      descricao: `
-        <div class="imagem-evento">
-          <img src="docs/poemas/a-alma-dum-caloteiro.png">
-        </div>
-      `
+      imagem: "docs/poemas/a-alma-dum-caloteiro.png"
+    },
+
+    {
+      idade: "35",
+      ano: 1921,
+      titulo: "O Terror em Vilar",
+      imagem: "docs/poemas/o-terror-em-vilar.png"
+    },
+
+    {
+      idade: "37",
+      ano: 1923,
+      titulo: "Sonhos e Realidades",
+      imagem: "docs/poemas/sonhos-e-realidades.png"
+    },
+
+    {
+      idade: "50",
+      ano: 1936,
+      titulo: "Nas Oras da Agonia",
+      imagem: "docs/poemas/a-memoria-de-cristo.png"
+    },
+
+    {
+      idade: "52",
+      ano: 1938,
+      titulo: "Despedidas de Helena Rosa Moreira",
+      imagem: "docs/poemas/a-historia-dum-feiticeeiro.png"
+    },
+
+    {
+      idade: "72",
+      ano: 1958,
+      titulo: "Fernando Moreira Graça",
+      imagem: "docs/poemas/uma-viagem-ao-ceu.png"
     }
   ]
 };
