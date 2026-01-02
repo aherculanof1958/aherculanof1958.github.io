@@ -1,99 +1,101 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Linha do Tempo - Joaquim Moreira da Silva</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;500;600&family=Tahoma&display=swap" rel="stylesheet">
-  <meta name="description" content="Linha do tempo interativa de Joaquim Moreira da Silva (1886-1960)">
+  <meta charset="UTF-8" />
+  <title>Linha do Tempo – Joaquim Moreira da Silva</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/timeline.css" />
 </head>
+
 <body>
-<div class="cabecalho-fixo">
-  <div class="linha-tempo-container">
-    <div class="rotulos-idade">
-      <span>1</span><span>10</span><span>20</span><span>30</span>
-      <span>40</span><span>50</span><span>60</span><span>70</span><span>74</span>
-    </div>
-    
-    <div class="linha-wrapper">
-      <div class="rotulo-linha-esquerda">História</div>
-      <div class="linha linha-historia" id="linha-historia"></div>
-      <div class="rotulo-linha-direita">História</div>
-    </div>
-    
-    <div class="linha-wrapper">
-      <div class="rotulo-linha-esquerda">Vida</div>
-      <div class="linha linha-vida" id="linha-vida"></div>
-      <div class="rotulo-linha-direita">Vida</div>
-    </div>
-    
-    <div class="linha-wrapper">
-      <div class="rotulo-linha-esquerda">Obra</div>
-      <div class="linha linha-obra" id="linha-obra"></div>
-      <div class="rotulo-linha-direita">Obra</div>
+
+  <!-- ===============================
+       CABEÇALHO / FILTROS
+  ================================ -->
+  <section class="controlos">
+
+    <div class="rotulos">
+      <span>História</span>
+      <span>Vida</span>
+      <span>Obra</span>
     </div>
 
-    <div class="rotulos-anos">
-      <span class="rotulo-ano">1886</span>
-      <span class="rotulo-ano">1896</span>
-      <span class="rotulo-ano">1906</span>
-      <span class="rotulo-ano">1916</span>
-      <span class="rotulo-ano">1926</span>
-      <span class="rotulo-ano">1936</span>
-      <span class="rotulo-ano">1946</span>
-      <span class="rotulo-ano">1956</span>
-      <span class="rotulo-ano">1960</span>
+    <div class="filtros">
+      <label>
+        <input type="checkbox" id="filtro-historia" checked />
+        História
+      </label>
+      <label>
+        <input type="checkbox" id="filtro-vida" checked />
+        Vida
+      </label>
+      <label>
+        <input type="checkbox" id="filtro-obra" checked />
+        Obra
+      </label>
     </div>
 
-    <div class="seletor" id="seletor">
-      <div class="seletor-idades" id="seletor-idades">
-        <span class="seletor-idade" id="seletor-idade-inicio">47</span>
-        <span class="seletor-idade" id="seletor-idade-fim">56</span>
+  </section>
+
+  <!-- ===============================
+       LINHA DO TEMPO
+  ================================ -->
+  <section class="linha-tempo-container">
+
+    <!-- SELETOR -->
+    <div id="seletor">
+      <div class="rotulo-seletor inicio">
+        <span id="seletor-idade-inicio"></span>
+        <span id="seletor-ano-inicio"></span>
       </div>
-      <div class="seletor-anos" id="seletor-anos">
-        <span class="seletor-ano" id="seletor-ano-inicio">1933</span>
-        <span class="seletor-ano" id="seletor-ano-fim">1942</span>
-      </div>
-    </div>
-  </div>  
 
-  <div class="cabecalho-grid">
-    <div class="cabecalho-titulo">
-      <h4>Eventos do Período Selecionado:</h4>
-    </div>
-    <div class="cabecalho-filtros">
-      <div class="filtros">
-        <fieldset>
-          <legend>Filtros</legend>
-          <input type="checkbox" id="filtro-historia" checked>
-          <label for="filtro-historia">História</label>
-          <input type="checkbox" id="filtro-vida" checked>
-          <label for="filtro-vida">Vida</label>
-          <input type="checkbox" id="filtro-obra" checked>
-          <label for="filtro-obra">Obra</label>
-        </fieldset>
+      <div class="rotulo-seletor fim">
+        <span id="seletor-idade-fim"></span>
+        <span id="seletor-ano-fim"></span>
       </div>
     </div>
-  </div>
-</div>
- 
-<div class="conteudo-rolavel">	
-  <div class="eventos-container">
-    <div class="lista-eventos" id="lista-eventos"></div>
-  </div>
-</div>
 
-<div id="imagemAmpliadaContainer" class="imagem-ampliada-container">
-  <div class="imagem-ampliada-wrapper">
-    <img id="imagemAmpliada" class="imagem-ampliada" src="" alt="">
-  </div>
-</div>
+    <!-- LINHAS -->
+    <div class="linhas">
+      <div id="linha-historia" class="linha historia"></div>
+      <div id="linha-vida" class="linha vida"></div>
+      <div id="linha-obra" class="linha obra"></div>
+    </div>
 
-<script src="eventos.js"></script>
-<script src="timeline.js"></script>
+    <!-- ANOS -->
+    <div class="escala-anos">
+      <span>1886</span>
+      <span>1896</span>
+      <span>1906</span>
+      <span>1916</span>
+      <span>1926</span>
+      <span>1936</span>
+      <span>1946</span>
+      <span>1956</span>
+      <span>1960</span>
+    </div>
+
+  </section>
+
+  <!-- ===============================
+       EVENTOS
+  ================================ -->
+  <section id="lista-eventos">
+
+    <h2>Eventos do Período Selecionado:</h2>
+
+    <!-- colunas são criadas via JS -->
+
+  </section>
+
+  <!-- ===============================
+       SCRIPTS (ORDEM CRÍTICA)
+  ================================ -->
+  <script src="js/eventos.js"></script>
+  <script src="js/timeline.js"></script>
 
 </body>
 </html>
