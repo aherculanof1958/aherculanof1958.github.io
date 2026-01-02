@@ -148,6 +148,32 @@ function terminarArrasto() {
   document.removeEventListener("mouseup", terminarArrasto);
 }
 
+function criarDivEvento(evento, tipo) {
+  const div = document.createElement("div");
+  div.className = `evento ${tipo}`;
+
+  const data =
+    evento["dia-mês"]
+      ? `${evento["dia-mês"]} ${evento["ano civil"]}`
+      : evento["ano civil"];
+
+  div.innerHTML = `
+    <div class="evento-cabecalho">
+      <span class="evento-idade">${evento.idade} anos</span>
+      <span class="evento-data">${data}</span>
+    </div>
+    <h4 class="evento-titulo">${evento.titulo}</h4>
+    ${
+      evento.descricao
+        ? `<div class="evento-descricao">${evento.descricao}</div>`
+        : ""
+    }
+  `;
+
+  return div;
+}
+
+
 // ==============================
 // Eventos (placeholder)
 // ==============================
