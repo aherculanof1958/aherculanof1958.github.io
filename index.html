@@ -3,93 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <title>Joaquim Moreira da Silva — Linha do Tempo</title>
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- CSS -->
   <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
-  <!-- ==============================
-       CABEÇALHO
-  ============================== -->
-  <header class="cabecalho-fixo">
-    <div class="cabecalho-grid">
-      <div class="cabecalho-titulo">
-        História · Vida · Obra
-      </div>
+<header class="cabecalho-fixo">
+  <div class="cabecalho-grid">
+    <div class="cabecalho-titulo">História · Vida · Obra</div>
 
-      <div class="cabecalho-filtros filtros">
-        <fieldset>
-          <legend>Filtros</legend>
-          <label>
-            <input type="checkbox" id="filtro-historia" checked>
-            História
-          </label>
-          <label>
-            <input type="checkbox" id="filtro-vida" checked>
-            Vida
-          </label>
-          <label>
-            <input type="checkbox" id="filtro-obra" checked>
-            Obra
-          </label>
-        </fieldset>
-      </div>
+    <div class="cabecalho-filtros">
+      <fieldset>
+        <legend>Filtros</legend>
+        <label><input type="checkbox" id="filtro-historia" checked> História</label>
+        <label><input type="checkbox" id="filtro-vida" checked> Vida</label>
+        <label><input type="checkbox" id="filtro-obra" checked> Obra</label>
+      </fieldset>
     </div>
-  </header>
+  </div>
+</header>
 
-  <!-- ==============================
-       LINHA DO TEMPO
-  ============================== -->
-  <section class="linha-tempo-container">
+<section class="linha-tempo-container">
 
-    <!-- Seletor -->
-    <div id="seletor">
-      <div class="rotulo-seletor inicio">
-        <span id="seletor-idade-inicio"></span>
-        <span id="seletor-ano-inicio"></span>
-      </div>
-      <div class="rotulo-seletor fim">
-        <span id="seletor-idade-fim"></span>
-        <span id="seletor-ano-fim"></span>
-      </div>
+  <!-- SELETOR -->
+  <div id="seletor">
+    <div class="rotulo-seletor inicio">
+      <span id="seletor-idade-inicio"></span>
+      <span id="seletor-ano-inicio"></span>
     </div>
-
-    <!-- Linhas -->
-    <div class="linhas">
-      <div class="linha historia" id="linha-historia"></div>
-      <div class="linha vida" id="linha-vida"></div>
-      <div class="linha obra" id="linha-obra"></div>
+    <div class="rotulo-seletor fim">
+      <span id="seletor-idade-fim"></span>
+      <span id="seletor-ano-fim"></span>
     </div>
+  </div>
 
-    <!-- Escala de anos -->
-    <div class="escala-anos">
-      <span>1886</span>
-      <span>1896</span>
-      <span>1906</span>
-      <span>1916</span>
-      <span>1926</span>
-      <span>1936</span>
-      <span>1946</span>
-      <span>1956</span>
-      <span>1960</span>
-    </div>
+  <!-- LINHAS -->
+  <div class="linhas">
+    <div class="linha historia" id="linha-historia"></div>
+    <div class="linha vida" id="linha-vida"></div>
+    <div class="linha obra" id="linha-obra"></div>
+  </div>
 
-  </section>
+  <!-- ESCALA -->
+  <div class="escala-anos">
+    <span>1886</span><span>1896</span><span>1906</span><span>1916</span>
+    <span>1926</span><span>1936</span><span>1946</span><span>1956</span><span>1960</span>
+  </div>
+</section>
 
-  <!-- ==============================
-       EVENTOS
-  ============================== -->
-  <main id="lista-eventos"></main>
+<main id="lista-eventos"></main>
 
-  <!-- ==============================
-       SCRIPTS
-  ============================== -->
-  <script src="js/eventos.js"></script>
-  <script src="js/timeline.js"></script>
+<script src="js/eventos.js"></script>
+<script src="js/timeline.js"></script>
 
 </body>
 </html>
