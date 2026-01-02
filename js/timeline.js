@@ -1,30 +1,19 @@
-// ==================================================
-// CONFIGURAÇÕES
-// ==================================================
+// ======================================================
+// CONFIGURAÇÕES GERAIS
+// ======================================================
 const ANO_INICIAL = 1886;
 const ANO_FINAL = 1960;
 const TOTAL_ANOS = ANO_FINAL - ANO_INICIAL + 1;
 const LARGURA_SELETOR = 10;
 
-// ==================================================
-// DADOS (EXEMPLO – SUBSTITUI PELOS TEUS COMPLETOS)
-// ==================================================
+// ======================================================
+// DADOS — EVENTOS (EXEMPLO REDUZIDO)
+// (mantém aqui os teus eventos completos)
+// ======================================================
 const eventos = {
   historia: [
-    {
-      idade: "24",
-      "ano civil": 1910,
-      "dia-mês": "5.OUT.",
-      titulo: "Implantação da República",
-      descricao: "Proclamação da República Portuguesa."
-    },
-    {
-      idade: "25",
-      "ano civil": 1911,
-      "dia-mês": "20.ABR.",
-      titulo: "Separação da Igreja do Estado",
-      descricao: "Lei da Separação."
-    }
+    { idade: "0", "ano civil": 1886, "dia-mês": "", titulo: "Início da atividade anarquista em Portugal" },
+    { idade: "24", "ano civil": 1910, "dia-mês": "5.OUT.", titulo: "Implantação da República" }
   ],
   vida: [
     {
@@ -32,33 +21,39 @@ const eventos = {
       "ano civil": 1916,
       "dia-mês": "5.MAR.",
       titulo: "Comício à saída da missa",
-      descricao: "Protesto público contra a distribuição do milho."
+      descricao: `
+        <div class="imagem-evento">
+          <img src="docs/oficios/informacao-do-regedor-mar1916.png" style="max-width:100px;">
+        </div>`
+    },
+    {
+      idade: "35",
+      "ano civil": 1922,
+      "dia-mês": "",
+      titulo: "Fotografia publicada em A Lira do Povo",
+      descricao: `
+        <div class="imagem-evento">
+          <img src="docs/fotos/jms-aos-36-anos-2.jpeg" style="max-width:100px;">
+        </div>`
     }
   ],
   obra: [
     {
       idade: "28",
       "ano civil": 1914,
-      "dia-mês": "28.JAN.",
-      titulo: "Grupo Anticlerical I",
-      descricao: ""
-    },
-    {
-      idade: "34",
-      "ano civil": 1920,
-      "dia-mês": "15.FEV.",
-      titulo: "A Alma dum Caloteiro",
+      "dia-mês": "27.JAN.",
+      titulo: "Grupo Anticlerical IV",
       descricao: `
         <div class="imagem-evento">
-          <img src="docs/poemas/a-alma-dum-caloteiro.png" style="max-width:100px;">
+          <img src="docs/obras/grupo-anti-clerical-iv.png" style="max-width:100px;">
         </div>`
     }
   ]
 };
 
-// ==================================================
+// ======================================================
 // ELEMENTOS DOM
-// ==================================================
+// ======================================================
 const linhaHistoria = document.getElementById("linha-historia");
 const linhaVida = document.getElementById("linha-vida");
 const linhaObra = document.getElementById("linha-obra");
@@ -71,18 +66,33 @@ const seletorIdadeFim = document.getElementById("seletor-idade-fim");
 
 const listaEventos = document.getElementById("lista-eventos");
 
-// ==================================================
+// ======================================================
 // ESTADO
-// ==================================================
+// ======================================================
 let larguraUtil = 0;
 let larguraCelula = 0;
 let posicaoSeletor = 0;
 let startX = 0;
 let startLeft = 0;
 
-// ==================================================
+// ======================================================
+// MAPA GLOBAL DE EVENTOS POR ANO (CHAVE DO PROBLEMA)
+// ======================================================
+const mapaEventos = {};
+
+["historia", "vida", "obra"].forEach(tipo => {
+  eventos[tipo].forEach(e => {
+    const ano = e["ano civil"];
+    if (!mapaEventos[ano]) {
+      mapaEventos[ano] = { historia: 0, vida: 0, obra: 0 };
+    }
+    mapaEventos[ano][tipo]++;
+  });
+});
+
+// ======================================================
 // INICIALIZAÇÃO
-// ==================================================
+// ======================================================
 function inicializar() {
   const container = document.querySelector(".linha-tempo-container");
   if (!container) return;
@@ -91,12 +101,8 @@ function inicializar() {
   container.offsetHeight; // força reflow
 
   larguraUtil = container.clientWidth;
-  if (larguraUtil === 0) {
-    setTimeout(inicializar, 50);
-    return;
-  }
-
   larguraCelula = larguraUtil / TOTAL_ANOS;
+
   posicaoSeletor =
     larguraUtil / 2 - (larguraCelula * LARGURA_SELETOR) / 2;
 
@@ -106,9 +112,9 @@ function inicializar() {
   ligarEventos();
 }
 
-// ==================================================
-// LINHAS DO TEMPO (COM EVENTOS NA BARRA)
-// ==================================================
+// ======================================================
+// LINHAS DO TEMPO (BARRA SUPERIOR)
+// ======================================================
 function criarLinhas() {
   criarLinha(linhaHistoria, "historia");
   criarLinha(linhaVida, "vida");
@@ -122,13 +128,8 @@ function criarLinha(container, tipo) {
     const ano = ANO_INICIAL + i;
     const celula = document.createElement("div");
     celula.className = `celula ${tipo}`;
-    celula.dataset.ano = ano;
 
-    const temEvento = eventos[tipo].some(
-      e => e["ano civil"] === ano
-    );
-
-    if (temEvento) {
+    if (mapaEventos[ano] && mapaEventos[ano][tipo] > 0) {
       celula.classList.add("com-evento");
     }
 
@@ -136,31 +137,30 @@ function criarLinha(container, tipo) {
   }
 }
 
-// ==================================================
+// ======================================================
 // COLUNAS DE EVENTOS
-// ==================================================
+// ======================================================
 function criarColunas() {
   listaEventos.innerHTML = `
     <div class="colunas-eventos">
       <div class="coluna-evento" id="coluna-historia"></div>
       <div class="coluna-evento" id="coluna-vida"></div>
       <div class="coluna-evento" id="coluna-obra"></div>
-    </div>`;
+    </div>
+  `;
 }
 
-// ==================================================
+// ======================================================
 // SELETOR
-// ==================================================
+// ======================================================
 function posicionarSeletor() {
   const larguraSeletor = larguraCelula * LARGURA_SELETOR;
   seletor.style.width = `${larguraSeletor}px`;
 
-  posicaoSeletor = Math.max(
-    0,
-    Math.min(posicaoSeletor, larguraUtil - larguraSeletor)
-  );
-
+  const max = larguraUtil - larguraSeletor;
+  posicaoSeletor = Math.max(0, Math.min(posicaoSeletor, max));
   seletor.style.left = `${posicaoSeletor}px`;
+
   atualizarRotulos();
 }
 
@@ -178,9 +178,9 @@ function atualizarRotulos() {
   seletorIdadeFim.textContent = anoFim - ANO_INICIAL;
 }
 
-// ==================================================
+// ======================================================
 // EVENTOS DO SELETOR
-// ==================================================
+// ======================================================
 function ligarEventos() {
   seletor.addEventListener("mousedown", iniciarArrasto);
   window.addEventListener("resize", () => setTimeout(inicializar, 100));
@@ -205,9 +205,9 @@ function terminarArrasto() {
   document.removeEventListener("mouseup", terminarArrasto);
 }
 
-// ==================================================
-// RENDERIZAÇÃO DE EVENTOS
-// ==================================================
+// ======================================================
+// LISTA DE EVENTOS (ÚNICA PARTE DINÂMICA)
+// ======================================================
 function criarDivEvento(evento, tipo) {
   const div = document.createElement("div");
   div.className = `evento ${tipo}`;
@@ -253,9 +253,9 @@ function atualizarEventos() {
     .forEach(e => colObra.appendChild(criarDivEvento(e, "obra")));
 }
 
-// ==================================================
+// ======================================================
 // ARRANQUE
-// ==================================================
+// ======================================================
 window.addEventListener("load", () => {
-  setTimeout(inicializar, 50);
+  inicializar();
 });
