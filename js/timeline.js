@@ -3,7 +3,7 @@
 // ==============================
 const ANO_INICIAL = 1886;
 const ANO_FINAL = 1960;
-const ANOS_TOTAL = ANO_FINAL - ANO_INICIAL + 1;
+const TOTAL_ANOS = ANO_FINAL - ANO_INICIAL + 1;
 const LARGURA_SELETOR = 10;
 
 // ==============================
@@ -21,12 +21,6 @@ const seletorIdadeFim = document.getElementById("seletor-idade-fim");
 
 const listaEventos = document.getElementById("lista-eventos");
 
-const filtros = {
-  historia: document.getElementById("filtro-historia"),
-  vida: document.getElementById("filtro-vida"),
-  obra: document.getElementById("filtro-obra")
-};
-
 // ==============================
 // Estado
 // ==============================
@@ -37,28 +31,35 @@ let startX = 0;
 let startLeft = 0;
 
 // ==============================
-// Inicialização segura
+// Inicialização ROBUSTA
 // ==============================
 function inicializar() {
   const container = document.querySelector(".linha-tempo-container");
+  if (!container) return;
 
-  if (!container || container.offsetWidth === 0) {
-    requestAnimationFrame(inicializar);
+  // 1️⃣ criar linhas primeiro
+  criarLinhas();
+
+  // 2️⃣ forçar reflow (CRÍTICO)
+  container.offsetHeight;
+
+  // 3️⃣ medir larguras reais
+  larguraUtil = container.clientWidth;
+  if (larguraUtil === 0) {
+    setTimeout(inicializar, 50);
     return;
   }
 
-  larguraUtil = container.offsetWidth;
-  larguraCelula = larguraUtil / ANOS_TOTAL;
+  larguraCelula = larguraUtil / TOTAL_ANOS;
 
-  criarLinhas();
-  criarColunas();
-
+  // 4️⃣ posição inicial do seletor
   posicaoSeletor =
     larguraUtil / 2 - (larguraCelula * LARGURA_SELETOR) / 2;
 
   posicionarSeletor();
+  criarColunas();
   atualizarEventos();
-  adicionarEventos();
+  ligarEventos();
 }
 
 // ==============================
@@ -72,7 +73,7 @@ function criarLinhas() {
 
 function criarLinha(container, tipo) {
   container.innerHTML = "";
-  for (let i = 0; i < ANOS_TOTAL; i++) {
+  for (let i = 0; i < TOTAL_ANOS; i++) {
     const celula = document.createElement("div");
     celula.className = `celula ${tipo}`;
     container.appendChild(celula);
@@ -80,7 +81,7 @@ function criarLinha(container, tipo) {
 }
 
 // ==============================
-// Estrutura de colunas
+// Colunas de eventos
 // ==============================
 function criarColunas() {
   listaEventos.innerHTML = `
@@ -96,10 +97,10 @@ function criarColunas() {
 // Seletor
 // ==============================
 function posicionarSeletor() {
-  const largura = larguraCelula * LARGURA_SELETOR;
-  seletor.style.width = `${largura}px`;
+  const larguraSeletor = larguraCelula * LARGURA_SELETOR;
+  seletor.style.width = `${larguraSeletor}px`;
 
-  const max = larguraUtil - largura;
+  const max = larguraUtil - larguraSeletor;
   posicaoSeletor = Math.max(0, Math.min(posicaoSeletor, max));
   seletor.style.left = `${posicaoSeletor}px`;
 
@@ -108,7 +109,7 @@ function posicionarSeletor() {
 
 function atualizarRotulos() {
   const anoInicio =
-    ANO_INICIAL + Math.round(posicaoSeletor / larguraCelula);
+    ANO_INICIAL + Math.floor(posicaoSeletor / larguraCelula);
   const anoFim = Math.min(
     anoInicio + LARGURA_SELETOR - 1,
     ANO_FINAL
@@ -121,23 +122,19 @@ function atualizarRotulos() {
 }
 
 // ==============================
-// Eventos
+// Eventos do seletor
 // ==============================
-function adicionarEventos() {
-  seletor.onmousedown = iniciarArrasto;
-  window.onresize = () => inicializar();
-
-  Object.values(filtros).forEach(cb =>
-    cb.addEventListener("change", atualizarEventos)
-  );
+function ligarEventos() {
+  seletor.addEventListener("mousedown", iniciarArrasto);
+  window.addEventListener("resize", () => setTimeout(inicializar, 100));
 }
 
 function iniciarArrasto(e) {
   startX = e.clientX;
   startLeft = posicaoSeletor;
 
-  document.onmousemove = moverSeletor;
-  document.onmouseup = pararArrasto;
+  document.addEventListener("mousemove", moverSeletor);
+  document.addEventListener("mouseup", terminarArrasto);
 }
 
 function moverSeletor(e) {
@@ -146,13 +143,13 @@ function moverSeletor(e) {
   atualizarEventos();
 }
 
-function pararArrasto() {
-  document.onmousemove = null;
-  document.onmouseup = null;
+function terminarArrasto() {
+  document.removeEventListener("mousemove", moverSeletor);
+  document.removeEventListener("mouseup", terminarArrasto);
 }
 
 // ==============================
-// Atualização de eventos
+// Eventos (placeholder)
 // ==============================
 function atualizarEventos() {
   document.getElementById("coluna-historia").innerHTML = "";
@@ -163,4 +160,6 @@ function atualizarEventos() {
 // ==============================
 // Arranque
 // ==============================
-window.addEventListener("load", inicializar);
+window.addEventListener("load", () => {
+  setTimeout(inicializar, 50);
+});
