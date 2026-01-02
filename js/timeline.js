@@ -1,14 +1,52 @@
-// ==============================
-// Configurações
-// ==============================
+// ==================================================
+// CONFIGURAÇÕES
+// ==================================================
 const ANO_INICIAL = 1886;
 const ANO_FINAL = 1960;
 const TOTAL_ANOS = ANO_FINAL - ANO_INICIAL + 1;
 const LARGURA_SELETOR = 10;
 
-// ==============================
-// Elementos DOM
-// ==============================
+// ==================================================
+// DADOS (EXEMPLO – PODES AMPLIAR)
+// ==================================================
+const eventos = {
+  historia: [
+    {
+      idade: "24",
+      "ano civil": 1910,
+      "dia-mês": "5.OUT.",
+      titulo: "Implantação da República",
+      descricao: "Proclamação da República Portuguesa."
+    }
+  ],
+  vida: [
+    {
+      idade: "30",
+      "ano civil": 1916,
+      "dia-mês": "5.MAR.",
+      titulo: "Comício à saída da missa",
+      descricao: "Protesto público contra a distribuição do milho."
+    }
+  ],
+  obra: [
+    {
+      idade: "34",
+      "ano civil": 1920,
+      "dia-mês": "15.FEV.",
+      titulo: "A Alma dum Caloteiro",
+      descricao: `
+        <div class="imagem-evento">
+          <img src="docs/poemas/a-alma-dum-caloteiro.png"
+               style="max-width:100px;">
+        </div>
+      `
+    }
+  ]
+};
+
+// ==================================================
+// ELEMENTOS DOM
+// ==================================================
 const linhaHistoria = document.getElementById("linha-historia");
 const linhaVida = document.getElementById("linha-vida");
 const linhaObra = document.getElementById("linha-obra");
@@ -21,29 +59,25 @@ const seletorIdadeFim = document.getElementById("seletor-idade-fim");
 
 const listaEventos = document.getElementById("lista-eventos");
 
-// ==============================
-// Estado
-// ==============================
+// ==================================================
+// ESTADO
+// ==================================================
 let larguraUtil = 0;
 let larguraCelula = 0;
 let posicaoSeletor = 0;
 let startX = 0;
 let startLeft = 0;
 
-// ==============================
-// Inicialização ROBUSTA
-// ==============================
+// ==================================================
+// INICIALIZAÇÃO
+// ==================================================
 function inicializar() {
   const container = document.querySelector(".linha-tempo-container");
   if (!container) return;
 
-  // 1️⃣ criar linhas primeiro
   criarLinhas();
+  container.offsetHeight; // força reflow
 
-  // 2️⃣ forçar reflow (CRÍTICO)
-  container.offsetHeight;
-
-  // 3️⃣ medir larguras reais
   larguraUtil = container.clientWidth;
   if (larguraUtil === 0) {
     setTimeout(inicializar, 50);
@@ -51,8 +85,6 @@ function inicializar() {
   }
 
   larguraCelula = larguraUtil / TOTAL_ANOS;
-
-  // 4️⃣ posição inicial do seletor
   posicaoSeletor =
     larguraUtil / 2 - (larguraCelula * LARGURA_SELETOR) / 2;
 
@@ -62,9 +94,9 @@ function inicializar() {
   ligarEventos();
 }
 
-// ==============================
-// Linhas do tempo
-// ==============================
+// ==================================================
+// LINHAS DO TEMPO
+// ==================================================
 function criarLinhas() {
   criarLinha(linhaHistoria, "historia");
   criarLinha(linhaVida, "vida");
@@ -80,9 +112,9 @@ function criarLinha(container, tipo) {
   }
 }
 
-// ==============================
-// Colunas de eventos
-// ==============================
+// ==================================================
+// COLUNAS
+// ==================================================
 function criarColunas() {
   listaEventos.innerHTML = `
     <div class="colunas-eventos">
@@ -93,9 +125,9 @@ function criarColunas() {
   `;
 }
 
-// ==============================
-// Seletor
-// ==============================
+// ==================================================
+// SELETOR
+// ==================================================
 function posicionarSeletor() {
   const larguraSeletor = larguraCelula * LARGURA_SELETOR;
   seletor.style.width = `${larguraSeletor}px`;
@@ -121,9 +153,9 @@ function atualizarRotulos() {
   seletorIdadeFim.textContent = anoFim - ANO_INICIAL;
 }
 
-// ==============================
-// Eventos do seletor
-// ==============================
+// ==================================================
+// EVENTOS DO SELETOR
+// ==================================================
 function ligarEventos() {
   seletor.addEventListener("mousedown", iniciarArrasto);
   window.addEventListener("resize", () => setTimeout(inicializar, 100));
@@ -132,7 +164,6 @@ function ligarEventos() {
 function iniciarArrasto(e) {
   startX = e.clientX;
   startLeft = posicaoSeletor;
-
   document.addEventListener("mousemove", moverSeletor);
   document.addEventListener("mouseup", terminarArrasto);
 }
@@ -148,14 +179,16 @@ function terminarArrasto() {
   document.removeEventListener("mouseup", terminarArrasto);
 }
 
+// ==================================================
+// RENDERIZAÇÃO DE EVENTOS
+// ==================================================
 function criarDivEvento(evento, tipo) {
   const div = document.createElement("div");
   div.className = `evento ${tipo}`;
 
-  const data =
-    evento["dia-mês"]
-      ? `${evento["dia-mês"]} ${evento["ano civil"]}`
-      : evento["ano civil"];
+  const data = evento["dia-mês"]
+    ? `${evento["dia-mês"]} ${evento["ano civil"]}`
+    : evento["ano civil"];
 
   div.innerHTML = `
     <div class="evento-cabecalho">
@@ -163,20 +196,11 @@ function criarDivEvento(evento, tipo) {
       <span class="evento-data">${data}</span>
     </div>
     <h4 class="evento-titulo">${evento.titulo}</h4>
-    ${
-      evento.descricao
-        ? `<div class="evento-descricao">${evento.descricao}</div>`
-        : ""
-    }
+    ${evento.descricao ? `<div class="evento-descricao">${evento.descricao}</div>` : ""}
   `;
-
   return div;
 }
 
-
-// ==============================
-// Eventos (placeholder)
-// ==============================
 function atualizarEventos() {
   const anoInicio = parseInt(seletorAnoInicio.textContent, 10);
   const anoFim = parseInt(seletorAnoFim.textContent, 10);
@@ -189,32 +213,22 @@ function atualizarEventos() {
   colVida.innerHTML = "";
   colObra.innerHTML = "";
 
-  // HISTÓRIA
-  if (document.getElementById("filtro-historia")?.checked !== false) {
-    eventos.historia
-      .filter(e => e["ano civil"] >= anoInicio && e["ano civil"] <= anoFim)
-      .forEach(e => colHistoria.appendChild(criarDivEvento(e, "historia")));
-  }
+  eventos.historia
+    .filter(e => e["ano civil"] >= anoInicio && e["ano civil"] <= anoFim)
+    .forEach(e => colHistoria.appendChild(criarDivEvento(e, "historia")));
 
-  // VIDA
-  if (document.getElementById("filtro-vida")?.checked !== false) {
-    eventos.vida
-      .filter(e => e["ano civil"] >= anoInicio && e["ano civil"] <= anoFim)
-      .forEach(e => colVida.appendChild(criarDivEvento(e, "vida")));
-  }
+  eventos.vida
+    .filter(e => e["ano civil"] >= anoInicio && e["ano civil"] <= anoFim)
+    .forEach(e => colVida.appendChild(criarDivEvento(e, "vida")));
 
-  // OBRA
-  if (document.getElementById("filtro-obra")?.checked !== false) {
-    eventos.obra
-      .filter(e => e["ano civil"] >= anoInicio && e["ano civil"] <= anoFim)
-      .forEach(e => colObra.appendChild(criarDivEvento(e, "obra")));
-  }
+  eventos.obra
+    .filter(e => e["ano civil"] >= anoInicio && e["ano civil"] <= anoFim)
+    .forEach(e => colObra.appendChild(criarDivEvento(e, "obra")));
 }
 
-
-// ==============================
-// Arranque
-// ==============================
+// ==================================================
+// ARRANQUE
+// ==================================================
 window.addEventListener("load", () => {
   setTimeout(inicializar, 50);
 });
