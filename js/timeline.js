@@ -7,7 +7,7 @@ const TOTAL_ANOS = ANO_FINAL - ANO_INICIAL + 1;
 const LARGURA_SELETOR = 10;
 
 // ==================================================
-// DADOS (EXEMPLO – PODES AMPLIAR)
+// EVENTOS (TESTE REAL – GARANTE VISUALIZAÇÃO)
 // ==================================================
 const eventos = {
   historia: [
@@ -36,10 +36,8 @@ const eventos = {
       titulo: "A Alma dum Caloteiro",
       descricao: `
         <div class="imagem-evento">
-          <img src="docs/poemas/a-alma-dum-caloteiro.png"
-               style="max-width:100px;">
-        </div>
-      `
+          <img src="docs/poemas/a-alma-dum-caloteiro.png" style="max-width:100px;">
+        </div>`
     }
   ]
 };
@@ -79,10 +77,7 @@ function inicializar() {
   container.offsetHeight; // força reflow
 
   larguraUtil = container.clientWidth;
-  if (larguraUtil === 0) {
-    setTimeout(inicializar, 50);
-    return;
-  }
+  if (larguraUtil === 0) return;
 
   larguraCelula = larguraUtil / TOTAL_ANOS;
   posicaoSeletor =
@@ -95,7 +90,7 @@ function inicializar() {
 }
 
 // ==================================================
-// LINHAS DO TEMPO
+// LINHAS
 // ==================================================
 function criarLinhas() {
   criarLinha(linhaHistoria, "historia");
@@ -106,9 +101,9 @@ function criarLinhas() {
 function criarLinha(container, tipo) {
   container.innerHTML = "";
   for (let i = 0; i < TOTAL_ANOS; i++) {
-    const celula = document.createElement("div");
-    celula.className = `celula ${tipo}`;
-    container.appendChild(celula);
+    const d = document.createElement("div");
+    d.className = `celula ${tipo}`;
+    container.appendChild(d);
   }
 }
 
@@ -121,114 +116,84 @@ function criarColunas() {
       <div class="coluna-evento" id="coluna-historia"></div>
       <div class="coluna-evento" id="coluna-vida"></div>
       <div class="coluna-evento" id="coluna-obra"></div>
-    </div>
-  `;
+    </div>`;
 }
 
 // ==================================================
 // SELETOR
 // ==================================================
 function posicionarSeletor() {
-  const larguraSeletor = larguraCelula * LARGURA_SELETOR;
-  seletor.style.width = `${larguraSeletor}px`;
+  const w = larguraCelula * LARGURA_SELETOR;
+  seletor.style.width = `${w}px`;
 
-  const max = larguraUtil - larguraSeletor;
-  posicaoSeletor = Math.max(0, Math.min(posicaoSeletor, max));
+  posicaoSeletor = Math.max(0, Math.min(posicaoSeletor, larguraUtil - w));
   seletor.style.left = `${posicaoSeletor}px`;
 
   atualizarRotulos();
 }
 
 function atualizarRotulos() {
-  const anoInicio =
-    ANO_INICIAL + Math.floor(posicaoSeletor / larguraCelula);
-  const anoFim = Math.min(
-    anoInicio + LARGURA_SELETOR - 1,
-    ANO_FINAL
-  );
+  const inicio = ANO_INICIAL + Math.floor(posicaoSeletor / larguraCelula);
+  const fim = Math.min(inicio + LARGURA_SELETOR - 1, ANO_FINAL);
 
-  seletorAnoInicio.textContent = anoInicio;
-  seletorAnoFim.textContent = anoFim;
-  seletorIdadeInicio.textContent = anoInicio - ANO_INICIAL;
-  seletorIdadeFim.textContent = anoFim - ANO_INICIAL;
+  seletorAnoInicio.textContent = inicio;
+  seletorAnoFim.textContent = fim;
+  seletorIdadeInicio.textContent = inicio - ANO_INICIAL;
+  seletorIdadeFim.textContent = fim - ANO_INICIAL;
 }
 
 // ==================================================
-// EVENTOS DO SELETOR
+// EVENTOS
 // ==================================================
 function ligarEventos() {
-  seletor.addEventListener("mousedown", iniciarArrasto);
-  window.addEventListener("resize", () => setTimeout(inicializar, 100));
+  seletor.addEventListener("mousedown", e => {
+    startX = e.clientX;
+    startLeft = posicaoSeletor;
+    document.onmousemove = m => {
+      posicaoSeletor = startLeft + (m.clientX - startX);
+      posicionarSeletor();
+      atualizarEventos();
+    };
+    document.onmouseup = () => {
+      document.onmousemove = null;
+      document.onmouseup = null;
+    };
+  });
 }
 
-function iniciarArrasto(e) {
-  startX = e.clientX;
-  startLeft = posicaoSeletor;
-  document.addEventListener("mousemove", moverSeletor);
-  document.addEventListener("mouseup", terminarArrasto);
-}
-
-function moverSeletor(e) {
-  posicaoSeletor = startLeft + (e.clientX - startX);
-  posicionarSeletor();
-  atualizarEventos();
-}
-
-function terminarArrasto() {
-  document.removeEventListener("mousemove", moverSeletor);
-  document.removeEventListener("mouseup", terminarArrasto);
-}
-
-// ==================================================
-// RENDERIZAÇÃO DE EVENTOS
-// ==================================================
-function criarDivEvento(evento, tipo) {
-  const div = document.createElement("div");
-  div.className = `evento ${tipo}`;
-
-  const data = evento["dia-mês"]
-    ? `${evento["dia-mês"]} ${evento["ano civil"]}`
-    : evento["ano civil"];
-
-  div.innerHTML = `
-    <div class="evento-cabecalho">
-      <span class="evento-idade">${evento.idade} anos</span>
-      <span class="evento-data">${data}</span>
-    </div>
-    <h4 class="evento-titulo">${evento.titulo}</h4>
-    ${evento.descricao ? `<div class="evento-descricao">${evento.descricao}</div>` : ""}
-  `;
-  return div;
+function criarDivEvento(e, tipo) {
+  const d = document.createElement("div");
+  d.className = `evento ${tipo}`;
+  d.innerHTML = `
+    <strong>${e.titulo}</strong><br>
+    <small>${e["dia-mês"] || ""} ${e["ano civil"]}</small>
+    ${e.descricao || ""}`;
+  return d;
 }
 
 function atualizarEventos() {
-  const anoInicio = parseInt(seletorAnoInicio.textContent, 10);
-  const anoFim = parseInt(seletorAnoFim.textContent, 10);
+  const ini = +seletorAnoInicio.textContent;
+  const fim = +seletorAnoFim.textContent;
 
-  const colHistoria = document.getElementById("coluna-historia");
-  const colVida = document.getElementById("coluna-vida");
-  const colObra = document.getElementById("coluna-obra");
+  const h = document.getElementById("coluna-historia");
+  const v = document.getElementById("coluna-vida");
+  const o = document.getElementById("coluna-obra");
 
-  colHistoria.innerHTML = "";
-  colVida.innerHTML = "";
-  colObra.innerHTML = "";
+  h.innerHTML = "";
+  v.innerHTML = "";
+  o.innerHTML = "";
 
-  eventos.historia
-    .filter(e => e["ano civil"] >= anoInicio && e["ano civil"] <= anoFim)
-    .forEach(e => colHistoria.appendChild(criarDivEvento(e, "historia")));
+  eventos.historia.filter(e => e["ano civil"] >= ini && e["ano civil"] <= fim)
+    .forEach(e => h.appendChild(criarDivEvento(e, "historia")));
 
-  eventos.vida
-    .filter(e => e["ano civil"] >= anoInicio && e["ano civil"] <= anoFim)
-    .forEach(e => colVida.appendChild(criarDivEvento(e, "vida")));
+  eventos.vida.filter(e => e["ano civil"] >= ini && e["ano civil"] <= fim)
+    .forEach(e => v.appendChild(criarDivEvento(e, "vida")));
 
-  eventos.obra
-    .filter(e => e["ano civil"] >= anoInicio && e["ano civil"] <= anoFim)
-    .forEach(e => colObra.appendChild(criarDivEvento(e, "obra")));
+  eventos.obra.filter(e => e["ano civil"] >= ini && e["ano civil"] <= fim)
+    .forEach(e => o.appendChild(criarDivEvento(e, "obra")));
 }
 
 // ==================================================
 // ARRANQUE
 // ==================================================
-window.addEventListener("load", () => {
-  setTimeout(inicializar, 50);
-});
+window.addEventListener("load", inicializar);
