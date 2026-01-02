@@ -1,72 +1,346 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Linha do Tempo Interativa</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
-    <div class="container">
-        <header class="header">
-            <h1><i class="fas fa-timeline"></i> Linha do Tempo</h1>
-            <p class="subtitle">Registre seus momentos importantes</p>
-        </header>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        <div class="controls">
-            <button id="prevYear" class="btn"><i class="fas fa-chevron-left"></i> Ano Anterior</button>
-            <button id="addEvent" class="btn btn-primary"><i class="fas fa-plus-circle"></i> Novo Evento</button>
-            <button id="nextYear" class="btn">Próximo Ano <i class="fas fa-chevron-right"></i></button>
-        </div>
+body {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #333;
+    background-color: #f5f5f5;
+    overflow: hidden;
+    height: 100vh;
+}
 
-        <div class="current-year" id="currentYear">2024</div>
+.cabecalho-fixo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
 
-        <div class="timeline-container">
-            <div class="timeline" id="timeline">
-                <!-- Eventos serão carregados aqui -->
-            </div>
-        </div>
+.linha-tempo-container {
+    position: relative;
+    padding: 15px 20px 5px;
+    background: linear-gradient(to bottom, #f9f9f9, #fff);
+    border-bottom: 1px solid #ddd;
+}
 
-        <div class="stats">
-            <p><i class="fas fa-calendar-check"></i> <span id="eventCount">0</span> eventos registrados</p>
-        </div>
+.rotulos-idade {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 40px;
+    margin-bottom: 10px;
+    font-size: 11px;
+    color: #666;
+    font-weight: 500;
+}
 
-        <footer class="footer">
-            <p>© 2024 - Linha do Tempo Interativa | 
-               <a href="https://github.com/aherculanof1958" target="_blank"><i class="fab fa-github"></i> GitHub</a>
-            </p>
-        </footer>
-    </div>
+.rotulos-idade span {
+    flex: 1;
+    text-align: center;
+}
 
-    <!-- Modal para adicionar eventos -->
-    <div id="eventModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2><i class="fas fa-calendar-plus"></i> Adicionar Evento</h2>
-            <form id="eventForm">
-                <div class="form-group">
-                    <label for="eventDate"><i class="fas fa-calendar-alt"></i> Data:</label>
-                    <input type="date" id="eventDate" required>
-                </div>
-                <div class="form-group">
-                    <label for="eventTitle"><i class="fas fa-heading"></i> Título:</label>
-                    <input type="text" id="eventTitle" placeholder="Digite o título do evento" required>
-                </div>
-                <div class="form-group">
-                    <label for="eventDesc"><i class="fas fa-align-left"></i> Descrição:</label>
-                    <textarea id="eventDesc" rows="4" placeholder="Descreva o evento..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="eventImg"><i class="fas fa-image"></i> URL da Imagem (opcional):</label>
-                    <input type="url" id="eventImg" placeholder="https://exemplo.com/imagem.jpg">
-                </div>
-                <button type="submit" class="btn-submit"><i class="fas fa-save"></i> Salvar Evento</button>
-            </form>
-        </div>
-    </div>
+.linha-wrapper {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
 
-    <script src="js/timeline.js"></script>
-</body>
-</html>
+.rotulo-linha-esquerda, 
+.rotulo-linha-direita {
+    width: 60px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #555;
+    text-align: center;
+}
+
+.rotulo-linha-esquerda {
+    text-align: right;
+    padding-right: 10px;
+}
+
+.rotulo-linha-direita {
+    text-align: left;
+    padding-left: 10px;
+}
+
+.linha {
+    flex: 1;
+    height: 20px;
+    background: #e0e0e0;
+    border-radius: 10px;
+    position: relative;
+}
+
+.linha-historia { background: linear-gradient(to right, #ff6b6b, #ff8e8e); }
+.linha-vida { background: linear-gradient(to right, #4ecdc4, #88d3ce); }
+.linha-obra { background: linear-gradient(to right, #45b7d1, #8ac6d1); }
+
+.rotulos-anos {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 35px;
+    margin-top: 10px;
+}
+
+.rotulo-ano {
+    font-size: 11px;
+    color: #444;
+    font-weight: 600;
+}
+
+.seletor {
+    position: absolute;
+    top: 45px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #2c3e50;
+    border-radius: 6px;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-width: 80px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.2);
+}
+
+.seletor-idades, .seletor-anos {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 8px;
+}
+
+.seletor-idade, .seletor-ano {
+    font-size: 12px;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.cabecalho-filtros {
+    padding: 10px 20px;
+    background: #fff;
+    border-top: 1px solid #eee;
+}
+
+.cabecalho-grid {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cabecalho-titulo h4 {
+    font-size: 15px;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.cabecalho-controles {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.filtros fieldset {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 12px;
+}
+
+.filtros legend {
+    font-size: 11px;
+    color: #666;
+    padding: 0 5px;
+    font-weight: 500;
+}
+
+.filtros input[type="checkbox"] {
+    margin-right: 3px;
+}
+
+.filtros label {
+    margin-right: 12px;
+    font-size: 12px;
+    color: #444;
+    cursor: pointer;
+}
+
+.btn-reset {
+    background: #2c3e50;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-reset:hover {
+    background: #1a252f;
+}
+
+.conteudo-rolavel {
+    margin-top: 185px;
+    height: calc(100vh - 185px);
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.eventos-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.lista-eventos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.evento-card {
+    background: white;
+    border-radius: 8px;
+    padding: 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border-left: 4px solid #3498db;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.evento-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.evento-card.historia { border-left-color: #ff6b6b; }
+.evento-card.vida { border-left-color: #4ecdc4; }
+.evento-card.obra { border-left-color: #45b7d1; }
+
+.evento-categoria {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    color: white;
+}
+
+.evento-categoria.historia { background: #ff6b6b; }
+.evento-categoria.vida { background: #4ecdc4; }
+.evento-categoria.obra { background: #45b7d1; }
+
+.evento-data {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.evento-titulo {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 10px;
+    line-height: 1.3;
+}
+
+.evento-descricao {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.5;
+    margin-bottom: 12px;
+}
+
+.evento-imagem {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: opacity 0.2s;
+}
+
+.evento-imagem:hover {
+    opacity: 0.9;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.9);
+    overflow: auto;
+}
+
+.modal-fechar {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 2001;
+}
+
+.modal-fechar:hover {
+    color: #ccc;
+}
+
+.modal-conteudo {
+    margin: auto;
+    display: block;
+    max-width: 90%;
+    max-height: 80vh;
+    margin-top: 10vh;
+    border-radius: 8px;
+}
+
+.modal-legenda {
+    text-align: center;
+    color: #fff;
+    padding: 20px;
+    font-size: 16px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .cabecalho-grid {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .cabecalho-controles {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .conteudo-rolavel {
+        margin-top: 220px;
+        height: calc(100vh - 220px);
+    }
+    
+    .lista-eventos {
+        grid-template-columns: 1fr;
+    }
+}
