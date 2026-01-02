@@ -24,66 +24,66 @@ const eventos = {
     { idade: "30", "ano civil": 1916, "dia-mês": "5.MAR.", titulo: "JMS faz comício à saída da missa censurando a distribuição do milho",
       zoomExtra: true, descricao: `
         <div class="imagem-evento">
-          <img src="docs/informacao-do-regedor-mar1916.png"
-               alt="informação do regedor para o administrador do concelho"
+          <img src="docs/oficios/informacao-do-regedor-mar1916.png"
+               alt="Informação do regedor para o administrador do concelho"
                style="max-width:100px;">
         </div>` },
 
     { idade: "35", "ano civil": 1921, "dia-mês": "4.SET.", titulo: "JMS é eleito em comício, para a Comissão que reclama o barateamento do preço do milho",
       zoomExtra: true, descricao: `
         <div class="imagem-evento">
-          <img src="docs/oficio-ao-administrador-set1921.png"
-               alt="ofício ao administrador"
+          <img src="docs/oficios/oficio-ao-administrador-set1921.png"
+               alt="Ofício da Comissão Popular ao Administrador do Concelho"
                style="max-width:100px;">
         </div>` },
 
     { idade: "35", "ano civil": 1922, "dia-mês": "", titulo: "Fotografia do poeta publicada em 'A Lira do Povo'",
       zoomExtra: true, descricao: `
         <div class="imagem-evento">
-          <img src="docs/jms-aos-36-anos-2.jpeg"
-               alt="JMS aos 36 anos"
+          <img src="docs/fotos/jms-aos-36-anos-2.jpeg"
+               alt="Joaquim Moreira da Silva aos 36 anos"
                style="max-width:100px;">
         </div>` }
   ],
 
   obra: [
     { idade: "28", "ano civil": 1914, "dia-mês": "27.JAN.", titulo: "Grupo Anticlerical IV", zoomExtra: true,
-      descricao:`<div class="imagem-evento"><img src="docs/grupo-anti-clerical-iv.png" style="max-width:100px;"></div>` },
+      descricao:`<div class="imagem-evento"><img src="docs/poemas/grupo-anti-clerical-iv.png" style="max-width:100px;"></div>` },
 
     { idade: "28", "ano civil": 1914, "dia-mês": "28.JAN.", titulo: "Grupo Anticlerical I", zoomExtra: true,
-      descricao:`<div class="imagem-evento"><img src="docs/grupo-anti-clerical-i.png" style="max-width:100px;"></div>` },
+      descricao:`<div class="imagem-evento"><img src="docs/poemas/grupo-anti-clerical-i.png" style="max-width:100px;"></div>` },
 
     { idade: "28", "ano civil": 1914, "dia-mês": "12.DEZ.", titulo: "Grupo Anticlerical III", zoomExtra: true,
-      descricao:`<div class="imagem-evento"><img src="docs/grupo-anti-clerical-iii.png" style="max-width:100px;"></div>` },
+      descricao:`<div class="imagem-evento"><img src="docs/poemas/grupo-anti-clerical-iii.png" style="max-width:100px;"></div>` },
 
     { idade: "30", "ano civil": 1916, "dia-mês": "23.ABR.", titulo: "À memória de Cristo", zoomExtra: true,
-      descricao:`<div class="imagem-evento"><img src="docs/a-memoria-de-cristo.png" style="max-width:100px;"></div>` },
+      descricao:`<div class="imagem-evento"><img src="docs/poemas/a-memoria-de-cristo.png" style="max-width:100px;"></div>` },
 
     { idade: "32", "ano civil": 1918, "dia-mês": "15.AGO.", titulo: "O Milho a 30 réis", zoomExtra: true,
-      descricao:`<div class="imagem-evento"><img src="docs/o-milho-a-30-reis.png" style="max-width:100px;"></div>` },
+      descricao:`<div class="imagem-evento"><img src="docs/poemas/o-milho-a-30-reis.png" style="max-width:100px;"></div>` },
 
     { idade: "33", "ano civil": 1919, "dia-mês": "31.AGO.", titulo: "Uma viagem ao céu", zoomExtra: true,
-      descricao:`<div class="imagem-evento"><img src="docs/uma-viagem-ao-ceu.png" style="max-width:100px;"></div>` },
+      descricao:`<div class="imagem-evento"><img src="docs/poemas/uma-viagem-ao-ceu.png" style="max-width:100px;"></div>` },
 
     { idade: "33", "ano civil": 1919, "dia-mês": "31.AGO.", titulo: "Uma viagem ao inferno", zoomExtra: true,
-      descricao:`<div class="imagem-evento"><img src="docs/uma-viagem-ao-inferno.png" style="max-width:100px;"></div>` },
+      descricao:`<div class="imagem-evento"><img src="docs/poemas/uma-viagem-ao-inferno.png" style="max-width:100px;"></div>` },
 
     { idade: "33", "ano civil": 1919, "dia-mês": "28.SET.", titulo: "A nova aurora", zoomExtra: true,
-      descricao:`<div class="imagem-evento"><img src="docs/a-nova-aurora.png" style="max-width:100px;"></div>` },
+      descricao:`<div class="imagem-evento"><img src="docs/poemas/a-nova-aurora.png" style="max-width:100px;"></div>` },
 
     { idade: "33", "ano civil": 1919, "dia-mês": "12.OUT.", titulo: "Aos carpinteiros do Porto", zoomExtra: true,
-      descricao:`<div class="imagem-evento"><img src="docs/aos-carpinteiros-do-porto.png" style="max-width:100px;"></div>` },
+      descricao:`<div class="imagem-evento"><img src="docs/poemas/aos-carpinteiros-do-porto.png" style="max-width:100px;"></div>` },
 
-    { idade: "34", "ano civil": 1920, "dia-mês": "15.FEV.", titulo: "A alma dum caloteiro", zoomExtra: true,
-      descricao:`<div class="imagem-evento"><img src="docs/a-alma-dum-caloteiro.png" style="max-width:100px;"></div>` },
+    { idade: "34", "ano civil": 1920, "dia-mês": "15.FEV.", titulo: "A Alma dum Caloteiro", zoomExtra: true,
+      descricao:`<div class="imagem-evento"><img src="docs/poemas/a-alma-dum-caloteiro.png" style="max-width:100px;"></div>` },
 
     { idade: "34", "ano civil": 1920, "dia-mês": "7.MAR.", titulo: "Libelos contra o verdugo", zoomExtra: true,
-      descricao:`<div class="imagem-evento"><img src="docs/libelos-contra-o-verdugo.png" style="max-width:100px;"></div>` },
+      descricao:`<div class="imagem-evento"><img src="docs/poemas/libelos-contra-o-verdugo.png" style="max-width:100px;"></div>` },
 
     { idade: "35", "ano civil": 1921, "dia-mês": "15.JAN.", titulo: "O terror em Vilar", zoomExtra: true,
-      descricao:`<div class="imagem-evento"><img src="docs/o-terror-em-vilar.png" style="max-width:100px;"></div>` },
+      descricao:`<div class="imagem-evento"><img src="docs/poemas/o-terror-em-vilar.png" style="max-width:100px;"></div>` },
 
     { idade: "35", "ano civil": 1921, "dia-mês": "30.JAN.", titulo: "O Bruxedo em Vilar", zoomExtra: true,
-      descricao:`<div class="imagem-evento"><img src="docs/o-bruxedo-em-vilar.png" style="max-width:100px;"></div>` }
+      descricao:`<div class="imagem-evento"><img src="docs/poemas/o-bruxedo-em-vilar.png" style="max-width:100px;"></div>` }
   ]
 };
