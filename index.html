@@ -1,71 +1,71 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8" />
-  <title>Linha do Tempo – Joaquim Moreira da Silva</title>
+  <meta charset="UTF-8">
+  <title>Joaquim Moreira da Silva — Linha do Tempo</title>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/timeline.css" />
+  <link rel="stylesheet" href="css/timeline.css">
 </head>
 
 <body>
 
-  <!-- ===============================
-       CABEÇALHO / FILTROS
-  ================================ -->
-  <section class="controlos">
+  <!-- ==============================
+       CABEÇALHO
+  ============================== -->
+  <header class="cabecalho-fixo">
+    <div class="cabecalho-grid">
+      <div class="cabecalho-titulo">
+        História · Vida · Obra
+      </div>
 
-    <div class="rotulos">
-      <span>História</span>
-      <span>Vida</span>
-      <span>Obra</span>
+      <div class="cabecalho-filtros filtros">
+        <fieldset>
+          <legend>Filtros</legend>
+          <label>
+            <input type="checkbox" id="filtro-historia" checked>
+            História
+          </label>
+          <label>
+            <input type="checkbox" id="filtro-vida" checked>
+            Vida
+          </label>
+          <label>
+            <input type="checkbox" id="filtro-obra" checked>
+            Obra
+          </label>
+        </fieldset>
+      </div>
     </div>
+  </header>
 
-    <div class="filtros">
-      <label>
-        <input type="checkbox" id="filtro-historia" checked />
-        História
-      </label>
-      <label>
-        <input type="checkbox" id="filtro-vida" checked />
-        Vida
-      </label>
-      <label>
-        <input type="checkbox" id="filtro-obra" checked />
-        Obra
-      </label>
-    </div>
-
-  </section>
-
-  <!-- ===============================
+  <!-- ==============================
        LINHA DO TEMPO
-  ================================ -->
+  ============================== -->
   <section class="linha-tempo-container">
 
-    <!-- SELETOR -->
+    <!-- Seletor -->
     <div id="seletor">
       <div class="rotulo-seletor inicio">
         <span id="seletor-idade-inicio"></span>
         <span id="seletor-ano-inicio"></span>
       </div>
-
       <div class="rotulo-seletor fim">
         <span id="seletor-idade-fim"></span>
         <span id="seletor-ano-fim"></span>
       </div>
     </div>
 
-    <!-- LINHAS -->
+    <!-- Linhas -->
     <div class="linhas">
-      <div id="linha-historia" class="linha historia"></div>
-      <div id="linha-vida" class="linha vida"></div>
-      <div id="linha-obra" class="linha obra"></div>
+      <div class="linha historia" id="linha-historia"></div>
+      <div class="linha vida" id="linha-vida"></div>
+      <div class="linha obra" id="linha-obra"></div>
     </div>
 
-    <!-- ANOS -->
+    <!-- Escala de anos -->
     <div class="escala-anos">
       <span>1886</span>
       <span>1896</span>
@@ -80,20 +80,14 @@
 
   </section>
 
-  <!-- ===============================
+  <!-- ==============================
        EVENTOS
-  ================================ -->
-  <section id="lista-eventos">
+  ============================== -->
+  <main id="lista-eventos"></main>
 
-    <h2>Eventos do Período Selecionado:</h2>
-
-    <!-- colunas são criadas via JS -->
-
-  </section>
-
-  <!-- ===============================
-       SCRIPTS (ORDEM CRÍTICA)
-  ================================ -->
+  <!-- ==============================
+       SCRIPTS
+  ============================== -->
   <script src="js/eventos.js"></script>
   <script src="js/timeline.js"></script>
 
