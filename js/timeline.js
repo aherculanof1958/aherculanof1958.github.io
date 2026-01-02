@@ -1,376 +1,337 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Elementos DOM
-    const timelineEl = document.getElementById('timeline');
-    const currentYearEl = document.getElementById('currentYear');
-    const eventCountEl = document.getElementById('eventCount');
-    const addEventBtn = document.getElementById('addEvent');
-    const prevYearBtn = document.getElementById('prevYear');
-    const nextYearBtn = document.getElementById('nextYear');
-    const modal = document.getElementById('eventModal');
-    const closeBtn = document.querySelector('.close');
-    const eventForm = document.getElementById('eventForm');
-
-    // Dados iniciais
-    let events = JSON.parse(localStorage.getItem('timelineEvents')) || [
+    const seletor = document.getElementById('seletor');
+    const listaEventos = document.getElementById('lista-eventos');
+    const modal = document.getElementById('modal-imagem');
+    const modalImg = document.getElementById('modal-img');
+    const modalLegenda = document.getElementById('modal-legenda');
+    const modalFechar = document.querySelector('.modal-fechar');
+    const btnReset = document.getElementById('btn-reset');
+    
+    // Filtros
+    const filtroHistoria = document.getElementById('filtro-historia');
+    const filtroVida = document.getElementById('filtro-vida');
+    const filtroObra = document.getElementById('filtro-obra');
+    
+    // Dados dos eventos
+    const eventos = [
+        // História
         {
             id: 1,
-            date: '2024-01-15',
-            title: 'Início do Projeto',
-            description: 'Criação da linha do tempo interativa.',
-            image: ''
+            categoria: 'historia',
+            ano: 1889,
+            idade: 3,
+            titulo: 'Proclamação da República no Brasil',
+            descricao: 'Fim do Império e início da República Brasileira.',
+            imagem: ''
         },
         {
             id: 2,
-            date: '2024-06-30',
-            title: 'Metas do Ano',
-            description: 'Atingimos 50% dos objetivos planejados para o ano.',
-            image: ''
+            categoria: 'historia',
+            ano: 1914,
+            idade: 28,
+            titulo: 'Início da Primeira Guerra Mundial',
+            descricao: 'Conflito global que afetou toda a Europa.',
+            imagem: ''
         },
         {
             id: 3,
-            date: '2024-09-15',
-            title: 'Novas Conquistas',
-            description: 'Expansão do projeto com novas funcionalidades.',
-            image: ''
+            categoria: 'historia',
+            ano: 1939,
+            idade: 53,
+            titulo: 'Início da Segunda Guerra Mundial',
+            descricao: 'Maior conflito armado da história mundial.',
+            imagem: ''
+        },
+        
+        // Vida
+        {
+            id: 4,
+            categoria: 'vida',
+            ano: 1886,
+            idade: 0,
+            titulo: 'Nascimento de Joaquim Moreira da Silva',
+            descricao: 'Nasceu em Lisboa, Portugal.',
+            imagem: ''
+        },
+        {
+            id: 5,
+            categoria: 'vida',
+            ano: 1905,
+            idade: 19,
+            titulo: 'Ingresso na Universidade',
+            descricao: 'Iniciou os estudos em Direito na Universidade de Coimbra.',
+            imagem: ''
+        },
+        {
+            id: 6,
+            categoria: 'vida',
+            ano: 1915,
+            idade: 29,
+            titulo: 'Casamento',
+            descricao: 'Casou-se com Maria da Conceição.',
+            imagem: ''
+        },
+        {
+            id: 7,
+            categoria: 'vida',
+            ano: 1960,
+            idade: 74,
+            titulo: 'Falecimento',
+            descricao: 'Faleceu em Lisboa aos 74 anos.',
+            imagem: ''
+        },
+        
+        // Obra
+        {
+            id: 8,
+            categoria: 'obra',
+            ano: 1920,
+            idade: 34,
+            titulo: 'Primeira Publicação',
+            descricao: 'Lançamento do livro "Direito e Sociedade".',
+            imagem: ''
+        },
+        {
+            id: 9,
+            categoria: 'obra',
+            ano: 1935,
+            idade: 49,
+            titulo: 'Obra Principal',
+            descricao: 'Publicação de "Tratado de Direito Civil".',
+            imagem: ''
+        },
+        {
+            id: 10,
+            categoria: 'obra',
+            ano: 1950,
+            idade: 64,
+            titulo: 'Reconhecimento Internacional',
+            descricao: 'Premiado pela Academia de Ciências de Lisboa.',
+            imagem: ''
         }
     ];
-
-    let currentYear = new Date().getFullYear();
-    let editMode = false;
-    let eventToEdit = null;
-
+    
+    // Estado inicial do seletor
+    let inicioSelecao = 1933;
+    let fimSelecao = 1942;
+    let inicioIdade = 47;
+    let fimIdade = 56;
+    
     // Inicialização
     init();
-
-    // Funções
+    
     function init() {
-        renderTimeline();
-        updateCurrentYear();
-        updateEventCount();
-        setupEventListeners();
+        atualizarSeletor();
+        renderizarEventos();
+        configurarEventListeners();
     }
-
-    function setupEventListeners() {
-        addEventBtn.addEventListener('click', () => openModal());
-        prevYearBtn.addEventListener('click', () => changeYear(-1));
-        nextYearBtn.addEventListener('click', () => changeYear(1));
-        closeBtn.addEventListener('click', () => closeModal());
+    
+    function atualizarSeletor() {
+        document.getElementById('seletor-ano-inicio').textContent = inicioSelecao;
+        document.getElementById('seletor-ano-fim').textContent = fimSelecao;
+        document.getElementById('seletor-idade-inicio').textContent = inicioIdade;
+        document.getElementById('seletor-idade-fim').textContent = fimIdade;
         
-        eventForm.addEventListener('submit', (e) => {
+        // Posicionar o seletor na linha do tempo
+        const containerWidth = document.querySelector('.linha-tempo-container').offsetWidth;
+        const inicioPercent = ((inicioSelecao - 1886) / (1960 - 1886)) * 100;
+        const fimPercent = ((fimSelecao - 1886) / (1960 - 1886)) * 100;
+        const larguraPercent = fimPercent - inicioPercent;
+        
+        seletor.style.left = `calc(${inicioPercent}% + 20px)`;
+        seletor.style.width = `calc(${larguraPercent}% - 40px)`;
+    }
+    
+    function renderizarEventos() {
+        listaEventos.innerHTML = '';
+        
+        const eventosFiltrados = eventos.filter(evento => {
+            // Filtrar por período selecionado
+            const dentroPeriodo = evento.ano >= inicioSelecao && evento.ano <= fimSelecao;
+            
+            // Filtrar por categoria ativa
+            const categoriaAtiva = 
+                (evento.categoria === 'historia' && filtroHistoria.checked) ||
+                (evento.categoria === 'vida' && filtroVida.checked) ||
+                (evento.categoria === 'obra' && filtroObra.checked);
+            
+            return dentroPeriodo && categoriaAtiva;
+        });
+        
+        // Ordenar por ano
+        eventosFiltrados.sort((a, b) => a.ano - b.ano);
+        
+        if (eventosFiltrados.length === 0) {
+            listaEventos.innerHTML = `
+                <div class="sem-eventos">
+                    <p>Nenhum evento encontrado para o período e filtros selecionados.</p>
+                </div>
+            `;
+            return;
+        }
+        
+        eventosFiltrados.forEach(evento => {
+            const eventoElement = document.createElement('div');
+            eventoElement.className = `evento-card ${evento.categoria}`;
+            
+            eventoElement.innerHTML = `
+                <div class="evento-categoria ${evento.categoria}">
+                    ${evento.categoria.toUpperCase()}
+                </div>
+                <div class="evento-data">
+                    ${evento.ano} (${evento.idade} anos)
+                </div>
+                <h3 class="evento-titulo">${evento.titulo}</h3>
+                <p class="evento-descricao">${evento.descricao}</p>
+                ${evento.imagem ? 
+                    `<img src="${evento.imagem}" alt="${evento.titulo}" class="evento-imagem">` : 
+                    ''
+                }
+            `;
+            
+            // Adicionar clique na imagem para modal
+            const img = eventoElement.querySelector('.evento-imagem');
+            if (img) {
+                img.addEventListener('click', function() {
+                    abrirModal(evento.imagem, evento.titulo);
+                });
+            }
+            
+            listaEventos.appendChild(eventoElement);
+        });
+    }
+    
+    function configurarEventListeners() {
+        // Filtros
+        filtroHistoria.addEventListener('change', renderizarEventos);
+        filtroVida.addEventListener('change', renderizarEventos);
+        filtroObra.addEventListener('change', renderizarEventos);
+        
+        // Botão reset
+        btnReset.addEventListener('click', function() {
+            inicioSelecao = 1933;
+            fimSelecao = 1942;
+            inicioIdade = 47;
+            fimIdade = 56;
+            atualizarSeletor();
+            renderizarEventos();
+        });
+        
+        // Modal
+        modalFechar.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+        
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+        
+        // Arrastar seletor (simplificado)
+        let arrastando = false;
+        let arrastandoInicio = false;
+        let arrastandoFim = false;
+        
+        seletor.addEventListener('mousedown', function(e) {
+            arrastando = true;
+            const rect = seletor.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            
+            // Determinar se está arrastando início ou fim
+            if (clickX < 20) {
+                arrastandoInicio = true;
+            } else if (clickX > rect.width - 20) {
+                arrastandoFim = true;
+            }
+            
+            document.body.style.userSelect = 'none';
+        });
+        
+        document.addEventListener('mousemove', function(e) {
+            if (!arrastando) return;
+            
+            const container = document.querySelector('.linha-tempo-container');
+            const containerRect = container.getBoundingClientRect();
+            const containerWidth = containerRect.width - 40; // Ajuste para padding
+            
+            const percent = ((e.clientX - containerRect.left - 20) / containerWidth) * 100;
+            const ano = Math.round(1886 + (percent / 100) * (1960 - 1886));
+            
+            if (arrastandoInicio && ano < fimSelecao - 5) {
+                inicioSelecao = ano;
+                inicioIdade = inicioSelecao - 1886;
+            } else if (arrastandoFim && ano > inicioSelecao + 5) {
+                fimSelecao = ano;
+                fimIdade = fimSelecao - 1886;
+            }
+            
+            atualizarSeletor();
+            renderizarEventos();
+        });
+        
+        document.addEventListener('mouseup', function() {
+            arrastando = false;
+            arrastandoInicio = false;
+            arrastandoFim = false;
+            document.body.style.userSelect = '';
+        });
+        
+        // Touch events para mobile
+        seletor.addEventListener('touchstart', function(e) {
+            arrastando = true;
+            const rect = seletor.getBoundingClientRect();
+            const touchX = e.touches[0].clientX - rect.left;
+            
+            if (touchX < 20) {
+                arrastandoInicio = true;
+            } else if (touchX > rect.width - 20) {
+                arrastandoFim = true;
+            }
+            
             e.preventDefault();
-            saveEvent();
         });
-
-        // Fechar modal ao clicar fora
-        window.addEventListener('click', (e) => {
-            if (e.target === modal) closeModal();
-        });
-
-        // Atalhos de teclado
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeModal();
-            if (e.key === 'ArrowLeft') changeYear(-1);
-            if (e.key === 'ArrowRight') changeYear(1);
-            if (e.ctrlKey && e.key === 'n') {
-                e.preventDefault();
-                openModal();
-            }
-        });
-    }
-
-    function changeYear(delta) {
-        currentYear += delta;
-        updateCurrentYear();
-        renderTimeline();
         
-        // Animações
-        const timelineContainer = document.querySelector('.timeline-container');
-        timelineContainer.style.opacity = '0.5';
-        setTimeout(() => {
-            timelineContainer.style.opacity = '1';
-            timelineContainer.style.transition = 'opacity 0.3s ease';
-        }, 50);
-    }
-
-    function updateCurrentYear() {
-        currentYearEl.textContent = currentYear;
-        currentYearEl.style.color = getRandomColor();
-    }
-
-    function getRandomColor() {
-        const colors = [
-            '#4361ee', '#3a0ca3', '#7209b7', 
-            '#f72585', '#4cc9f0', '#4895ef'
-        ];
-        return colors[Math.floor(Math.random() * colors.length)];
-    }
-
-    function formatDate(dateString) {
-        const date = new Date(dateString);
-        const options = { 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric',
-            weekday: 'long'
-        };
-        return date.toLocaleDateString('pt-PT', options);
-    }
-
-    function getEventsForYear(year) {
-        return events.filter(event => {
-            const eventYear = new Date(event.date).getFullYear();
-            return eventYear === year;
-        }).sort((a, b) => new Date(a.date) - new Date(b.date));
-    }
-
-    function renderTimeline() {
-        const yearEvents = getEventsForYear(currentYear);
-        timelineEl.innerHTML = '';
-
-        if (yearEvents.length === 0) {
-            timelineEl.innerHTML = `
-                <div class="no-events">
-                    <i class="fas fa-calendar-times"></i>
-                    <h3>Nenhum evento em ${currentYear}</h3>
-                    <p>Adicione seu primeiro evento clicando no botão acima!</p>
-                </div>
-            `;
-            return;
-        }
-
-        yearEvents.forEach((event, index) => {
-            const eventElement = document.createElement('div');
-            eventElement.className = 'event-card';
-            eventElement.dataset.id = event.id;
+        document.addEventListener('touchmove', function(e) {
+            if (!arrastando) return;
             
-            const date = new Date(event.date);
-            const day = date.getDate();
-            const month = date.getMonth() + 1;
+            const container = document.querySelector('.linha-tempo-container');
+            const containerRect = container.getBoundingClientRect();
+            const containerWidth = containerRect.width - 40;
             
-            eventElement.innerHTML = `
-                <div class="event-marker">
-                    <span>${day}/${month}</span>
-                </div>
-                <div class="event-content">
-                    <div class="event-date">
-                        <i class="fas fa-calendar-alt"></i>
-                        ${formatDate(event.date)}
-                    </div>
-                    <h3 class="event-title">${event.title}</h3>
-                    <p class="event-description">${event.description}</p>
-                    ${event.image ? `
-                        <img src="${event.image}" 
-                             alt="${event.title}" 
-                             class="event-image"
-                             onerror="this.style.display='none'">
-                    ` : ''}
-                    <div class="event-actions">
-                        <button class="btn-edit" onclick="editEvent(${event.id})">
-                            <i class="fas fa-edit"></i> Editar
-                        </button>
-                        <button class="btn-delete" onclick="deleteEvent(${event.id})">
-                            <i class="fas fa-trash"></i> Excluir
-                        </button>
-                    </div>
-                </div>
-            `;
+            const touchX = e.touches[0].clientX;
+            const percent = ((touchX - containerRect.left - 20) / containerWidth) * 100;
+            const ano = Math.round(1886 + (percent / 100) * (1960 - 1886));
             
-            timelineEl.appendChild(eventElement);
+            if (arrastandoInicio && ano < fimSelecao - 5) {
+                inicioSelecao = ano;
+                inicioIdade = inicioSelecao - 1886;
+            } else if (arrastandoFim && ano > inicioSelecao + 5) {
+                fimSelecao = ano;
+                fimIdade = fimSelecao - 1886;
+            }
+            
+            atualizarSeletor();
+            renderizarEventos();
+            e.preventDefault();
         });
-
-        // Adiciona estilos dinâmicos para os botões de ação
-        const style = document.createElement('style');
-        style.textContent = `
-            .event-actions {
-                display: flex;
-                gap: 10px;
-                margin-top: 15px;
-                padding-top: 15px;
-                border-top: 1px solid #e9ecef;
-            }
-            .btn-edit, .btn-delete {
-                padding: 8px 15px;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-                font-size: 0.9rem;
-                display: flex;
-                align-items: center;
-                gap: 5px;
-                transition: all 0.3s;
-            }
-            .btn-edit {
-                background: #e3f2fd;
-                color: #1976d2;
-            }
-            .btn-edit:hover {
-                background: #bbdefb;
-            }
-            .btn-delete {
-                background: #ffebee;
-                color: #d32f2f;
-            }
-            .btn-delete:hover {
-                background: #ffcdd2;
-            }
-            .no-events {
-                text-align: center;
-                padding: 60px 20px;
-                color: #6c757d;
-            }
-            .no-events i {
-                font-size: 4rem;
-                margin-bottom: 20px;
-                color: #dee2e6;
-            }
-        `;
-        document.head.appendChild(style);
-    }
-
-    function openModal(event = null) {
-        if (event) {
-            editMode = true;
-            eventToEdit = event;
-            document.getElementById('eventTitle').value = event.title;
-            document.getElementById('eventDate').value = event.date;
-            document.getElementById('eventDesc').value = event.description;
-            document.getElementById('eventImg').value = event.image;
-            modal.querySelector('h2').innerHTML = '<i class="fas fa-edit"></i> Editar Evento';
-            document.querySelector('.btn-submit').innerHTML = '<i class="fas fa-save"></i> Atualizar Evento';
-        } else {
-            editMode = false;
-            eventForm.reset();
-            document.getElementById('eventDate').value = new Date().toISOString().split('T')[0];
-            modal.querySelector('h2').innerHTML = '<i class="fas fa-calendar-plus"></i> Novo Evento';
-            document.querySelector('.btn-submit').innerHTML = '<i class="fas fa-save"></i> Salvar Evento';
-        }
         
+        document.addEventListener('touchend', function() {
+            arrastando = false;
+            arrastandoInicio = false;
+            arrastandoFim = false;
+        });
+    }
+    
+    function abrirModal(src, legenda) {
+        modalImg.src = src;
+        modalLegenda.textContent = legenda;
         modal.style.display = 'block';
-        document.getElementById('eventTitle').focus();
     }
-
-    function closeModal() {
-        modal.style.display = 'none';
-        editMode = false;
-        eventToEdit = null;
-    }
-
-    function saveEvent() {
-        const formData = {
-            id: editMode ? eventToEdit.id : Date.now(),
-            title: document.getElementById('eventTitle').value.trim(),
-            date: document.getElementById('eventDate').value,
-            description: document.getElementById('eventDesc').value.trim(),
-            image: document.getElementById('eventImg').value.trim()
-        };
-
-        if (!formData.title) {
-            alert('Por favor, insira um título para o evento.');
-            return;
-        }
-
-        if (editMode) {
-            // Atualizar evento existente
-            const index = events.findIndex(e => e.id === eventToEdit.id);
-            if (index !== -1) {
-                events[index] = formData;
-            }
-        } else {
-            // Adicionar novo evento
-            events.push(formData);
-        }
-
-        localStorage.setItem('timelineEvents', JSON.stringify(events));
-        renderTimeline();
-        updateEventCount();
-        closeModal();
-        
-        // Feedback visual
-        showNotification(editMode ? 'Evento atualizado!' : 'Evento adicionado!');
-    }
-
-    function deleteEvent(id) {
-        if (confirm('Tem certeza que deseja excluir este evento?')) {
-            events = events.filter(event => event.id !== id);
-            localStorage.setItem('timelineEvents', JSON.stringify(events));
-            renderTimeline();
-            updateEventCount();
-            showNotification('Evento excluído!');
-        }
-    }
-
-    function updateEventCount() {
-        const totalEvents = events.length;
-        eventCountEl.textContent = totalEvents;
-        
-        // Animar contador
-        eventCountEl.style.transform = 'scale(1.2)';
-        eventCountEl.style.color = '#4361ee';
-        setTimeout(() => {
-            eventCountEl.style.transform = 'scale(1)';
-            eventCountEl.style.color = '';
-        }, 300);
-    }
-
-    function showNotification(message) {
-        const notification = document.createElement('div');
-        notification.className = 'notification';
-        notification.innerHTML = `
-            <i class="fas fa-check-circle"></i>
-            <span>${message}</span>
-        `;
-        
-        // Estilos da notificação
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #4caf50;
-            color: white;
-            padding: 15px 25px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            z-index: 10000;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            animation: slideIn 0.3s ease;
-        `;
-        
-        document.body.appendChild(notification);
-        
-        // Animação
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideIn {
-                from { transform: translateX(100%); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-            }
-            @keyframes slideOut {
-                from { transform: translateX(0); opacity: 1; }
-                to { transform: translateX(100%); opacity: 0; }
-            }
-        `;
-        document.head.appendChild(style);
-        
-        // Remover após 3 segundos
-        setTimeout(() => {
-            notification.style.animation = 'slideOut 0.3s ease forwards';
-            setTimeout(() => notification.remove(), 300);
-        }, 3000);
-    }
-
-    // Funções globais para os botões de edição/exclusão
-    window.editEvent = function(id) {
-        const event = events.find(e => e.id === id);
-        if (event) openModal(event);
-    };
-
-    window.deleteEvent = deleteEvent;
-
-    // Inicializar com animação
+    
+    // Inicializar com um pequeno atraso para garantir que o DOM está pronto
     setTimeout(() => {
-        document.querySelector('.container').style.opacity = '1';
-        document.querySelector('.container').style.transform = 'translateY(0)';
+        renderizarEventos();
     }, 100);
 });
