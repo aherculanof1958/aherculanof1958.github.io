@@ -1,346 +1,109 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Linha do Tempo - Joaquim Moreira da Silva</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta name="description" content="Linha do tempo interativa de Joaquim Moreira da Silva (1886-1960)">
+</head>
+<body>
+  <div class="cabecalho-fixo">
+    <div class="linha-tempo-container">
+      <!-- Rótulos de idade -->
+      <div class="rotulos-idade">
+        <span>1</span><span>10</span><span>20</span><span>30</span>
+        <span>40</span><span>50</span><span>60</span><span>70</span><span>74</span>
+      </div>
+      
+      <!-- Linha História -->
+      <div class="linha-wrapper">
+        <div class="rotulo-linha-esquerda">História</div>
+        <div class="linha linha-historia" id="linha-historia"></div>
+        <div class="rotulo-linha-direita">História</div>
+      </div>
+      
+      <!-- Linha Vida -->
+      <div class="linha-wrapper">
+        <div class="rotulo-linha-esquerda">Vida</div>
+        <div class="linha linha-vida" id="linha-vida"></div>
+        <div class="rotulo-linha-direita">Vida</div>
+      </div>
+      
+      <!-- Linha Obra -->
+      <div class="linha-wrapper">
+        <div class="rotulo-linha-esquerda">Obra</div>
+        <div class="linha linha-obra" id="linha-obra"></div>
+        <div class="rotulo-linha-direita">Obra</div>
+      </div>
 
-body {
-    font-family: 'Inter', sans-serif;
-    font-size: 14px;
-    line-height: 1.5;
-    color: #333;
-    background-color: #f5f5f5;
-    overflow: hidden;
-    height: 100vh;
-}
+      <!-- Rótulos de anos -->
+      <div class="rotulos-anos">
+        <span class="rotulo-ano">1886</span>
+        <span class="rotulo-ano">1896</span>
+        <span class="rotulo-ano">1906</span>
+        <span class="rotulo-ano">1916</span>
+        <span class="rotulo-ano">1926</span>
+        <span class="rotulo-ano">1936</span>
+        <span class="rotulo-ano">1946</span>
+        <span class="rotulo-ano">1956</span>
+        <span class="rotulo-ano">1960</span>
+      </div>
 
-.cabecalho-fixo {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    background: white;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    z-index: 1000;
-}
+      <!-- Seletor -->
+      <div class="seletor" id="seletor">
+        <div class="seletor-idades" id="seletor-idades">
+          <span class="seletor-idade" id="seletor-idade-inicio">47</span>
+          <span class="seletor-idade" id="seletor-idade-fim">56</span>
+        </div>
+        <div class="seletor-anos" id="seletor-anos">
+          <span class="seletor-ano" id="seletor-ano-inicio">1933</span>
+          <span class="seletor-ano" id="seletor-ano-fim">1942</span>
+        </div>
+      </div>
+    </div>  
 
-.linha-tempo-container {
-    position: relative;
-    padding: 15px 20px 5px;
-    background: linear-gradient(to bottom, #f9f9f9, #fff);
-    border-bottom: 1px solid #ddd;
-}
+    <!-- Cabeçalho com filtros -->
+    <div class="cabecalho-filtros">
+      <div class="cabecalho-grid">
+        <div class="cabecalho-titulo">
+          <h4>Eventos do Período Selecionado:</h4>
+        </div>
+        <div class="cabecalho-controles">
+          <div class="filtros">
+            <fieldset>
+              <legend>Filtros</legend>
+              <input type="checkbox" id="filtro-historia" checked>
+              <label for="filtro-historia">História</label>
+              <input type="checkbox" id="filtro-vida" checked>
+              <label for="filtro-vida">Vida</label>
+              <input type="checkbox" id="filtro-obra" checked>
+              <label for="filtro-obra">Obra</label>
+            </fieldset>
+          </div>
+          <button class="btn-reset" id="btn-reset">↺ Reposicionar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- Conteúdo rolável -->
+  <div class="conteudo-rolavel">	
+    <div class="eventos-container">
+      <div class="lista-eventos" id="lista-eventos"></div>
+    </div>
+  </div>
 
-.rotulos-idade {
-    display: flex;
-    justify-content: space-between;
-    padding: 0 40px;
-    margin-bottom: 10px;
-    font-size: 11px;
-    color: #666;
-    font-weight: 500;
-}
+  <!-- Modal para imagem ampliada -->
+  <div id="modal-imagem" class="modal">
+    <span class="modal-fechar">&times;</span>
+    <img class="modal-conteudo" id="modal-img">
+    <div id="modal-legenda" class="modal-legenda"></div>
+  </div>
 
-.rotulos-idade span {
-    flex: 1;
-    text-align: center;
-}
-
-.linha-wrapper {
-    display: flex;
-    align-items: center;
-    margin-bottom: 8px;
-}
-
-.rotulo-linha-esquerda, 
-.rotulo-linha-direita {
-    width: 60px;
-    font-size: 12px;
-    font-weight: 600;
-    color: #555;
-    text-align: center;
-}
-
-.rotulo-linha-esquerda {
-    text-align: right;
-    padding-right: 10px;
-}
-
-.rotulo-linha-direita {
-    text-align: left;
-    padding-left: 10px;
-}
-
-.linha {
-    flex: 1;
-    height: 20px;
-    background: #e0e0e0;
-    border-radius: 10px;
-    position: relative;
-}
-
-.linha-historia { background: linear-gradient(to right, #ff6b6b, #ff8e8e); }
-.linha-vida { background: linear-gradient(to right, #4ecdc4, #88d3ce); }
-.linha-obra { background: linear-gradient(to right, #45b7d1, #8ac6d1); }
-
-.rotulos-anos {
-    display: flex;
-    justify-content: space-between;
-    padding: 0 35px;
-    margin-top: 10px;
-}
-
-.rotulo-ano {
-    font-size: 11px;
-    color: #444;
-    font-weight: 600;
-}
-
-.seletor {
-    position: absolute;
-    top: 45px;
-    height: 80px;
-    background: rgba(255, 255, 255, 0.9);
-    border: 2px solid #2c3e50;
-    border-radius: 6px;
-    pointer-events: none;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-width: 80px;
-    box-shadow: 0 3px 15px rgba(0,0,0,0.2);
-}
-
-.seletor-idades, .seletor-anos {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    padding: 0 8px;
-}
-
-.seletor-idade, .seletor-ano {
-    font-size: 12px;
-    font-weight: 700;
-    color: #2c3e50;
-}
-
-.cabecalho-filtros {
-    padding: 10px 20px;
-    background: #fff;
-    border-top: 1px solid #eee;
-}
-
-.cabecalho-grid {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.cabecalho-titulo h4 {
-    font-size: 15px;
-    color: #2c3e50;
-    font-weight: 600;
-}
-
-.cabecalho-controles {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.filtros fieldset {
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 8px 12px;
-    font-size: 12px;
-}
-
-.filtros legend {
-    font-size: 11px;
-    color: #666;
-    padding: 0 5px;
-    font-weight: 500;
-}
-
-.filtros input[type="checkbox"] {
-    margin-right: 3px;
-}
-
-.filtros label {
-    margin-right: 12px;
-    font-size: 12px;
-    color: #444;
-    cursor: pointer;
-}
-
-.btn-reset {
-    background: #2c3e50;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.btn-reset:hover {
-    background: #1a252f;
-}
-
-.conteudo-rolavel {
-    margin-top: 185px;
-    height: calc(100vh - 185px);
-    overflow-y: auto;
-    padding: 20px;
-}
-
-.eventos-container {
-    max-width: 1000px;
-    margin: 0 auto;
-}
-
-.lista-eventos {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-}
-
-.evento-card {
-    background: white;
-    border-radius: 8px;
-    padding: 18px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    border-left: 4px solid #3498db;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.evento-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-.evento-card.historia { border-left-color: #ff6b6b; }
-.evento-card.vida { border-left-color: #4ecdc4; }
-.evento-card.obra { border-left-color: #45b7d1; }
-
-.evento-categoria {
-    display: inline-block;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    padding: 3px 8px;
-    border-radius: 12px;
-    margin-bottom: 8px;
-    color: white;
-}
-
-.evento-categoria.historia { background: #ff6b6b; }
-.evento-categoria.vida { background: #4ecdc4; }
-.evento-categoria.obra { background: #45b7d1; }
-
-.evento-data {
-    font-size: 13px;
-    color: #666;
-    margin-bottom: 5px;
-    font-weight: 500;
-}
-
-.evento-titulo {
-    font-size: 16px;
-    font-weight: 600;
-    color: #2c3e50;
-    margin-bottom: 10px;
-    line-height: 1.3;
-}
-
-.evento-descricao {
-    font-size: 14px;
-    color: #555;
-    line-height: 1.5;
-    margin-bottom: 12px;
-}
-
-.evento-imagem {
-    width: 100%;
-    height: 160px;
-    object-fit: cover;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: opacity 0.2s;
-}
-
-.evento-imagem:hover {
-    opacity: 0.9;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 2000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.9);
-    overflow: auto;
-}
-
-.modal-fechar {
-    position: absolute;
-    top: 20px;
-    right: 30px;
-    color: #fff;
-    font-size: 40px;
-    font-weight: bold;
-    cursor: pointer;
-    z-index: 2001;
-}
-
-.modal-fechar:hover {
-    color: #ccc;
-}
-
-.modal-conteudo {
-    margin: auto;
-    display: block;
-    max-width: 90%;
-    max-height: 80vh;
-    margin-top: 10vh;
-    border-radius: 8px;
-}
-
-.modal-legenda {
-    text-align: center;
-    color: #fff;
-    padding: 20px;
-    font-size: 16px;
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-/* Responsividade */
-@media (max-width: 768px) {
-    .cabecalho-grid {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
-    
-    .cabecalho-controles {
-        width: 100%;
-        justify-content: space-between;
-    }
-    
-    .conteudo-rolavel {
-        margin-top: 220px;
-        height: calc(100vh - 220px);
-    }
-    
-    .lista-eventos {
-        grid-template-columns: 1fr;
-    }
-}
+  <script src="js/timeline.js"></script>
+</body>
+</html>
