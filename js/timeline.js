@@ -152,10 +152,39 @@ function terminarArrasto() {
 // Eventos (placeholder)
 // ==============================
 function atualizarEventos() {
-  document.getElementById("coluna-historia").innerHTML = "";
-  document.getElementById("coluna-vida").innerHTML = "";
-  document.getElementById("coluna-obra").innerHTML = "";
+  const anoInicio = parseInt(seletorAnoInicio.textContent, 10);
+  const anoFim = parseInt(seletorAnoFim.textContent, 10);
+
+  const colHistoria = document.getElementById("coluna-historia");
+  const colVida = document.getElementById("coluna-vida");
+  const colObra = document.getElementById("coluna-obra");
+
+  colHistoria.innerHTML = "";
+  colVida.innerHTML = "";
+  colObra.innerHTML = "";
+
+  // HISTÓRIA
+  if (document.getElementById("filtro-historia")?.checked !== false) {
+    eventos.historia
+      .filter(e => e["ano civil"] >= anoInicio && e["ano civil"] <= anoFim)
+      .forEach(e => colHistoria.appendChild(criarDivEvento(e, "historia")));
+  }
+
+  // VIDA
+  if (document.getElementById("filtro-vida")?.checked !== false) {
+    eventos.vida
+      .filter(e => e["ano civil"] >= anoInicio && e["ano civil"] <= anoFim)
+      .forEach(e => colVida.appendChild(criarDivEvento(e, "vida")));
+  }
+
+  // OBRA
+  if (document.getElementById("filtro-obra")?.checked !== false) {
+    eventos.obra
+      .filter(e => e["ano civil"] >= anoInicio && e["ano civil"] <= anoFim)
+      .forEach(e => colObra.appendChild(criarDivEvento(e, "obra")));
+  }
 }
+
 
 // ==============================
 // Arranque
