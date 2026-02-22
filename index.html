@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-   
+  
   <style>
     :root {
       --cor-historia: #e74c3c;
@@ -417,6 +417,10 @@
     let lastX = 0;
     let lastY = 0;
     
+    // Variáveis para Pinch (Mobile)
+    let initialPinchDistance = 0;
+    let initialPinchScale = 1;
+    
     // --- INICIALIZAÇÃO ---
     function inicializar() {
       calcularDimensoes(); 
@@ -631,14 +635,17 @@
       return d;
     }
 
-    // --- ZOOM COM PAN & WHEEL ---
+    // --- ZOOM (Mouse e Touch) ---
+    
     function abrirZoom(imgElement, alignClass) {
       clearTimeout(openTimer);
       clearTimeout(closeTimer);
       
+      // Reset estado
       zoomScale = 1;
       panX = 0;
       panY = 0;
+      isDragging = false;
       updateZoomTransform();
       
       zoomImg.src = imgElement.src;
@@ -652,48 +659,142 @@
       zoomImg.onmouseleave = () => scheduleClose(DELAY_SAIDA_ZOOM);
       
       zoomContainer.onclick = (e) => {
+        // Fecha se não estivermos a arrastar
         if(!isDragging) fecharZoom();
       };
 
+      // Eventos Mouse
       zoomImg.onwheel = handleWheel;
       zoomImg.onmousedown = startDrag;
+      
+      // Eventos Touch
+      zoomImg.addEventListener('touchstart', handleTouchStart, { passive: false });
+      zoomImg.addEventListener('touchmove', handleTouchMove, { passive: false });
+      zoomImg.addEventListener('touchend', handleTouchEnd);
     }
 
-     function handleWheel(e) {
+    // --- WHEEL (Rato) - Zoom para o ponto do cursor ---
+    function handleWheel(e) {
       e.preventDefault();
 
       const delta = e.deltaY > 0 ? -0.2 : 0.2;
       const newScale = Math.min(Math.max(1, zoomScale + delta), 4);
 
-      // Se não houve mudança de escala (limite máximo/mínimo), não faz nada
       if (newScale === zoomScale) return;
 
-      // 1. Obter a posição atual da imagem na tela
+      // Cálculo do foco no cursor
       const imgRect = zoomImg.getBoundingClientRect();
-      
-      // Centro atual da imagem (onde o zoom acontecia antes)
       const currentCenterX = imgRect.left + imgRect.width / 2;
       const currentCenterY = imgRect.top + imgRect.height / 2;
       
-      // Posição do rato
       const mouseX = e.clientX;
       const mouseY = e.clientY;
 
-      // 2. Calcular a proporção do zoom
       const scaleRatio = newScale / zoomScale;
 
-      // 3. Calcular o ajuste do Pan
-      // Fórmula matemática para manter o ponto sob o cursor fixo:
-      // O pan move-se proporcionalmente à distância do rato ao centro
+      // Ajuste do Pan
       panX += (mouseX - currentCenterX) * (1 - scaleRatio);
       panY += (mouseY - currentCenterY) * (1 - scaleRatio);
 
-      // Atualizar escala
       zoomScale = newScale;
       
       updateZoomTransform();
     }
+    
+    // --- TOUCH START (Mobile) ---
+    function handleTouchStart(e) {
+      // Se 2 dedos (Pinch Start)
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        initialPinchDistance = getPinchDistance(e.touches);
+        initialPinchScale = zoomScale;
+        
+        // Define o centro do pinch para referência de pan
+        const midPoint = getPinchMidPoint(e.touches);
+        lastX = midPoint.x;
+        lastY = midPoint.y;
+      } 
+      // Se 1 dedo e zoom > 1, iniciamos o arrasto (Pan)
+      else if (e.touches.length === 1 && zoomScale > 1) {
+        isDragging = false; // Reset
+        lastX = e.touches[0].clientX;
+        lastY = e.touches[0].clientY;
+      }
+    }
 
+    // --- TOUCH MOVE (Mobile) ---
+    function handleTouchMove(e) {
+      // PINCH MOVE (2 dedos)
+      if (e.touches.length === 2) {
+        e.preventDefault(); 
+        
+        const currentDistance = getPinchDistance(e.touches);
+        const newScale = initialPinchScale * (currentDistance / initialPinchDistance);
+        
+        zoomScale = Math.min(Math.max(1, newScale), 4);
+
+        // Lógica de Pan enquanto se faz zoom (se quisermos mover o centro)
+        // Simplesmente movemos a imagem consoante o movimento do centro dos dedos
+        const midPoint = getPinchMidPoint(e.touches);
+        
+        // Ajustamos o pan pela diferença do movimento
+        panX += (midPoint.x - lastX);
+        panY += (midPoint.y - lastY);
+
+        lastX = midPoint.x;
+        lastY = midPoint.y;
+
+        updateZoomTransform();
+      } 
+      // PAN MOVE (1 dedo)
+      else if (e.touches.length === 1 && zoomScale > 1) {
+        const dx = e.touches[0].clientX - lastX;
+        const dy = e.touches[0].clientY - lastY;
+        
+        // Verifica se é arrasto real (para não fechar ao clicar)
+        if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+           isDragging = true;
+           zoomImg.classList.add('dragging');
+        }
+
+        if(isDragging) {
+           panX += dx;
+           panY += dy;
+           lastX = e.touches[0].clientX;
+           lastY = e.touches[0].clientY;
+           updateZoomTransform();
+        }
+      }
+    }
+
+    // --- TOUCH END (Mobile) ---
+    function handleTouchEnd(e) {
+      if (e.touches.length < 2) {
+        initialPinchDistance = 0;
+      }
+      
+      if (e.touches.length === 0) {
+        zoomImg.classList.remove('dragging');
+        setTimeout(() => { isDragging = false; }, 10);
+      }
+    }
+
+    // --- HELPERS ---
+    function getPinchDistance(touches) {
+      return Math.hypot(
+        touches[0].clientX - touches[1].clientX,
+        touches[0].clientY - touches[1].clientY
+      );
+    }
+
+    function getPinchMidPoint(touches) {
+      return {
+        x: (touches[0].clientX + touches[1].clientX) / 2,
+        y: (touches[0].clientY + touches[1].clientY) / 2
+      };
+    }
+
+    // --- DRAG (Rato) ---
     function startDrag(e) {
       if(zoomScale <= 1) return;
       e.preventDefault();
@@ -742,8 +843,15 @@
     function fecharZoom() {
       zoomContainer.classList.remove('visible');
       clearTimeout(closeTimer);
+      
       zoomImg.onwheel = null;
       zoomImg.onmousedown = null;
+      
+      // Remover listeners de touch
+      zoomImg.removeEventListener('touchstart', handleTouchStart);
+      zoomImg.removeEventListener('touchmove', handleTouchMove);
+      zoomImg.removeEventListener('touchend', handleTouchEnd);
+
       zoomScale = 1; 
       panX = 0; 
       panY = 0;
