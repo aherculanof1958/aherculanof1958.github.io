@@ -111,8 +111,6 @@
     }
     .zoom-trigger:hover { transform: scale(1.05); opacity: 0.9; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
 
-    .text-trigger { cursor: zoom-in; display: block; width: fit-content; }
-
     /* --- CSS DO ZOOM --- */
     .imagem-evento { display: inline-block; position: relative; }
     .imagem-evento img { max-width: 100px; height: auto; cursor: zoom-in; transition: transform 0.2s ease; border: 1px solid #e0e0e0; border-radius: 4px; padding: 4px; background: #f9f9f9; }
@@ -464,15 +462,22 @@
       renderizarLinha(document.getElementById('linha-obra'), 'obra');
     }
 
+    // CORREÇÃO 2: Mostrar títulos no tooltip das células
     function renderizarLinha(container, tipo) {
       container.innerHTML = '';
       for (let i = 0; i < TOTAL_ANOS; i++) {
         const cel = document.createElement('div'); 
         cel.className = `celula ${tipo}`;
         const ano = ANO_INICIAL + i;
-        if (eventos[tipo].some(e => e["ano civil"] == ano)) { 
+        
+        // Procurar eventos deste ano específico
+        const eventosNoAno = eventos[tipo].filter(e => e["ano civil"] == ano);
+        
+        if (eventosNoAno.length > 0) { 
           cel.classList.add('com-evento'); 
-          cel.title = ano; 
+          // Criar lista de títulos para o tooltip
+          const titulos = eventosNoAno.map(e => e.titulo).join('\n');
+          cel.title = titulos; 
         }
         container.appendChild(cel);
       }
@@ -605,8 +610,9 @@
 
       const conteudo = d.querySelector('.evento-conteudo');
       const img = conteudo.querySelector('img');
-      const textNode = conteudo.querySelector('.evento-descricao');
 
+      // CORREÇÃO 1: Removido o bloco 'else if' que impedia os links de funcionar.
+      // Agora apenas tratamos das imagens para o zoom. O texto com links funciona normalmente.
       if(img) {
         img.classList.add('zoom-trigger');
         
@@ -627,9 +633,6 @@
           clearTimeout(openTimer);
           abrirZoom(img, alignClass);
         });
-      } else if (textNode && textNode.innerText.trim() !== "") {
-        textNode.classList.add('zoom-trigger', 'text-trigger');
-        textNode.addEventListener('click', () => alert(textNode.innerText));
       }
 
       return d;
@@ -659,7 +662,6 @@
       zoomImg.onmouseleave = () => scheduleClose(DELAY_SAIDA_ZOOM);
       
       zoomContainer.onclick = (e) => {
-        // Fecha se não estivermos a arrastar
         if(!isDragging) fecharZoom();
       };
 
