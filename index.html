@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Linha do Tempo - Joaquim Moreira da Silva</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --cor-historia: #e74c3c;
+      --cor-vida: #3498db;
+      --cor-obra: #2ecc71;
+      --cinza-claro: #ecf0f1;
+      --texto-cor: #2c3e50;
+      --fundo-cor: #f4f7f6;
+      --label-width: 60px;
+      --border-width: 2px;
+      --label-height: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--fundo-cor);
+      color: var(--texto-cor);
+      line-height: 1.4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* --- Layout Base --- */
+    .cabecalho-fixo { position: relative; background-color: #fff; width: 100%; box-shadow: 0 2px 8px rgba(0,0,0,0.08); z-index: 100; padding: 8px 15px 5px 15px; flex-shrink: 0; }
+    .linha-tempo-container { position: relative; user-select: none; padding-top: var(--label-height); padding-bottom: var(--label-height); }
+    .rotulos-idade, .rotulos-anos { position: absolute; left: var(--label-width); right: var(--label-width); height: var(--label-height); font-size: 0.65rem; color: #7f8c8d; pointer-events: none; display: flex; align-items: center; }
+    .rotulos-idade { top: 0; } .rotulos-anos { bottom: 0; }
+    .rotulos-idade span, .rotulos-anos span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+    .linha-wrapper { display: flex; align-items: center; justify-content: center; margin: 3px 0; }
+    .rotulo-linha-esquerda, .rotulo-linha-direita { width: var(--label-width); font-size: 0.7rem; color: var(--texto-cor); font-weight: bold; flex-shrink: 0; padding: 0 4px; }
+    .rotulo-linha-esquerda { text-align: right; } .rotulo-linha-direita { text-align: left; }
+    .linha { flex-grow: 1; display: flex; height: 16px; background-color: var(--cinza-claro); border-radius: 3px; overflow: hidden; cursor: pointer; }
+    .celula { flex: 1 1 auto; height: 100%; border-right: 1px solid rgba(255,255,255,0.5); }
+    .celula.com-evento { z-index: 2; cursor: pointer; }
+    .celula.com-evento.historia { background-color: rgba(231, 76, 60, 0.5); }
+    .celula.com-evento.vida { background-color: rgba(52, 152, 219, 0.5); }
+    .celula.com-evento.obra { background-color: rgba(46, 204, 113, 0.5); }
+    .celula.com-evento:hover { transform: scaleY(1.7); z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
+
+    /* --- Seletor --- */
+    .seletor { position: absolute; top: 0; bottom: 0; left: 0; width: 100px; border-left: var(--border-width) solid var(--texto-cor); border-right: var(--border-width) solid var(--texto-cor); background-color: rgba(0, 0, 0, 0.04); cursor: grab; z-index: 20; touch-action: none; display: flex; flex-direction: column; justify-content: space-between; transition: left 1.0s ease-in-out, width 0.5s ease; }
+    .seletor:active { cursor: grabbing; }
+    .seletor.sem-transicao { transition: none; }
+    .seletor-idades, .seletor-anos { height: var(--label-height); width: 100%; background-color: #f1f1f1; display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; color: var(--texto-cor); font-weight: bold; padding: 0 4px; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; z-index: 1; }
+    .seletor-idades { border-bottom: none; } .seletor-anos { border-top: none; }
+    .sel-label-center { font-weight: normal; font-size: 0.65rem; color: #666; }
+
+    /* --- Filtros --- */
+    .area-filtros { display: flex; justify-content: center; margin-top: 15px; padding-bottom: 5px; }
+    .filtros fieldset { border: none; border-top: 1px solid #eee; padding: 5px 0 0 0; margin: 0; display: flex; justify-content: center; gap: 15px; background: transparent; }
+    .filtros legend { display: none; }
+    .filtro-wrapper { display: flex; align-items: center; }
+    .filtros input[type="checkbox"] { position: absolute; opacity: 0; width: 0; height: 0; }
+    .filtros label { cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; position: relative; padding-left: 22px; height: 18px; }
+    .filtros label::before { content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; background-color: white; border: 2px solid #ccc; border-radius: 3px; transition: all 0.2s; }
+    .filtros label.historia-label::before { border-color: var(--cor-historia); }
+    .filtros label.vida-label::before { border-color: var(--cor-vida); }
+    .filtros label.obra-label::before { border-color: var(--cor-obra); }
+    .filtros input[type="checkbox"]:checked + label::before { content: '✔'; color: white; line-height: 14px; text-align: center; font-size: 12px; }
+    #filtro-historia:checked + label::before { background-color: var(--cor-historia); }
+    #filtro-vida:checked + label::before { background-color: var(--cor-vida); }
+    #filtro-obra:checked + label::before { background-color: var(--cor-obra); }
+
+    /* --- Área Rolável --- */
+    .conteudo-rolavel { flex: 1 1 auto; overflow: hidden; background-color: var(--fundo-cor); display: flex; flex-direction: column; }
+    .eventos-container { height: 100%; width: 100%; max-width: 1400px; margin: 0 auto; padding: 0 10px; }
+    .colunas-eventos { display: flex; height: 100%; gap: 10px; }
+    .coluna-evento { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; overflow-x: hidden; padding: 15px 5px; background: rgba(255,255,255,0.3); border-radius: 4px; }
+    .coluna-oculta { display: none; }
+
+    /* --- Cartões --- */
+    .evento { background: white; border-radius: 6px; padding: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); border-left: 4px solid transparent; display: flex; flex-direction: column; }
+    .evento.historia { border-left-color: var(--cor-historia); }
+    .evento.vida { border-left-color: var(--cor-vida); }
+    .evento.obra { border-left-color: var(--cor-obra); }
+
+    .evento-cabecalho { display: flex; justify-content: space-between; font-size: 0.8em; color: #7f8c8d; margin-bottom: 6px; font-weight: bold; }
+    .evento-titulo { margin: 0 0 8px 0; font-size: 1rem; color: var(--texto-cor); }
+    
+    /* Miniatura */
+    .evento-conteudo { flex-grow: 1; }
+    .evento-descricao { margin: 0; font-size: 0.85rem; color: #555; line-height: 1.5; text-align: left; }
+    .imagem-evento { margin-top: 10px; text-align: center; }
+    
+    .zoom-trigger {
+      cursor: zoom-in;
+      max-width: 100%; 
+      max-height: 80px;   
+      width: auto;
+      height: auto;
+      border-radius: 4px;
+      border: 1px solid #eee;
+      transition: transform 0.2s, opacity 0.2s;
+      display: inline-block;
+    }
+    .zoom-trigger:hover { transform: scale(1.05); opacity: 0.9; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+
+    .text-trigger { cursor: zoom-in; display: block; width: fit-content; }
+
+    /* --- CSS DO ZOOM --- */
+    .imagem-evento { display: inline-block; position: relative; }
+    .imagem-evento img { max-width: 100px; height: auto; cursor: zoom-in; transition: transform 0.2s ease; border: 1px solid #e0e0e0; border-radius: 4px; padding: 4px; background: #f9f9f9; }
+    .imagem-evento img:hover { transform: scale(1.03); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+
+    .imagem-ampliada-wrapper {
+      position: relative;
+      display: inline-block;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 8px;
+      height: 100%; 
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      transform-origin: center center; 
+    }
+
+    .imagem-ampliada {
+      height: 100vh;      
+      width: auto;        
+      max-width: none;
+      display: block;
+      object-fit: contain; 
+      box-shadow: 0 0 25px rgba(0,0,0,0.6);
+      position: relative;
+      z-index: 2;
+      cursor: zoom-out;
+      transition: transform 0.1s ease-out;
+      transform-origin: center center; 
+    }
+    
+    .imagem-ampliada.dragging {
+      cursor: grabbing;
+    }
+
+    .imagem-ampliada-container {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      justify-content: center; 
+      align-items: flex-start; 
+      z-index: 1000;
+      background-color: rgba(0, 0, 0, 0.85); 
+      pointer-events: auto; 
+      transition: opacity 0.3s ease;
+      overflow: hidden;
+      display: none; 
+      opacity: 0;
+    }
+
+    .imagem-ampliada-container.align-center {
+      justify-content: center;
+    }
+    .imagem-ampliada-container.align-right .imagem-ampliada-wrapper {
+      margin-left: 20%; 
+    }
+
+    .imagem-ampliada-container.visible {
+      display: flex;
+      opacity: 1;
+    }
+
+    /* --- Mão de Demo --- */
+    .demo-hand { 
+      position: absolute; 
+      top: 50%; 
+      left: 50%; 
+      transform: translate(-50%, -50%); 
+      width: 50px; 
+      height: 50px; 
+      pointer-events: none; 
+      z-index: 21; 
+      opacity: 0; 
+      transition: opacity 0.3s ease; 
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4)); 
+    }
+    .demo-hand.visible { opacity: 1; }
+    @keyframes handPulse { 0% { transform: translate(-50%, -50%) scale(1) rotate(0deg); } 50% { transform: translate(-50%, -50%) scale(1.15) rotate(5deg); } 100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); } }
+    .demo-hand.pulse { animation: handPulse 1.2s infinite; }
+
+    @media (max-width: 768px) {
+      :root { --label-width: 0px; }
+      .rotulo-linha-esquerda, .rotulo-linha-direita { display: none; }
+      .rotulos-idade, .rotulos-anos { left: 0; right: 0; }
+      .evento { border-left: none; border-top: 4px solid transparent; }
+      .imagem-ampliada-container.align-right .imagem-ampliada-wrapper {
+        margin-left: 55%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="cabecalho-fixo">
+  <div class="linha-tempo-container">
+    <div class="rotulos-idade" id="rotulos-idade-container"></div>
+    <div class="linha-wrapper">
+      <div class="rotulo-linha-esquerda">História</div>
+      <div class="linha linha-historia" id="linha-historia"></div>
+      <div class="rotulo-linha-direita">História</div>
+    </div>
+    <div class="linha-wrapper">
+      <div class="rotulo-linha-esquerda">Vida</div>
+      <div class="linha linha-vida" id="linha-vida"></div>
+      <div class="rotulo-linha-direita">Vida</div>
+    </div>
+    <div class="linha-wrapper">
+      <div class="rotulo-linha-esquerda">Obra</div>
+      <div class="linha linha-obra" id="linha-obra"></div>
+      <div class="rotulo-linha-direita">Obra</div>
+    </div>
+    <div class="rotulos-anos" id="rotulos-anos-container"></div>
+
+    <div class="seletor" id="seletor">
+      <div class="seletor-idades"><span id="sel-idade-inicio">0</span><span class="sel-label-center">IDADE</span><span id="sel-idade-fim">9</span></div>
+      <div class="seletor-anos"><span id="sel-ano-inicio">1886</span><span class="sel-label-center">---</span><span id="sel-ano-fim">1895</span></div>
+      <div id="demoHand" class="demo-hand">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #333; background: rgba(255,255,255,0.9); border-radius: 50%; padding: 8px;">
+          <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"></path>
+          <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"></path>
+          <path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"></path>
+          <path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"></path>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="area-filtros">
+    <div class="filtros">
+      <fieldset>
+        <div class="filtro-wrapper"><input type="checkbox" id="filtro-historia" checked><label for="filtro-historia" class="historia-label">História</label></div>
+        <div class="filtro-wrapper"><input type="checkbox" id="filtro-vida" checked><label for="filtro-vida" class="vida-label">Vida</label></div>
+        <div class="filtro-wrapper"><input type="checkbox" id="filtro-obra" checked><label for="filtro-obra" class="obra-label">Obra</label></div>
+      </fieldset>
+    </div>
+  </div>
+</div>
+
+<div class="conteudo-rolavel" id="scrollContainer">
+  <div class="eventos-container"><div class="colunas-eventos" id="lista-eventos"></div></div>
+</div>
+
+<!-- OVERLAY DE ZOOM -->
+<div id="zoom-container" class="imagem-ampliada-container">
+  <div class="imagem-ampliada-wrapper">
+    <img id="zoom-img" class="imagem-ampliada" src="" alt="">
+  </div>
+</div>
+
+<script>
+    // --- CONFIGURAÇÕES ---
+    const ANO_INICIAL = 1886; 
+    const ANO_FINAL = 1960; 
+    const TOTAL_ANOS = ANO_FINAL - ANO_INICIAL + 1; 
+    const LARGURA_SELETOR = 10; 
+    const TEMPO_INATIVIDADE_DEMO = 180000;
+    const DELAY_ENTRADA_ZOOM = 500; 
+    const DELAY_SAIDA_ZOOM = 500;    
+    
+    // --- DADOS COMPLETOS ---
+    const eventos = {
+      historia: [
+        { idade: "0", "ano civil": 1886, "dia-mês": "", titulo: "Início da atividade anarquista em Portugal.", descricao: 'Em Lisboa, Antero de Quental formou (com Eça de Queirós, Guerra Junqueiro e Ramalho Ortigão), "O Cenáculo", um grupo de intelectuais anarquistas. <br>Mais na <a href="https://fr.wikipedia.org/wiki/Anarchisme_au_Portugal" target="_blank">Wikipedia</a>.' },
+        { idade: "5", "ano civil": 1891, "dia-mês": "", titulo: "Revolta do 31 de Janeiro contra a Monarquia no Porto", descricao: 'Mais na <a href="https://pt.wikipedia.org/wiki/Revolta_de_31_de_janeiro_de_1891" target="_blank">Wikipedia</a>.' },
+        { idade: "10", "ano civil": 1896, "dia-mês": "13.FEV.", titulo: "'Lei da Bomba' contra os Anarquistas", descricao: 'Mais na <a href="https://app.parlamento.pt/comunicar/V1/201905/57/artigos/art9.html" target="_blank">A.R.</a>.' },
+        { idade: "22", "ano civil": 1908, "dia-mês": "28.JAN.", titulo: "Regicídio", descricao: 'Mais na <a href="https://ensina.rtp.pt/artigo/regicidio-em-lisboa-1908/" target="_blank">RTP Ensina</a>.' },
+        { idade: "24", "ano civil": 1910, "dia-mês": "5.OUT.", titulo: "Implantação da República", descricao: 'Mais na <a href="https://ensina.rtp.pt/artigo/5-de-outubro-1910/" target="_blank">RTP Ensina</a>.' },
+        { idade: "25", "ano civil": 1911, "dia-mês": "20.ABR.", titulo: "Separação da Igreja do Estado", descricao: 'Mais na <a href="https://pt.wikipedia.org/wiki/Lei_da_Separa%C3%A7%C3%A3o_do_Estado_das_Igrejas" target="_blank">Wikipedia</a>.' },
+        { idade: "25", "ano civil": 1911, "dia-mês": "", titulo: "Explosão do Movimento Anarquista", descricao: "" },
+        { idade: "26", "ano civil": 1912, "dia-mês": "", titulo: "Fundação da Federação Anarquista do Norte", descricao: "" },
+        { idade: "27", "ano civil": 1913, "dia-mês": "", titulo: "Fundação da CULTUAL", descricao: "" },
+        { idade: "28", "ano civil": 1914, "dia-mês": "", titulo: "Início da 1.ª Grande Guerra [1914-1918]", descricao: "" },
+        { idade: "29", "ano civil": 1915, "dia-mês": "", titulo: "1.ª Grande Guerra [1914-1918]", descricao: "" },
+        { idade: "30", "ano civil": 1916, "dia-mês": "", titulo: "1.ª Grande Guerra [1914-1918]", descricao: "" },
+        { idade: "31", "ano civil": 1917, "dia-mês": "", titulo: "1.ª Grande Guerra [1914-1918]", descricao: "" },
+        { idade: "31", "ano civil": 1917, "dia-mês": "19.MAI.", titulo: "A revolta da Batata", descricao: 'Mais na <a href="https://ensina.rtp.pt/artigo/__trashed-17/" target="_blank">RTP Ensina</a>.' },
+        { idade: "32", "ano civil": 1918, "dia-mês": "", titulo: "Fim da 1.ª Grande Guerra [1914-1918]", descricao: "" },
+        { idade: "35", "ano civil": 1921, "dia-mês": "6.MAR.", titulo: "Fundação do Partido Comunista Português", descricao: 'Mais em <a href="https://www.pcp.pt/como-nasceu-partido-comunista-portugues" target="_blank">PCP</a>.' },
+        { idade: "35", "ano civil": 1921, "dia-mês": "", titulo: "Fundação da Internacional Sindical Vermelha [PROFITERN]", descricao: 'Mais em <a href="https://pt.wikipedia.org/wiki/Internacional_Vermelha_dos_Sindicatos" target="_blank">Wikipedia</a>.' },
+        { idade: "37", "ano civil": 1923, "dia-mês": "18.MAR.", titulo: "Criação da União Anarquista Portuguesa (UAP)", descricao: 'Com 20 grupos aderentes entre eles o de Vila do Conde.<br><a href="https://we.riseup.net/assets/160397/Edgar%20Rodrigues%20hist%C3%B3ria%20do%20movimento%20anarquista%20em%20portugal.pdf" target="_blank">Edgar Rodrigues, História do Movimento Anarquista em Portugal</a>' },
+        { idade: "40", "ano civil": 1926, "dia-mês": "28.MAI.", titulo: "Golpe Militar de 28 de Maio – Ditadura", descricao: 'Mais na <a href="https://ensina.rtp.pt/artigo/golpe-28-de-maio-1926/" target="_blank">RTP Ensina</a>.' },
+        { idade: "41", "ano civil": 1927, "dia-mês": "25.JUL.", titulo: "Fundação da Federação Anarquista Ibérica – FAI", descricao: 'Mais na <a href="https://noticiasanarquistas.noblogs.org/post/2021/04/16/espanha-lancamento-historia-da-fai-o-anarquismo-organizado-de-julian-vadillo-munoz/" target="_blank">ANA</a>.' },
+        { idade: "47", "ano civil": 1933, "dia-mês": "11.ABR.", titulo: "Estado Novo – CENSURA", descricao: 'Mais na <a href="https://ensina.rtp.pt/artigo/censura-previa-a-mordaca-que-o-estado-novo-criou/" target="_blank">RTP Ensina</a>.' },
+        { idade: "48", "ano civil": 1934, "dia-mês": "", titulo: "Jornal 'Batalha' passa à clandestinidade", descricao: 'Mais em <a href="https://colectivolibertarioevora.wordpress.com/2019/02/22/a-batalha-100-anos-de-luta-por-um-mundo-novo-sem-explorados-nem-exploradores-sem-oprimidos-nen-opressores/" target="_blank">Portal Anarquista</a>.' },
+        { idade: "51", "ano civil": 1937, "dia-mês": "4.JUL.", titulo: "Atentado a Salazar perpetrado por anarquistas", descricao: 'Mais na <a href="https://ensina.rtp.pt/artigo/retratos-do-atentado-a-salazar/" target="_blank">RTP Ensina</a>.' }
+      ],
+      vida: [
+        { idade: "0", "ano civil": 1886, "dia-mês": "15.MAR.", titulo: "Nascimento de JOAQUIM MOREIRA DA SILVA", descricao: "" },
+        { idade: "7", "ano civil": 1893, "dia-mês": "", titulo: "Começa a trabalhar como moço de Lavoura", descricao: "" },
+        { idade: "18", "ano civil": 1904, "dia-mês": "", titulo: "Vai trabalhar para o Porto como aprendiz de carpinteiro", descricao: "" },
+        { idade: "18", "ano civil": 1904, "dia-mês": "", titulo: "Frequenta escola noturna Vasco da Gama, onde aprende a ler e escrever", descricao: "" },
+        { idade: "18", "ano civil": 1904, "dia-mês": "", titulo: "Inscreve-se na Associação (SINDICATO)", descricao: "" },
+        { idade: "23", "ano civil": 1909, "dia-mês": "10.JUL.", titulo: "Casa com a camponesa Maria Rosa Marques", descricao: "" },
+        { idade: "24", "ano civil": 1910, "dia-mês": "22.MAI.", titulo: "Nasce o primeiro filho", descricao: "" },
+        { idade: "24", "ano civil": 1910, "dia-mês": "13.OUT.", titulo: "Morte do primeiro filho", descricao: "" },
+        { idade: "26", "ano civil": 1912, "dia-mês": "17.FEV.", titulo: "Nascimento do filho Alberto Moreira", descricao: "" },
+        { idade: "30", "ano civil": 1916, "dia-mês": "5.MAR.", titulo: "JMS faz comício à saída da missa censurando a distribuição do milho", descricao: '<div class="imagem-evento"><img src="docs/informacao-do-regedor-mar1916.png" alt="Informação do regedor"></div><p>Informação do regedor para o administrador do concelho</p>' },
+        { idade: "31", "ano civil": 1917, "dia-mês": "5.FEV.", titulo: "O povo de Vilar saiu à rua em protesto contra a fome e tocou os sinos a rebate. Formou-se 'uma comissão'", descricao: "" },
+        { idade: "31", "ano civil": 1917, "dia-mês": "30.MAI.", titulo: "Assalto à 'Tulha' de Manuel Gonçalves Dias", descricao: "" },
+        { idade: "31", "ano civil": 1917, "dia-mês": "JUL.", titulo: "Julgamento do Assalto", descricao: "" },
+        { idade: "31", "ano civil": 1917, "dia-mês": "AGO.", titulo: "Juíz ordena a captura de JMS e restantes implicados", descricao: "" },
+        { idade: "31", "ano civil": 1917, "dia-mês": "2.SET.", titulo: "Comício em Vilar (no Alto da Pereira) para tratar da carestia do milho e o açambarcamento", descricao: "" },
+        { idade: "31", "ano civil": 1917, "dia-mês": "17.SET.", titulo: "Início do processo de audição dos réus", descricao: "" },
+        { idade: "31", "ano civil": 1917, "dia-mês": "27.SET.", titulo: "Emitido mandato de captura dos implicados", descricao: "" },
+        { idade: "31", "ano civil": 1917, "dia-mês": "23.OUT.", titulo: "JMS é ouvido pelo Juiz que lhe nomeia como advogado António Maria Pereira Júnior", descricao: "" },
+        { idade: "35", "ano civil": 1921, "dia-mês": "MAR.", titulo: "Moreira da Silva foi preso com outros anarquistas e sindicalistas", descricao: "" },
+        { idade: "35", "ano civil": 1921, "dia-mês": "4.SET.", titulo: "JMS é eleito em comício, para a Comissão que reclama o barateamento do preço do milho", descricao: '<div class="imagem-evento"><img src="docs/oficio-ao-administrador-set1921.png" alt="Ofício"></div><p>Em ofício da Comissão para o Administrador</p>' },
+        { idade: "35", "ano civil": 1922, "dia-mês": "", titulo: "Fotografia do poeta publicada em 'A Lira do Povo'", descricao: '<div class="imagem-evento"><img src="docs/JMS_aos_36_anos-2.jpg" alt="Fotografia"></div><p>O poeta aos 36 anos</p>' },
+        { idade: "48", "ano civil": 1934, "dia-mês": "22.NOV.", titulo: "Nascimento da primeira neta", descricao: "Margarida Rosa Moreira" },
+        { idade: "49", "ano civil": 1935, "dia-mês": "22.SET.", titulo: "Nascimento da segunda neta", descricao: "Helena Rosa Moreira" },
+        { idade: "49", "ano civil": 1935, "dia-mês": "22.OUT.", titulo: "Falecimento da segunda neta", descricao: "Helena Rosa Moreira" },
+        { idade: "50", "ano civil": 1936, "dia-mês": "MAR.", titulo: "JMS tem uma doença grave, pensa que vai morrer.", descricao: "" },
+        { idade: "50", "ano civil": 1936, "dia-mês": "MAI.", titulo: "Comemora o 1º de Maio", descricao: "Com volta ao Minho com outros anarquistas" },
+        { idade: "52", "ano civil": 1938, "dia-mês": "7.JAN.", titulo: "Nascimento da 3ª neta", descricao: "Helena Rosa Moreira (nome igual ao da que morreu)" },
+        { idade: "53", "ano civil": 1939, "dia-mês": "27.SET.", titulo: "Morte da 3ª neta", descricao: "Helena Rosa Moreira" },
+        { idade: "54", "ano civil": 1940, "dia-mês": "JAN.", titulo: "Nascimento da 4ª neta", descricao: "Helena Moreira da Silva" },
+        { idade: "56", "ano civil": 1942, "dia-mês": "23.JAN.", titulo: "Nascimento da 5ª neta", descricao: "Maria Rosa Moreira" },
+        { idade: "63", "ano civil": 1949, "dia-mês": "10.MAR.", titulo: "Morte da Esposa", descricao: "Maria Rosa de Jesus" },
+        { idade: "74", "ano civil": 1960, "dia-mês": "12.DEZ.", titulo: "Falecimento de JOAQUIM MOREIRA DA SILVA", descricao: "" }
+      ],
+      obra: [
+        { idade: "28", "ano civil": 1914, "dia-mês": "27.JAN.", titulo: "Grupo Anticlerical IV", descricao: '<div class="imagem-evento"><img src="docs/grupo-anti-clerical-iv.png" alt="Poema"></div>' },
+        { idade: "28", "ano civil": 1914, "dia-mês": "28.JAN.", titulo: "Grupo Anticlerical I", descricao: '<div class="imagem-evento"><img src="docs/grupo-anti-clerical-i.png" alt="Poema"></div>' },
+        { idade: "28", "ano civil": 1914, "dia-mês": "12.DEZ.", titulo: "Grupo Anticlerical III", descricao: '<div class="imagem-evento"><img src="docs/grupo-anti-clerical-iii.png" alt="Poema"></div>' },
+        { idade: "30", "ano civil": 1916, "dia-mês": "13.FEV.", titulo: "Ao povo de Vilar", descricao: '<div class="imagem-evento"><img src="docs/ao-povo-de-vilar.gif" alt="Poema"></div>' },
+        { idade: "30", "ano civil": 1916, "dia-mês": "23.ABR.", titulo: "À memória de Cristo", descricao: '<div class="imagem-evento"><img src="docs/a-memoria-de-cristo.png" alt="Poema"></div>' },
+        { idade: "32", "ano civil": 1918, "dia-mês": "15.AGO.", titulo: "O Milho a 30 réis", descricao: '<div class="imagem-evento"><img src="docs/o-milho-a-30-reis.png" alt="Poema"></div>' },
+        { idade: "32", "ano civil": 1918, "dia-mês": "8.SET.", titulo: "À memória de Joaquim da Silva Freitas", descricao: '<div class="imagem-evento"><img src="docs/a-memoria-de-joaquim-da-silva-freitas.png" alt="Poema"></div>' },
+        { idade: "33", "ano civil": 1919, "dia-mês": "24.JUN.", titulo: "Nas desfolhadas da aldeia", descricao: '<div class="imagem-evento"><img src="docs/nas-desfolhadas-daldeia.png" alt="Poema"></div>' },
+        { idade: "33", "ano civil": 1919, "dia-mês": "31.AGO.", titulo: "Uma viagem ao céu", descricao: '<div class="imagem-evento"><img src="docs/uma-viagem-ao-ceu.png" alt="Poema"></div>' },
+        { idade: "33", "ano civil": 1919, "dia-mês": "31.AGO.", titulo: "Uma viagem ao inferno", descricao: '<div class="imagem-evento"><img src="docs/uma-viagem-ao-inferno.png" alt="Poema"></div>' },
+        { idade: "33", "ano civil": 1919, "dia-mês": "21.SET.", titulo: "Ao mais alto caloteiro", descricao: '<div class="imagem-evento"><img src="docs/ao-mais-alto-caloteiro.png" alt="Poema"></div>' },
+        { idade: "33", "ano civil": 1919, "dia-mês": "28.SET.", titulo: "A nova aurora", descricao: '<div class="imagem-evento"><img src="docs/a-nova-aurora.png" alt="Poema"></div>' },
+        { idade: "33", "ano civil": 1919, "dia-mês": "12.OUT.", titulo: "Aos carpinteiros do Porto", descricao: '<div class="imagem-evento"><img src="docs/aos-carpinteiros-do-porto.png" alt="Poema"></div>' },
+        { idade: "33", "ano civil": 1919, "dia-mês": "20.NOV.", titulo: "Prá história dum Feiticeiro", descricao: '<div class="imagem-evento"><img src="docs/pra-historia-de-um-feiticeiro-lado-a-lado.png" alt="Poema"></div>' },
+        { idade: "33", "ano civil": 1919, "dia-mês": "7.DEZ.", titulo: "A História de um Feiticeiro", descricao: '<div class="imagem-evento"><img src="docs/a-historia-dum-feiticeiro.png" alt="Poema"></div>' },
+        { idade: "34", "ano civil": 1920, "dia-mês": "1.JAN.", titulo: "À memória de António Dias Fontes", descricao: '<div class="imagem-evento"><img src="docs/a-memoria-de-antonio-dias-fontes.png" alt="Poema"></div>' },
+        { idade: "34", "ano civil": 1920, "dia-mês": "18.JAN.", titulo: "Versos de gratidão", descricao: "" },
+        { idade: "34", "ano civil": 1920, "dia-mês": "15.FEV.", titulo: "A Alma dum caloteiro", descricao: '<div class="imagem-evento"><img src="docs/a-alma-dum-caloteiro.png" alt="Poema"></div>' },
+        { idade: "34", "ano civil": 1920, "dia-mês": "7.MAR.", titulo: "Libelos contra o verdugo", descricao: '<div class="imagem-evento"><img src="docs/libelos-contra-o-verdugo.png" alt="Poema"></div>' },
+        { idade: "34", "ano civil": 1920, "dia-mês": "25.MAR.", titulo: "Um sonho poético", descricao: '<div class="imagem-evento"><img src="docs/um-sonho-poetico.png" alt="Poema"></div>' },
+        { idade: "34", "ano civil": 1920, "dia-mês": "24.JUN.", titulo: "A excomunhão do Verdugo na corte celeste", descricao: "" },
+        { idade: "34", "ano civil": 1920, "dia-mês": "25.JUL.", titulo: "Nos serões da aldeia", descricao: "" },
+        { idade: "34", "ano civil": 1920, "dia-mês": "27.AGO.", titulo: "A história da costureira", descricao: '<div class="imagem-evento"><img src="docs/a-historia-da-costureira.png" alt="Poema"></div>' },
+        { idade: "34", "ano civil": 1920, "dia-mês": "18.DEZ.", titulo: "O assalto à Batalha", descricao: '<div class="imagem-evento"><img src="docs/o-assalto-a-batalha.png" alt="Poema"></div>' },
+        { idade: "35", "ano civil": 1921, "dia-mês": "1.JAN.", titulo: "As janeiras de Vilar", descricao: "" },
+        { idade: "35", "ano civil": 1921, "dia-mês": "15.JAN.", titulo: "O terror em Vilar", descricao: '<div class="imagem-evento"><img src="docs/o-terror-em-vilar.png" alt="Poema"></div>' },
+        { idade: "35", "ano civil": 1921, "dia-mês": "30.JAN.", titulo: "O Bruxedo em Vilar", descricao: '<div class="imagem-evento"><img src="docs/o-bruxedo-em-vilar.png" alt="Poema"></div>' },
+        { idade: "35", "ano civil": 1921, "dia-mês": "6.MAR.", titulo: "Ao povo de Mosteiró", descricao: "" },
+        { idade: "35", "ano civil": 1921, "dia-mês": "MAR.", titulo: "Na prisão – Recordações dos companheiros de luta", descricao: "" },
+        { idade: "35", "ano civil": 1921, "dia-mês": "17.ABR.", titulo: "Ao povo trabalhador – Para conheceres o Delfim da Silva", descricao: "" },
+        { idade: "35", "ano civil": 1921, "dia-mês": "24.JUN.", titulo: "Está desvendado o mistério do bruxedo de Vilar", descricao: '<div class="imagem-evento"><img src="docs/esta-desvendado-o-misterio.png" alt="Poema"></div>' },
+        { idade: "37", "ano civil": 1923, "dia-mês": "8.SET.", titulo: "Sonhos e Realidades", descricao: '<div class="imagem-evento"><img src="docs/sonhos-e-realidades.png" alt="Poema"></div>' },
+        { idade: "37", "ano civil": 1923, "dia-mês": "9.DEZ.", titulo: "Ao povo de Mosteiró", descricao: "" },
+        { idade: "38", "ano civil": 1924, "dia-mês": "JAN.", titulo: "Serenatas na Aldeia", descricao: "" },
+        { idade: "38", "ano civil": 1924, "dia-mês": "22.FEV.", titulo: "Os cinco Falsários", descricao: "" },
+        { idade: "38", "ano civil": 1924, "dia-mês": "14.SET.", titulo: "Na Freguesia de Gemunde – O Padre em Ação", descricao: "" },
+        { idade: "39", "ano civil": 1925, "dia-mês": "19.ABR.", titulo: "O compasso em Mosteiró", descricao: "" },
+        { idade: "39", "ano civil": 1925, "dia-mês": "30.AGO.", titulo: "Vilar do Pinheiro", descricao: "" },
+        { idade: "39", "ano civil": 1925, "dia-mês": "19.OUT.", titulo: "Carta aberta à Leopoldina", descricao: "" },
+        { idade: "39", "ano civil": 1925, "dia-mês": "13.DEZ.", titulo: "Os campos da Bruxaria", descricao: "" },
+        { idade: "39", "ano civil": 1925, "dia-mês": "", titulo: "A Noite de S. João", descricao: "" },
+        { idade: "40", "ano civil": 1926, "dia-mês": "8.JAN.", titulo: "Ao povo de Águas Santas e arredores", descricao: "" },
+        { idade: "40", "ano civil": 1926, "dia-mês": "MAR.", titulo: "Nas Horas Vagas", descricao: "" },
+        { idade: "40", "ano civil": 1926, "dia-mês": "", titulo: "No Vale de Josefá", descricao: "" },
+        { idade: "41", "ano civil": 1927, "dia-mês": "AGO.", titulo: "Sacco e Vanzetti Morreram", descricao: "" },
+        { idade: "41", "ano civil": 1927, "dia-mês": "", titulo: "Problemas Recreativos", descricao: "" },
+        { idade: "42", "ano civil": 1928, "dia-mês": "MAI.", titulo: "Em louvor do Santo Preto", descricao: "" },
+        { idade: "44", "ano civil": 1930, "dia-mês": "26.ABR.", titulo: "Ao Povo de Vilar do Pinheiro e Arredores", descricao: "" },
+        { idade: "46", "ano civil": 1932, "dia-mês": "2.ABR.", titulo: "Ao Povo de Vilar do Pinheiro e Arredores", descricao: '<div class="imagem-evento"><img src="docs/ao-povo-de-vilar-do-pinheiro.jpg" alt="Poema"></div>' },
+        { idade: "50", "ano civil": 1936, "dia-mês": "29.MAR.", titulo: "Nas oras da Agonia", descricao: "" },
+        { idade: "50", "ano civil": 1936, "dia-mês": "12.ABR.", titulo: "Recuperando Melhoras", descricao: "" },
+        { idade: "52", "ano civil": 1938, "dia-mês": "27.SET.", titulo: "Despedidas de Helena Rosa Moreira", descricao: "" },
+        { idade: "59", "ano civil": 1945, "dia-mês": "", titulo: "A Guerra Universal", descricao: "" },
+        { idade: "60", "ano civil": 1946, "dia-mês": "MAR.", titulo: "Versos à bandeira do 'Honra e Dever'", descricao: "" },
+        { idade: "65", "ano civil": 1951, "dia-mês": "", titulo: "Viagem ao Paraíso", descricao: "" },
+        { idade: "68", "ano civil": 1954, "dia-mês": "", titulo: "Seis Contos Poéticos", descricao: "" },
+        { idade: "72", "ano civil": 1958, "dia-mês": "5.JUN.", titulo: "Fernando Moreira Graça", descricao: "" }
+      ]
+    };
+
+    // --- ESTADO ---
+    let currentIndex = 0;
+    let lastRenderedIndex = -1; 
+    let filtrosAtivos = { historia: true, vida: true, obra: true };
+    let larguraAnoPx = 0; 
+    let offsetEsquerdo = 60;
+    let inactivityTimer = null; 
+    let isDemoPlaying = false;
+    
+    // --- ELEMENTOS ZOOM ---
+    const zoomContainer = document.getElementById('zoom-container');
+    const zoomImg = document.getElementById('zoom-img');
+    let openTimer = null;     
+    let closeTimer = null;
+
+    // --- ESTADO DO ZOOM (Pan & Zoom) ---
+    let zoomScale = 1;
+    let panX = 0;
+    let panY = 0;
+    let isDragging = false;
+    let lastX = 0;
+    let lastY = 0;
+    
+    // --- INICIALIZAÇÃO ---
+    function inicializar() {
+      calcularDimensoes(); 
+      criarEstruturaLinhaTempo(); 
+      criarRotulosEixos();
+      setTimeout(() => { 
+        calcularDimensoes(); 
+        posicionarSeletor(); 
+        atualizarEventos(); 
+        rodarDemonstracao(); 
+      }, 100);
+      adicionarListeners();
+    }
+
+    function calcularDimensoes() {
+      const barra = document.querySelector('.linha');
+      if (barra) larguraAnoPx = barra.offsetWidth / TOTAL_ANOS;
+      offsetEsquerdo = (window.innerWidth <= 768) ? 0 : 60;
+    }
+    
+    function criarRotulosEixos() {
+      const rIdade = document.getElementById('rotulos-idade-container');
+      const rAnos = document.getElementById('rotulos-anos-container');
+      rIdade.innerHTML = ''; 
+      rAnos.innerHTML = '';
+      [0, 10, 20, 30, 40, 50, 60, 70, 74].forEach(i => {
+        let s1 = document.createElement('span'); 
+        s1.innerText = i; 
+        s1.style.left = `${(i/TOTAL_ANOS)*100}%`; 
+        rIdade.appendChild(s1);
+        let s2 = document.createElement('span'); 
+        s2.innerText = ANO_INICIAL+i; 
+        s2.style.left = `${(i/TOTAL_ANOS)*100}%`; 
+        rAnos.appendChild(s2);
+      });
+    }
+
+    function criarEstruturaLinhaTempo() {
+      renderizarLinha(document.getElementById('linha-historia'), 'historia');
+      renderizarLinha(document.getElementById('linha-vida'), 'vida');
+      renderizarLinha(document.getElementById('linha-obra'), 'obra');
+    }
+
+    function renderizarLinha(container, tipo) {
+      container.innerHTML = '';
+      for (let i = 0; i < TOTAL_ANOS; i++) {
+        const cel = document.createElement('div'); 
+        cel.className = `celula ${tipo}`;
+        const ano = ANO_INICIAL + i;
+        if (eventos[tipo].some(e => e["ano civil"] == ano)) { 
+          cel.classList.add('com-evento'); 
+          cel.title = ano; 
+        }
+        container.appendChild(cel);
+      }
+    }
+
+    function adicionarListeners() {
+      const sel = document.getElementById('seletor');
+      sel.addEventListener('mousedown', iniciarArrasto);
+      document.addEventListener('mousemove', moverArrasto); 
+      document.addEventListener('mouseup', terminarArrasto);
+      sel.addEventListener('touchstart', iniciarArrasto, {passive: false});
+      document.addEventListener('touchmove', moverArrasto, {passive: false}); 
+      document.addEventListener('touchend', terminarArrasto);
+      document.getElementById('filtro-historia').onchange = (e) => { filtrosAtivos.historia = e.target.checked; atualizarEventos(true); }; 
+      document.getElementById('filtro-vida').onchange = (e) => { filtrosAtivos.vida = e.target.checked; atualizarEventos(true); };
+      document.getElementById('filtro-obra').onchange = (e) => { filtrosAtivos.obra = e.target.checked; atualizarEventos(true); };
+      window.addEventListener('resize', () => { calcularDimensoes(); posicionarSeletor(); });
+      ['mousedown', 'touchstart', 'scroll', 'keydown'].forEach(evt => {
+        document.getElementById('scrollContainer').addEventListener(evt, () => { pararDemo(); reiniciarTimerInatividade(); }, true);
+      });
+    }
+
+    let arrastando = false; 
+    let startX = 0; 
+    let startIndex = 0;
+    
+    function iniciarArrasto(e) { 
+      e.preventDefault(); 
+      pararDemo(); 
+      arrastando = true; 
+      startX = e.clientX || e.touches[0].clientX; 
+      startIndex = currentIndex; 
+      document.getElementById('seletor').classList.add('sem-transicao'); 
+    }
+    
+    function moverArrasto(e) {
+      if(!arrastando) return; 
+      e.preventDefault(); 
+      const x = e.clientX || e.touches[0].clientX; 
+      const delta = x - startX; 
+      const anos = Math.round(delta / larguraAnoPx); 
+      let novo = startIndex + anos; 
+      novo = Math.max(0, Math.min(novo, TOTAL_ANOS - LARGURA_SELETOR)); 
+      if(novo !== currentIndex) { 
+        currentIndex = novo; 
+        posicionarSeletor(); 
+      } 
+    }
+    
+    function terminarArrasto() { 
+      arrastando = false; 
+      document.getElementById('seletor').classList.remove('sem-transicao'); 
+      atualizarEventos(); 
+      reiniciarTimerInatividade(); 
+    }
+    
+    function posicionarSeletor() { 
+      const l = offsetEsquerdo + (currentIndex * larguraAnoPx); 
+      const w = LARGURA_SELETOR * larguraAnoPx; 
+      const s = document.getElementById('seletor'); 
+      s.style.left=`${l}px`; 
+      s.style.width=`${w}px`; 
+      atualizarRotulosSeletor(); 
+    }
+    
+    function atualizarRotulosSeletor() { 
+      document.getElementById('sel-idade-inicio').innerText = currentIndex; 
+      document.getElementById('sel-idade-fim').innerText = currentIndex + LARGURA_SELETOR - 1; 
+      document.getElementById('sel-ano-inicio').innerText = ANO_INICIAL + currentIndex; 
+      document.getElementById('sel-ano-fim').innerText = ANO_INICIAL + currentIndex + LARGURA_SELETOR - 1; 
+    }
+
+    // --- RENDERIZAÇÃO CARDS ---
+    function atualizarEventos(forcar = false) {
+      if (currentIndex === lastRenderedIndex && !forcar) return;
+
+      const anoInicio = ANO_INICIAL + currentIndex;
+      const anoFim = ANO_INICIAL + currentIndex + LARGURA_SELETOR - 1;
+      
+      const scrollPositions = {};
+      const colH = document.querySelector('.coluna-historia');
+      const colV = document.querySelector('.coluna-vida');
+      const colO = document.querySelector('.coluna-obra');
+      if(colH) scrollPositions['historia'] = colH.scrollTop;
+      if(colV) scrollPositions['vida'] = colV.scrollTop;
+      if(colO) scrollPositions['obra'] = colO.scrollTop;
+
+      const lista = document.getElementById('lista-eventos'); 
+      lista.innerHTML = '';
+      
+      const cols = [
+        { t: 'historia', a: filtrosAtivos.historia },
+        { t: 'vida', a: filtrosAtivos.vida },
+        { t: 'obra', a: filtrosAtivos.obra }
+      ];
+
+      cols.forEach(c => {
+        const col = document.createElement('div'); 
+        col.className = `coluna-evento coluna-${c.t}`; 
+        if(!c.a) col.classList.add('coluna-oculta');
+        
+        const evs = eventos[c.t].filter(e => e["ano civil"] >= anoInicio && e["ano civil"] <= anoFim).sort((a,b) => a["ano civil"] - b["ano civil"]);
+        evs.forEach(ev => col.appendChild(criarCard(ev, c.t)));
+        lista.appendChild(col);
+      });
+
+      setTimeout(() => {
+        const newColH = document.querySelector('.coluna-historia');
+        const newColV = document.querySelector('.coluna-vida');
+        const newColO = document.querySelector('.coluna-obra');
+        if(newColH && scrollPositions['historia'] !== undefined) newColH.scrollTop = scrollPositions['historia'];
+        if(newColV && scrollPositions['vida'] !== undefined) newColV.scrollTop = scrollPositions['vida'];
+        if(newColO && scrollPositions['obra'] !== undefined) newColO.scrollTop = scrollPositions['obra'];
+      }, 0); 
+
+      lastRenderedIndex = currentIndex;
+    }
+
+    function criarCard(ev, tipo) {
+      const d = document.createElement('div'); 
+      d.className = `evento ${tipo}`;
+      let data = ev["ano civil"]; 
+      if(ev["dia-mês"]) data = `${ev["dia-mês"]} ${ev["ano civil"]}`;
+      
+      d.innerHTML = `
+        <div class="evento-cabecalho"><span>${ev.idade} anos</span><span>${data}</span></div>
+        <h4 class="evento-titulo">${ev.titulo}</h4>
+        <div class="evento-conteudo"><div class="evento-descricao">${ev.descricao || ''}</div></div>
+      `;
+
+      const conteudo = d.querySelector('.evento-conteudo');
+      const img = conteudo.querySelector('img');
+      const textNode = conteudo.querySelector('.evento-descricao');
+
+      if(img) {
+        img.classList.add('zoom-trigger');
+        
+        let alignClass = 'align-center'; 
+        if (tipo === 'obra') alignClass = 'align-right';
+        
+        img.addEventListener('mouseenter', () => {
+          clearTimeout(openTimer); 
+          clearTimeout(closeTimer);
+          openTimer = setTimeout(() => abrirZoom(img, alignClass), DELAY_ENTRADA_ZOOM);
+        });
+
+        img.addEventListener('mouseleave', () => {
+          clearTimeout(openTimer);
+        });
+
+        img.addEventListener('click', () => {
+          clearTimeout(openTimer);
+          abrirZoom(img, alignClass);
+        });
+      } else if (textNode && textNode.innerText.trim() !== "") {
+        textNode.classList.add('zoom-trigger', 'text-trigger');
+        textNode.addEventListener('click', () => alert(textNode.innerText));
+      }
+
+      return d;
+    }
+
+    // --- ZOOM COM PAN & WHEEL ---
+    function abrirZoom(imgElement, alignClass) {
+      clearTimeout(openTimer);
+      clearTimeout(closeTimer);
+      
+      zoomScale = 1;
+      panX = 0;
+      panY = 0;
+      updateZoomTransform();
+      
+      zoomImg.src = imgElement.src;
+      zoomImg.alt = imgElement.alt;
+      
+      zoomContainer.classList.remove('align-center', 'align-right');
+      zoomContainer.classList.add(alignClass);
+      zoomContainer.classList.add('visible');
+      
+      zoomImg.onmouseenter = () => clearTimeout(closeTimer);
+      zoomImg.onmouseleave = () => scheduleClose(DELAY_SAIDA_ZOOM);
+      
+      zoomContainer.onclick = (e) => {
+        if(!isDragging) fecharZoom();
+      };
+
+      zoomImg.onwheel = handleWheel;
+      zoomImg.onmousedown = startDrag;
+    }
+
+     function handleWheel(e) {
+      e.preventDefault();
+
+      const delta = e.deltaY > 0 ? -0.2 : 0.2;
+      const newScale = Math.min(Math.max(1, zoomScale + delta), 4);
+
+      // Se não houve mudança de escala (limite máximo/mínimo), não faz nada
+      if (newScale === zoomScale) return;
+
+      // 1. Obter a posição atual da imagem na tela
+      const imgRect = zoomImg.getBoundingClientRect();
+      
+      // Centro atual da imagem (onde o zoom acontecia antes)
+      const currentCenterX = imgRect.left + imgRect.width / 2;
+      const currentCenterY = imgRect.top + imgRect.height / 2;
+      
+      // Posição do rato
+      const mouseX = e.clientX;
+      const mouseY = e.clientY;
+
+      // 2. Calcular a proporção do zoom
+      const scaleRatio = newScale / zoomScale;
+
+      // 3. Calcular o ajuste do Pan
+      // Fórmula matemática para manter o ponto sob o cursor fixo:
+      // O pan move-se proporcionalmente à distância do rato ao centro
+      panX += (mouseX - currentCenterX) * (1 - scaleRatio);
+      panY += (mouseY - currentCenterY) * (1 - scaleRatio);
+
+      // Atualizar escala
+      zoomScale = newScale;
+      
+      updateZoomTransform();
+    }
+
+    function startDrag(e) {
+      if(zoomScale <= 1) return;
+      e.preventDefault();
+      isDragging = false;
+      lastX = e.clientX;
+      lastY = e.clientY;
+      
+      const onMouseMove = (moveEvent) => {
+        if (Math.abs(moveEvent.clientX - lastX) > 5 || Math.abs(moveEvent.clientY - lastY) > 5) {
+          isDragging = true;
+          zoomImg.classList.add('dragging');
+          
+          const dx = moveEvent.clientX - lastX;
+          const dy = moveEvent.clientY - lastY;
+          
+          panX += dx;
+          panY += dy;
+          
+          updateZoomTransform();
+          
+          lastX = moveEvent.clientX;
+          lastY = moveEvent.clientY;
+        }
+      };
+      
+      const onMouseUp = () => {
+        zoomImg.classList.remove('dragging');
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+        setTimeout(() => { isDragging = false; }, 10);
+      };
+      
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    }
+
+    function updateZoomTransform() {
+      zoomImg.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomScale})`;
+    }
+
+    function scheduleClose(delay) {
+      clearTimeout(closeTimer);
+      closeTimer = setTimeout(fecharZoom, delay);
+    }
+
+    function fecharZoom() {
+      zoomContainer.classList.remove('visible');
+      clearTimeout(closeTimer);
+      zoomImg.onwheel = null;
+      zoomImg.onmousedown = null;
+      zoomScale = 1; 
+      panX = 0; 
+      panY = 0;
+    }
+
+    // --- DEMO ---
+    function reiniciarTimerInatividade() { 
+      clearTimeout(inactivityTimer); 
+      inactivityTimer = setTimeout(rodarDemonstracao, TEMPO_INATIVIDADE_DEMO); 
+    }
+    
+    function rodarDemonstracao() {
+      if(isDemoPlaying) return; 
+      isDemoPlaying = true;
+      document.getElementById('seletor').classList.remove('sem-transicao');
+      currentIndex = 0; 
+      posicionarSeletor(); 
+      atualizarEventos();
+      document.getElementById('demoHand').classList.add('visible', 'pulse');
+      setTimeout(() => { 
+        if(!isDemoPlaying) return; 
+        document.getElementById('demoHand').classList.remove('pulse'); 
+        currentIndex = 35; 
+        posicionarSeletor(); 
+        atualizarEventos(); 
+      }, 1000);
+      setTimeout(() => { 
+        if(!isDemoPlaying) return; 
+        currentIndex = 10; 
+        posicionarSeletor(); 
+        atualizarEventos(); 
+      }, 3500);
+      setTimeout(() => { 
+        if(!isDemoPlaying) return; 
+        currentIndex = Math.floor((TOTAL_ANOS - LARGURA_SELETOR) / 2); 
+        posicionarSeletor(); 
+        atualizarEventos(); 
+      }, 6000);
+      setTimeout(() => { pararDemo(); }, 8500);
+    }
+    
+    function pararDemo() { 
+      isDemoPlaying = false; 
+      document.getElementById('demoHand').classList.remove('visible', 'pulse'); 
+      reiniciarTimerInatividade(); 
+    }
+
+    document.addEventListener('DOMContentLoaded', inicializar);
+
+</script>
+</body>
+</html>
