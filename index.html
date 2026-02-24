@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -53,8 +54,10 @@
     .celula.com-evento.obra { background-color: rgba(46, 204, 113, 0.5); }
     .celula.com-evento:hover { transform: scaleY(1.7); z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
 
-    /* --- Seletor --- */
-    .seletor { position: absolute; top: 0; bottom: 0; left: 0; width: 100px; border-left: var(--border-width) solid var(--texto-cor); border-right: var(--border-width) solid var(--texto-cor); background-color: rgba(0, 0, 0, 0.04); cursor: grab; z-index: 20; touch-action: none; display: flex; flex-direction: column; justify-content: space-between; transition: left 1.0s ease-in-out, width 0.5s ease; }
+    /* --- Seletor (PC) --- */
+    /* Cursor customizado maior (SVG) aplicado aqui */
+    .seletor { position: absolute; top: 0; bottom: 0; left: 0; width: 100px; border-left: var(--border-width) solid var(--texto-cor); border-right: var(--border-width) solid var(--texto-cor); background-color: rgba(0, 0, 0, 0.04); cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"></path><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"></path><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"></path><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"></path></svg>') 24 24, grab; z-index: 20; touch-action: none; display: flex; flex-direction: column; justify-content: space-between; transition: left 1.0s ease-in-out, width 0.5s ease; }
+    
     .seletor:active { cursor: grabbing; }
     .seletor.sem-transicao { transition: none; }
     .seletor-idades, .seletor-anos { height: var(--label-height); width: 100%; background-color: #f1f1f1; display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; color: var(--texto-cor); font-weight: bold; padding: 0 4px; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; z-index: 1; }
@@ -182,8 +185,8 @@
       top: 50%; 
       left: 50%; 
       transform: translate(-50%, -50%); 
-      width: 50px;      /* Tamanho Normal PC */
-      height: 50px;     /* Tamanho Normal PC */
+      width: 50px;      
+      height: 50px;     
       pointer-events: none; 
       z-index: 21; 
       opacity: 0; 
@@ -195,7 +198,7 @@
     .demo-hand.pulse { animation: handPulse 1.2s infinite; }
 
     /* ==========================================
-       MEDIA QUERIES (MOBILE) - LIMPO E ORGANIZADO
+       MEDIA QUERIES (MOBILE) - FINAL
        ========================================== */
     @media (max-width: 768px) {
       
@@ -210,12 +213,13 @@
       .area-filtros { margin-top: 20px; }
 
       /* --- Mão de Demo (Mobile) --- */
+      /* Mão mais pequena e transparente no mobile */
       .demo-hand {
-        width: 36px;       /* Menor no mobile */
+        width: 36px;       
         height: 36px;
       }
       .demo-hand svg {
-        background: transparent !important; /* Transparente no mobile */
+        background: transparent !important; 
         padding: 0 !important;
       }
 
