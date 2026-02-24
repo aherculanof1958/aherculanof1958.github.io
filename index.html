@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -111,6 +112,8 @@
     }
     .zoom-trigger:hover { transform: scale(1.05); opacity: 0.9; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
 
+    .text-trigger { cursor: zoom-in; display: block; width: fit-content; }
+
     /* --- CSS DO ZOOM --- */
     .imagem-evento { display: inline-block; position: relative; }
     .imagem-evento img { max-width: 100px; height: auto; cursor: zoom-in; transition: transform 0.2s ease; border: 1px solid #e0e0e0; border-radius: 4px; padding: 4px; background: #f9f9f9; }
@@ -192,16 +195,114 @@
     @keyframes handPulse { 0% { transform: translate(-50%, -50%) scale(1) rotate(0deg); } 50% { transform: translate(-50%, -50%) scale(1.15) rotate(5deg); } 100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); } }
     .demo-hand.pulse { animation: handPulse 1.2s infinite; }
 
+    /* ==========================================
+       MEDIA QUERIES (MOBILE)
+       ========================================== */
     @media (max-width: 768px) {
       :root { --label-width: 0px; }
+      
+      /* Esconde as escalas fixas */
+      .rotulos-idade, .rotulos-anos { display: none; }
+      
+      /* Resetar padding das barras */
+      .linha-tempo-container { 
+        padding-top: 0; 
+        padding-bottom: 0; 
+      }
+
+      /* Ajuste do Cabeçalho - Subir */
+      .cabecalho-fixo {
+        padding-top: 18px; 
+        padding-bottom: 5px;
+      }
+      
+      /* Espaço para a etiqueta inferior */
+      .area-filtros {
+        margin-top: 20px; 
+      }
+
       .rotulo-linha-esquerda, .rotulo-linha-direita { display: none; }
-      .rotulos-idade, .rotulos-anos { left: 0; right: 0; }
-      .evento { border-left: none; border-top: 4px solid transparent; }
-      .imagem-ampliada-container.align-right .imagem-ampliada-wrapper {
-        margin-left: 55%;
+      
+      /* --- CARTÕES: Menos espaço entre eles --- */
+      .coluna-evento {
+        gap: 8px;
+      }
+
+      /* Borda colorida no Topo */
+      .evento { 
+        border-left: none; 
+        border-top: 4px solid transparent; 
+      }
+      .evento.historia { border-top-color: var(--cor-historia); }
+      .evento.vida { border-top-color: var(--cor-vida); }
+      .evento.obra { border-top-color: var(--cor-obra); }
+      
+      /* --- SELETOR: Etiquetas centradas nas bordas --- */
+      .seletor {
+        overflow: visible; 
+        background-color: transparent;
+      }
+
+      .seletor-idades, .seletor-anos {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        height: auto;
+        
+        background-color: transparent;
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        z-index: 25;
+        font-size: 0.7rem; 
+        color: var(--texto-cor);
+      }
+
+      .seletor-idades { top: -8px; }
+      .seletor-anos { bottom: -8px; }
+
+      .sel-label-center { display: none; }
+
+      /* Etiqueta Inicial: Centrada na borda esquerda */
+      #sel-idade-inicio, #sel-ano-inicio {
+        position: absolute;
+        left: 0;
+        transform: translateX(-50%);
+        white-space: nowrap;
+      }
+
+      /* Etiqueta Final: Centrada na borda direita */
+      #sel-idade-fim, #sel-ano-fim {
+        position: absolute;
+        right: 0;
+        transform: translateX(50%);
+        white-space: nowrap;
+      }
+
+      /* --- ZOOM MOBILE --- */
+      .imagem-ampliada-container {
+        justify-content: center !important;
+        align-items: center !important;
+      }
+      .imagem-ampliada-wrapper {
+        margin-left: 0 !important;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .imagem-ampliada {
+        max-width: 100%;
+        max-height: 100%;
+        width: 100%;
+        height: 100%;
+        object-fit: contain; 
       }
     }
+    /* FIM DO @MEDIA */
   </style>
+
 </head>
 <body>
 
@@ -259,6 +360,8 @@
     <img id="zoom-img" class="imagem-ampliada" src="" alt="">
   </div>
 </div>
+
+
 
 <script>
     // --- CONFIGURAÇÕES ---
@@ -462,22 +565,15 @@
       renderizarLinha(document.getElementById('linha-obra'), 'obra');
     }
 
-    // CORREÇÃO 2: Mostrar títulos no tooltip das células
     function renderizarLinha(container, tipo) {
       container.innerHTML = '';
       for (let i = 0; i < TOTAL_ANOS; i++) {
         const cel = document.createElement('div'); 
         cel.className = `celula ${tipo}`;
         const ano = ANO_INICIAL + i;
-        
-        // Procurar eventos deste ano específico
-        const eventosNoAno = eventos[tipo].filter(e => e["ano civil"] == ano);
-        
-        if (eventosNoAno.length > 0) { 
+        if (eventos[tipo].some(e => e["ano civil"] == ano)) { 
           cel.classList.add('com-evento'); 
-          // Criar lista de títulos para o tooltip
-          const titulos = eventosNoAno.map(e => e.titulo).join('\n');
-          cel.title = titulos; 
+          cel.title = ano; 
         }
         container.appendChild(cel);
       }
@@ -610,9 +706,8 @@
 
       const conteudo = d.querySelector('.evento-conteudo');
       const img = conteudo.querySelector('img');
+      const textNode = conteudo.querySelector('.evento-descricao');
 
-      // CORREÇÃO 1: Removido o bloco 'else if' que impedia os links de funcionar.
-      // Agora apenas tratamos das imagens para o zoom. O texto com links funciona normalmente.
       if(img) {
         img.classList.add('zoom-trigger');
         
@@ -633,6 +728,9 @@
           clearTimeout(openTimer);
           abrirZoom(img, alignClass);
         });
+      } else if (textNode && textNode.innerText.trim() !== "") {
+        textNode.classList.add('zoom-trigger', 'text-trigger');
+        textNode.addEventListener('click', () => alert(textNode.innerText));
       }
 
       return d;
@@ -662,6 +760,7 @@
       zoomImg.onmouseleave = () => scheduleClose(DELAY_SAIDA_ZOOM);
       
       zoomContainer.onclick = (e) => {
+        // Fecha se não estivermos a arrastar
         if(!isDragging) fecharZoom();
       };
 
