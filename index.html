@@ -1,999 +1,1652 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Linha do Tempo - Joaquim Moreira da Silva</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-  
-  <style>
-    :root {
-      --cor-historia: #e74c3c;
-      --cor-vida: #3498db;
-      --cor-obra: #2ecc71;
-      --cinza-claro: #ecf0f1;
-      --texto-cor: #2c3e50;
-      --fundo-cor: #f4f7f6;
-      --label-width: 60px;
-      --border-width: 2px;
-      --label-height: 22px;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joaquim Moreira da Silva - Poeta Carpinteiro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+      <style>
+        :root {
+            --bg: #f5f1eb;
+            --fg: #2a2420;
+            --muted: #6b5e52;
+            --accent: #8b4513;
+            --accent-hover: #a0522d;
+            --card: #fffdf9;
+            --border: #d4c8b8;
+            --green-dark: #2d5a3d;
+            --gold: #b8860b;
+        }
 
-    * { box-sizing: border-box; }
+        * { box-sizing: border-box; }
 
-    body {
-      font-family: 'Roboto', sans-serif;
-      background-color: var(--fundo-cor);
-      color: var(--texto-cor);
-      line-height: 1.4;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
-    }
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
 
-    /* ==========================================
-       PROTEÇÃO CSS (Início)
-       Impede a seleção de texto e o arrastar de imagens
-       ========================================== */
-    
-    /* Impede que o texto seja selecionado em todo o corpo da página */
-    body {
-      -webkit-user-select: none; /* Safari, Chrome */
-      -moz-user-select: none;    /* Firefox */
-      -ms-user-select: none;     /* IE, Edge */
-      user-select: none;         /* Padrão */
-    }
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background-color: var(--bg);
+            color: var(--fg);
+            margin: 0;
+            line-height: 1.7;
+        }
 
-    /* Impede especificamente que as imagens sejam arrastadas */
-    img {
-      -webkit-user-drag: none;
-      -khtml-user-drag: none;
-      -moz-user-drag: none;
-      -o-user-drag: none;
-      user-drag: none;
-      pointer-events: none; /* Impede o clique direito direto na imagem, mas o JS lida com o zoom */
-    }
-    
-    /* ==========================================
-       PROTEÇÃO CSS (Fim)
-       ========================================== */
+        h1, h2, h3, h4, h5 {
+            font-family: 'Cormorant Garamond', serif;
+            line-height: 1.2;
+        }
 
-    /* --- Layout Base --- */
-    .cabecalho-fixo { position: relative; background-color: #fff; width: 100%; box-shadow: 0 2px 8px rgba(0,0,0,0.08); z-index: 100; padding: 8px 15px 5px 15px; flex-shrink: 0; }
-    .linha-tempo-container { position: relative; user-select: none; padding-top: var(--label-height); padding-bottom: var(--label-height); }
-    .rotulos-idade, .rotulos-anos { position: absolute; left: var(--label-width); right: var(--label-width); height: var(--label-height); font-size: 0.65rem; color: #7f8c8d; pointer-events: none; display: flex; align-items: center; }
-    .rotulos-idade { top: 0; } .rotulos-anos { bottom: 0; }
-    .rotulos-idade span, .rotulos-anos span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
-    .linha-wrapper { display: flex; align-items: center; justify-content: center; margin: 3px 0; }
-    .rotulo-linha-esquerda, .rotulo-linha-direita { width: var(--label-width); font-size: 0.7rem; color: var(--texto-cor); font-weight: bold; flex-shrink: 0; padding: 0 4px; }
-    .rotulo-linha-esquerda { text-align: right; } .rotulo-linha-direita { text-align: left; }
-    .linha { flex-grow: 1; display: flex; height: 16px; background-color: var(--cinza-claro); border-radius: 3px; overflow: hidden; cursor: pointer; }
-    .celula { flex: 1 1 auto; height: 100%; border-right: 1px solid rgba(255,255,255,0.5); }
-    .celula.com-evento { z-index: 2; cursor: pointer; }
-    .celula.com-evento.historia { background-color: rgba(231, 76, 60, 0.5); }
-    .celula.com-evento.vida { background-color: rgba(52, 152, 219, 0.5); }
-    .celula.com-evento.obra { background-color: rgba(46, 204, 113, 0.5); }
-    .celula.com-evento:hover { transform: scaleY(1.7); z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
+        /* Background Pattern */
+        .bg-pattern {
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(139, 69, 19, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(45, 90, 61, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(184, 134, 11, 0.02) 0%, transparent 40%);
+        }
 
-    /* --- Seletor (PC) --- */
-    .seletor { position: absolute; top: 0; bottom: 0; left: 0; width: 100px; border-left: var(--border-width) solid var(--texto-cor); border-right: var(--border-width) solid var(--texto-cor); background-color: rgba(0, 0, 0, 0.04); cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"></path><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"></path><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"></path><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"></path></svg>') 24 24, grab; z-index: 20; touch-action: none; display: flex; flex-direction: column; justify-content: space-between; transition: left 1.0s ease-in-out, width 0.5s ease; }
-    
-    .seletor:active { cursor: grabbing; }
-    .seletor.sem-transicao { transition: none; }
-    .seletor-idades, .seletor-anos { height: var(--label-height); width: 100%; background-color: #f1f1f1; display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; color: var(--texto-cor); font-weight: bold; padding: 0 4px; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; z-index: 1; }
-    .seletor-idades { border-bottom: none; } .seletor-anos { border-top: none; }
-    .sel-label-center { font-weight: normal; font-size: 0.65rem; color: #666; }
+        /* Navigation */
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
 
-    /* --- Filtros --- */
-    .area-filtros { display: flex; justify-content: center; margin-top: 15px; padding-bottom: 5px; }
-    .filtros fieldset { border: none; border-top: 1px solid #eee; padding: 5px 0 0 0; margin: 0; display: flex; justify-content: center; gap: 15px; background: transparent; }
-    .filtros legend { display: none; }
-    .filtro-wrapper { display: flex; align-items: center; }
-    .filtros input[type="checkbox"] { position: absolute; opacity: 0; width: 0; height: 0; }
-    .filtros label { cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; position: relative; padding-left: 22px; height: 18px; }
-    .filtros label::before { content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; background-color: white; border: 2px solid #ccc; border-radius: 3px; transition: all 0.2s; }
-    .filtros label.historia-label::before { border-color: var(--cor-historia); }
-    .filtros label.vida-label::before { border-color: var(--cor-vida); }
-    .filtros label.obra-label::before { border-color: var(--cor-obra); }
-    .filtros input[type="checkbox"]:checked + label::before { content: '✔'; color: white; line-height: 14px; text-align: center; font-size: 12px; }
-    #filtro-historia:checked + label::before { background-color: var(--cor-historia); }
-    #filtro-vida:checked + label::before { background-color: var(--cor-vida); }
-    #filtro-obra:checked + label::before { background-color: var(--cor-obra); }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
 
-    /* --- Área Rolável --- */
-    .conteudo-rolavel { flex: 1 1 auto; overflow: hidden; background-color: var(--fundo-cor); display: flex; flex-direction: column; }
-    .eventos-container { height: 100%; width: 100%; max-width: 1400px; margin: 0 auto; padding: 0 10px; }
-    .colunas-eventos { display: flex; height: 100%; gap: 10px; }
-    .coluna-evento { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; overflow-x: hidden; padding: 15px 5px; background: rgba(255,255,255,0.3); border-radius: 4px; }
-    .coluna-oculta { display: none; }
+        .nav-link:hover::after {
+            width: 100%;
+        }
 
-    /* --- Cartões --- */
-    .evento { background: white; border-radius: 6px; padding: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); border-left: 4px solid transparent; display: flex; flex-direction: column; }
-    .evento.historia { border-left-color: var(--cor-historia); }
-    .evento.vida { border-left-color: var(--cor-vida); }
-    .evento.obra { border-left-color: var(--cor-obra); }
+        /* Dropdown */
+        .dropdown {
+            position: relative;
+        }
 
-    .evento-cabecalho { display: flex; justify-content: space-between; font-size: 0.8em; color: #7f8c8d; margin-bottom: 6px; font-weight: bold; }
-    .evento-titulo { margin: 0 0 8px 0; font-size: 1rem; color: var(--texto-cor); }
-    
-    /* Miniatura */
-    .evento-conteudo { flex-grow: 1; }
-    .evento-descricao { margin: 0; font-size: 0.85rem; color: #555; line-height: 1.5; text-align: left; }
-    .imagem-evento { margin-top: 10px; text-align: center; }
-    
-    .zoom-trigger {
-      cursor: zoom-in;
-      max-width: 100%; 
-      max-height: 80px;   
-      width: auto;
-      height: auto;
-      border-radius: 4px;
-      border: 1px solid #eee;
-      transition: transform 0.2s, opacity 0.2s;
-      display: inline-block;
-      /* Herda a proteção de img definida acima, mas garantimos pointer-events para o zoom funcionar via wrapper */
-      pointer-events: auto; 
-    }
-    .zoom-trigger:hover { transform: scale(1.05); opacity: 0.9; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 100;
+            min-width: 220px;
+        }
 
-    .text-trigger { cursor: zoom-in; display: block; width: fit-content; }
+        .dropdown:hover .dropdown-menu,
+        .dropdown:focus-within .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
 
-    /* --- CSS DO ZOOM --- */
-    .imagem-evento { display: inline-block; position: relative; }
-    /* A imagem dentro do container de zoom também precisa de proteção */
-    .imagem-evento img { max-width: 100px; height: auto; cursor: zoom-in; transition: transform 0.2s ease; border: 1px solid #e0e0e0; border-radius: 4px; padding: 4px; background: #f9f9f9; }
-    .imagem-evento img:hover { transform: scale(1.03); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        /* Hero */
+        .hero-title {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
 
-    .imagem-ampliada-wrapper {
-      position: relative;
-      display: inline-block;
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border-radius: 8px;
-      height: 100%; 
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      transform-origin: center center; 
-    }
+        .hero-subtitle {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            font-weight: 400;
+            font-style: italic;
+            color: var(--muted);
+        }
 
-    .imagem-ampliada {
-      height: 100vh;      
-      width: auto;        
-      max-width: none;
-      display: block;
-      object-fit: contain; 
-      box-shadow: 0 0 25px rgba(0,0,0,0.6);
-      position: relative;
-      z-index: 2;
-      cursor: zoom-out;
-      transition: transform 0.1s ease-out;
-      transform-origin: center center; 
-      pointer-events: auto; /* Necessário para interagir com a imagem ampliada */
-    }
-    
-    .imagem-ampliada.dragging {
-      cursor: grabbing;
-    }
+        /* Photo Frame */
+        .photo-frame {
+            position: relative;
+            background: linear-gradient(135deg, #d4c8b8 0%, #e8e0d5 100%);
+            padding: 12px;
+            box-shadow: 
+                0 4px 20px rgba(0,0,0,0.1),
+                inset 0 2px 4px rgba(255,255,255,0.5);
+        }
 
-    .imagem-ampliada-container {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      justify-content: center; 
-      align-items: flex-start; 
-      z-index: 1000;
-      background-color: rgba(0, 0, 0, 0.85); 
-      pointer-events: auto; 
-      transition: opacity 0.3s ease;
-      overflow: hidden;
-      display: none; 
-      opacity: 0;
-    }
+        .photo-frame::before {
+            content: '';
+            position: absolute;
+            inset: 8px;
+            border: 1px solid rgba(139, 69, 19, 0.2);
+            pointer-events: none;
+        }
 
-    .imagem-ampliada-container.align-center {
-      justify-content: center;
-    }
-    .imagem-ampliada-container.align-right .imagem-ampliada-wrapper {
-      margin-left: 20%; 
-    }
+        /* Section Headers */
+        .section-header {
+            position: relative;
+            display: inline-block;
+        }
 
-    .imagem-ampliada-container.visible {
-      display: flex;
-      opacity: 1;
-    }
+        .section-header::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--accent);
+        }
 
-    /* --- Mão de Demo (PC) --- */
-    .demo-hand { 
-      position: absolute; 
-      top: 50%; 
-      left: 50%; 
-      transform: translate(-50%, -50%); 
-      width: 50px;      
-      height: 50px;     
-      pointer-events: none; 
-      z-index: 21; 
-      opacity: 0; 
-      transition: opacity 0.3s ease; 
-      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4)); 
-    }
-    .demo-hand.visible { opacity: 1; }
-    @keyframes handPulse { 0% { transform: translate(-50%, -50%) scale(1) rotate(0deg); } 50% { transform: translate(-50%, -50%) scale(1.15) rotate(5deg); } 100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); } }
-    .demo-hand.pulse { animation: handPulse 1.2s infinite; }
+        /* Poem Block */
+        .poem-block {
+            position: relative;
+            background: linear-gradient(135deg, #faf8f5 0%, #f0ebe3 100%);
+            border-left: 4px solid var(--green-dark);
+            padding: 24px 28px;
+            margin: 24px 0;
+            font-style: italic;
+            line-height: 2;
+        }
 
-    /* ==========================================
-       MEDIA QUERIES (MOBILE) - FINAL
-       ========================================== */
-    @media (max-width: 768px) {
-      
-      /* --- Geral --- */
-      :root { --label-width: 0px; }
-      .rotulos-idade, .rotulos-anos { display: none; }
-      .rotulo-linha-esquerda, .rotulo-linha-direita { display: none; }
+        .poem-block::before {
+            content: '"';
+            position: absolute;
+            top: 10px;
+            left: 12px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 4rem;
+            color: var(--accent);
+            opacity: 0.3;
+            line-height: 1;
+        }
 
-      /* --- Layout --- */
-      .linha-tempo-container { padding-top: 0; padding-bottom: 0; }
-      .cabecalho-fixo { padding-top: 18px; padding-bottom: 5px; }
-      .area-filtros { margin-top: 20px; }
+        /* Cards */
+        .content-card {
+            background: var(--card);
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
 
-      /* --- Mão de Demo (Mobile) --- */
-      .demo-hand {
-        width: 36px;       
-        height: 36px;
-      }
-      .demo-hand svg {
-        background: transparent !important; 
-        padding: 0 !important;
-      }
+        .content-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
 
-      /* --- Texto Reduzido (Mobile) --- */
-      .filtros label { font-size: 0.75rem; }
-      .evento-titulo { font-size: 0.9rem; }
-      .evento-cabecalho { font-size: 0.7em; }
-      .evento-descricao { font-size: 0.75rem; }
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+        }
 
-      /* --- Cartões --- */
-      .coluna-evento { gap: 8px; }
-      .evento { border-left: none; border-top: 4px solid transparent; }
-      .evento.historia { border-top-color: var(--cor-historia); }
-      .evento.vida { border-top-color: var(--cor-vida); }
-      .evento.obra { border-top-color: var(--cor-obra); }
-      
-      /* --- Seletor --- */
-      .seletor { overflow: visible; background-color: transparent; }
-      .seletor-idades, .seletor-anos {
-        position: absolute; left: 0; width: 100%; height: auto;
-        background-color: transparent; border: none; box-shadow: none;
-        padding: 0; z-index: 25; font-size: 0.7rem; color: var(--texto-cor);
-      }
-      .seletor-idades { top: -8px; }
-      .seletor-anos { bottom: -8px; }
-      .sel-label-center { display: none; }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--accent), var(--green-dark));
+        }
 
-      /* Alinhamento Etiquetas nas Bordas */
-      #sel-idade-inicio, #sel-ano-inicio { position: absolute; left: 0; transform: translateX(-50%); white-space: nowrap; }
-      #sel-idade-fim, #sel-ano-fim { position: absolute; right: 0; transform: translateX(50%); white-space: nowrap; }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 32px;
+            padding-left: 30px;
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: slideIn 0.6s ease forwards;
+            display: flow-root; 
+            transition: z-index 0s;
+        }
 
-      /* --- Zoom Mobile --- */
-      .imagem-ampliada-container { justify-content: center !important; align-items: center !important; }
-      .imagem-ampliada-wrapper { margin-left: 0 !important; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; }
-      .imagem-ampliada { max-width: 100%; max-height: 100%; width: 100%; height: 100%; object-fit: contain; }
+        .timeline-item.item-zoom-active {
+            z-index: 1000;
+            position: relative;
+        }
 
-    } /* FIM DO MEDIA QUERY */
-  </style>
+        .timeline-item.hidden-item {
+            display: none;
+        }
 
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -32px;
+            top: 6px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--card);
+            border: 3px solid var(--accent);
+            z-index: 1;
+        }
+
+        .timeline-item.vida::before { border-color: #7c3aed; }
+        .timeline-item.obra::before { border-color: var(--green-dark); }
+        .timeline-item.evento::before { border-color: #dc2626; }
+
+        /* --- MINIATURAS --- */
+        .timeline-desc {
+            overflow: hidden; 
+        }
+
+        .timeline-item.item-zoom-active .timeline-desc {
+            overflow: visible;
+        }
+
+        .imagem-evento {
+            float: left;
+            margin: 5px 20px 10px 0;
+            width: 140px;
+            height: 200px;
+            overflow: hidden;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            cursor: zoom-in;
+            position: relative;
+            z-index: 5; 
+            transition: transform 0.3s ease, box-shadow 0.3s ease, width 0.3s, height 0.3s;
+            transform-origin: top left;
+        }
+
+        .imagem-evento.landscape {
+            width: 220px;
+            height: 150px;
+        }
+
+        .imagem-evento.expanded {
+            position: relative; 
+            z-index: 100;
+            transform: scale(2.5); 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            cursor: move;
+            background: #fff;
+        }
+
+        .imagem-evento img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.1s ease-out;
+            backface-visibility: hidden;
+            pointer-events: none;
+            
+            /* SEGURANÇA: Impede arrastar e selecionar a imagem */
+            user-select: none;
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Filter Buttons */
+        .filter-btn {
+            padding: 8px 20px;
+            border-radius: 24px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background 0.2s ease, color 0.2s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .filter-btn.vida { background: #ede9fe; color: #7c3aed; border-color: #7c3aed; }
+        .filter-btn.vida:hover { background: #dbeafe; }
+        .filter-btn.vida.active { background: #7c3aed; color: white; }
+        .filter-btn.vida.active:hover { background: #6d28d9; }
+
+        .filter-btn.obra { background: #dcfce7; color: var(--green-dark); border-color: var(--green-dark); }
+        .filter-btn.obra:hover { background: #bbf7d0; }
+        .filter-btn.obra.active { background: var(--green-dark); color: white; }
+        .filter-btn.obra.active:hover { background: #166534; }
+
+        .filter-btn.evento { background: #fee2e2; color: #dc2626; border-color: #dc2626; }
+        .filter-btn.evento:hover { background: #fecaca; }
+        .filter-btn.evento.active { background: #dc2626; color: white; }
+        .filter-btn.evento.active:hover { background: #b91c1c; }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg);
+            z-index: 200;
+            transform: translateX(-100%);
+            transition: transform 0.4s ease;
+            overflow-y: auto;
+        }
+
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+
+        /* Scroll Reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Focus States */
+        a:focus-visible,
+        button:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            html { scroll-behavior: auto; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+    </style>
 </head>
-<body>
+<body class="bg-pattern">
 
-<div class="cabecalho-fixo">
-  <div class="linha-tempo-container">
-    <div class="rotulos-idade" id="rotulos-idade-container"></div>
-    <div class="linha-wrapper">
-      <div class="rotulo-linha-esquerda">História</div>
-      <div class="linha linha-historia" id="linha-historia"></div>
-      <div class="rotulo-linha-direita">História</div>
-    </div>
-    <div class="linha-wrapper">
-      <div class="rotulo-linha-esquerda">Vida</div>
-      <div class="linha linha-vida" id="linha-vida"></div>
-      <div class="rotulo-linha-direita">Vida</div>
-    </div>
-    <div class="linha-wrapper">
-      <div class="rotulo-linha-esquerda">Obra</div>
-      <div class="linha linha-obra" id="linha-obra"></div>
-      <div class="rotulo-linha-direita">Obra</div>
-    </div>
-    <div class="rotulos-anos" id="rotulos-anos-container"></div>
+    <!-- Navigation -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-[#f5f1eb]/95 backdrop-blur-md border-b border-[#d4c8b8]">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 md:h-20">
+                <!-- Logo -->
+                <a href="#topo" class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-[#8b4513] flex items-center justify-center">
+                        <span class="text-white font-serif text-lg font-bold">JMS</span>
+                    </div>
+                    <span class="hidden sm:block font-serif text-lg font-semibold text-[#2a2420]">Joaquim Moreira da Silva</span>
+                </a>
 
-    <div class="seletor" id="seletor">
-      <div class="seletor-idades"><span id="sel-idade-inicio">0</span><span class="sel-label-center">IDADE</span><span id="sel-idade-fim">9</span></div>
-      <div class="seletor-anos"><span id="sel-ano-inicio">1886</span><span class="sel-label-center">---</span><span id="sel-ano-fim">1895</span></div>
-      <div id="demoHand" class="demo-hand">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #333; background: rgba(255,255,255,0.9); border-radius: 50%; padding: 8px;">
-          <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"></path>
-          <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"></path>
-          <path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"></path>
-          <path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"></path>
-        </svg>
-      </div>
+                <!-- Desktop Menu -->
+                <div class="hidden lg:flex items-center gap-8">
+                    <a href="#inicio" class="nav-link text-[#2a2420] hover:text-[#8b4513] font-medium">Início</a>
+                    
+                    <div class="dropdown">
+                        <button class="nav-link text-[#2a2420] hover:text-[#8b4513] font-medium flex items-center gap-1" aria-expanded="false" aria-haspopup="true">
+                            Obra
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="dropdown-menu bg-white rounded-lg shadow-xl border border-[#d4c8b8] py-2 mt-2">
+                            <a href="#relevancia" class="block px-4 py-2 hover:bg-[#f5f1eb] text-[#2a2420]">Relevância</a>
+                            <a href="#caracteristicas" class="block px-4 py-2 hover:bg-[#f5f1eb] text-[#2a2420]">Características Formais</a>
+                            <a href="#classificacao" class="block px-4 py-2 hover:bg-[#f5f1eb] text-[#2a2420]">Classificação Temática</a>
+                            <a href="#circulacao" class="block px-4 py-2 hover:bg-[#f5f1eb] text-[#2a2420]">Circulação</a>
+                            <a href="#livros" class="block px-4 py-2 hover:bg-[#f5f1eb] text-[#2a2420]">Livros Publicados</a>
+                        </div>
+                    </div>
+
+                    <a href="#intervencao" class="nav-link text-[#2a2420] hover:text-[#8b4513] font-medium">Intervenção Cívica</a>
+                    
+                    <div class="dropdown">
+                        <button class="nav-link text-[#2a2420] hover:text-[#8b4513] font-medium flex items-center gap-1">
+                            Iconografia
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="dropdown-menu bg-white rounded-lg shadow-xl border border-[#d4c8b8] py-2 mt-2">
+                            <a href="#fotografias" class="block px-4 py-2 hover:bg-[#f5f1eb] text-[#2a2420]">Fotografias</a>
+                            <a href="#manuscritos" class="block px-4 py-2 hover:bg-[#f5f1eb] text-[#2a2420]">Manuscritos</a>
+                            <a href="#noticias" class="block px-4 py-2 hover:bg-[#f5f1eb] text-[#2a2420]">Notícias</a>
+                            <a href="#outros" class="block px-4 py-2 hover:bg-[#f5f1eb] text-[#2a2420]">Outros</a>
+                        </div>
+                    </div>
+
+                    <a href="#cronologia" class="nav-link text-[#2a2420] hover:text-[#8b4513] font-medium">Cronologia</a>
+
+                    <div class="dropdown">
+                        <button class="nav-link text-[#2a2420] hover:text-[#8b4513] font-medium flex items-center gap-1">
+                            Mais
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="dropdown-menu bg-white rounded-lg shadow-xl border border-[#d4c8b8] py-2 mt-2">
+                            <a href="#imprensa" class="block px-4 py-2 hover:bg-[#f5f1eb] text-[#2a2420]">Imprensa</a>
+                            <a href="#eventos" class="block px-4 py-2 hover:bg-[#f5f1eb] text-[#2a2420]">Eventos Científicos</a>
+                            <a href="#homenagens" class="block px-4 py-2 hover:bg-[#f5f1eb] text-[#2a2420]">Homenagens</a>
+                            <a href="#ligacoes" class="block px-4 py-2 hover:bg-[#f5f1eb] text-[#2a2420]">Ligações Externas</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuBtn" class="lg:hidden p-2 text-[#2a2420]" aria-label="Abrir menu">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Mobile Menu Panel -->
+    <div id="mobileMenu" class="mobile-menu lg:hidden">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-8">
+                <span class="font-serif text-xl font-semibold">Menu</span>
+                <button id="closeMobileMenu" class="p-2" aria-label="Fechar menu">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <nav class="space-y-4">
+                <a href="#inicio" class="block py-3 text-lg font-medium border-b border-[#d4c8b8]">Início</a>
+                <div class="py-2">
+                    <button class="mobile-dropdown-toggle w-full flex justify-between items-center py-3 text-lg font-medium border-b border-[#d4c8b8]">
+                        Obra
+                        <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div class="mobile-dropdown-content hidden pl-4 mt-2 space-y-2">
+                        <a href="#relevancia" class="block py-2 text-[#6b5e52]">Relevância</a>
+                        <a href="#caracteristicas" class="block py-2 text-[#6b5e52]">Características Formais</a>
+                        <a href="#classificacao" class="block py-2 text-[#6b5e52]">Classificação Temática</a>
+                        <a href="#circulacao" class="block py-2 text-[#6b5e52]">Circulação</a>
+                        <a href="#livros" class="block py-2 text-[#6b5e52]">Livros Publicados</a>
+                    </div>
+                </div>
+                <a href="#intervencao" class="block py-3 text-lg font-medium border-b border-[#d4c8b8]">Intervenção Cívica</a>
+                <div class="py-2">
+                    <button class="mobile-dropdown-toggle w-full flex justify-between items-center py-3 text-lg font-medium border-b border-[#d4c8b8]">
+                        Iconografia
+                        <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div class="mobile-dropdown-content hidden pl-4 mt-2 space-y-2">
+                        <a href="#fotografias" class="block py-2 text-[#6b5e52]">Fotografias</a>
+                        <a href="#manuscritos" class="block py-2 text-[#6b5e52]">Manuscritos</a>
+                        <a href="#noticias" class="block py-2 text-[#6b5e52]">Notícias</a>
+                        <a href="#outros" class="block py-2 text-[#6b5e52]">Outros</a>
+                    </div>
+                </div>
+                <a href="#cronologia" class="block py-3 text-lg font-medium border-b border-[#d4c8b8]">Cronologia</a>
+                <div class="py-2">
+                    <button class="mobile-dropdown-toggle w-full flex justify-between items-center py-3 text-lg font-medium border-b border-[#d4c8b8]">
+                        Mais
+                        <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div class="mobile-dropdown-content hidden pl-4 mt-2 space-y-2">
+                        <a href="#imprensa" class="block py-2 text-[#6b5e52]">Imprensa</a>
+                        <a href="#eventos" class="block py-2 text-[#6b5e52]">Eventos Científicos</a>
+                        <a href="#homenagens" class="block py-2 text-[#6b5e52]">Homenagens</a>
+                        <a href="#ligacoes" class="block py-2 text-[#6b5e52]">Ligações Externas</a>
+                    </div>
+                </div>
+            </nav>
+        </div>
     </div>
-  </div>
-  <div class="area-filtros">
-    <div class="filtros">
-      <fieldset>
-        <div class="filtro-wrapper"><input type="checkbox" id="filtro-historia" checked><label for="filtro-historia" class="historia-label">História</label></div>
-        <div class="filtro-wrapper"><input type="checkbox" id="filtro-vida" checked><label for="filtro-vida" class="vida-label">Vida</label></div>
-        <div class="filtro-wrapper"><input type="checkbox" id="filtro-obra" checked><label for="filtro-obra" class="obra-label">Obra Datada</label></div>
-      </fieldset>
-    </div>
-  </div>
+
+    <main id="topo" class="pt-16 md:pt-20">
+        
+        <!-- Hero Section -->
+        <section id="inicio" class="relative overflow-hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+                <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                    <!-- Text Content -->
+                    <div class="order-2 lg:order-1 reveal">
+                        <h1 class="hero-title text-[#2a2420] mb-4">Joaquim Moreira da Silva</h1>
+                        <p class="hero-subtitle mb-8">Poeta Carpinteiro</p>
+                        <p class="text-lg text-[#6b5e52] mb-8 leading-relaxed">
+                            <strong class="text-[#2a2420]">Joaquim Moreira da Silva</strong>, carpinteiro de profissão, tem uma extensa obra poética, que o tornou conhecido por Poeta Carpinteiro, um poeta "que sabe de carpintaria poética, e merece ser lido e lembrado" (Arnaldo Saraiva). Com uma vida dura de pobreza e de trabalho, essa obra é marcada por grande talento poético e pelas suas convicções na luta por uma vida melhor.
+                        </p>
+                        <div class="flex flex-wrap gap-4">
+                            <a href="#obra" class="inline-flex items-center gap-2 px-6 py-3 bg-[#8b4513] text-white rounded-lg font-semibold hover:bg-[#a0522d] transition-colors">
+                                Explorar Obra
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                            </a>
+                            <a href="#cronologia" class="inline-flex items-center gap-2 px-6 py-3 border-2 border-[#8b4513] text-[#8b4513] rounded-lg font-semibold hover:bg-[#8b4513] hover:text-white transition-colors">
+                                Ver Cronologia
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Photo -->
+                    <div class="order-1 lg:order-2 flex justify-center reveal" style="animation-delay: 0.2s">
+                        <div class="photo-frame max-w-sm w-full">
+			<img src="fotos/JMS_aos_36_anos-2.png" alt="Joaquim Moreira da Silva" class="w-full h-auto grayscale hover:grayscale-0 transition-all duration-700">
+                            <p class="text-center text-sm text-[#6b5e52] mt-3 italic">O poeta aos 36 anos</p>
+			    <p class="text-center text-sm text-[#6b5e52] mt-3 italic">(retocada digitalmente)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bio Details -->
+        <section class="bg-white/50 border-y border-[#d4c8b8]">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 reveal">
+                    <div class="text-center p-6">
+                        <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-[#8b4513]/10 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-[#8b4513]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        </div>
+                        <p class="text-sm text-[#6b5e52] mb-1">Nascimento</p>
+                        <p class="font-semibold text-[#2a2420]">15 de Março de 1886</p>
+                        <p class="text-sm text-[#6b5e52]">Vilar, Vila do Conde</p>
+                    </div>
+                    <div class="text-center p-6">
+                        <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-[#2d5a3d]/10 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-[#2d5a3d]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        </div>
+                        <p class="text-sm text-[#6b5e52] mb-1">Profissão</p>
+                        <p class="font-semibold text-[#2a2420]">Carpinteiro</p>
+                        <p class="text-sm text-[#6b5e52]">Poeta por vocação</p>
+                    </div>
+                    <div class="text-center p-6">
+                        <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-[#b8860b]/10 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-[#b8860b]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+                        </div>
+                        <p class="text-sm text-[#6b5e52] mb-1">Conhecido por</p>
+                        <p class="font-semibold text-[#2a2420]">Poeta Carpinteiro</p>
+                        <p class="text-sm text-[#6b5e52]">"Moreira Cego"</p>
+                    </div>
+                    <div class="text-center p-6">
+                        <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-[#8b4513]/10 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-[#8b4513]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <p class="text-sm text-[#6b5e52] mb-1">Falecimento</p>
+                        <p class="font-semibold text-[#2a2420]">12 de Dezembro de 1960</p>
+                        <p class="text-sm text-[#6b5e52]">Vilar, Vila do Conde</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Biography Section -->
+        <section id="biografia" class="py-16 md:py-24">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="reveal">
+                    <h2 class="section-header text-3xl md:text-4xl font-bold text-[#2a2420] mb-12">Biografia</h2>
+                </div>
+                
+                <div class="prose prose-lg max-w-none reveal" style="animation-delay: 0.2s">
+                    <p class="text-[#2a2420] mb-6">
+                        Aos 7 anos, sem nunca ter podido frequentar a escola, Joaquim Moreira da Silva começou a trabalhar como moço de lavoura. Ainda criança cegou de um olho num acidente com uma foicinha, o que lhe valeu a alcunha de Moreira Cego, apesar de manter a visão do outro olho.
+                    </p>
+                    
+                    <p class="text-[#2a2420] mb-6">
+                        Aos 18 anos Moreira da Silva aprendeu a arte de carpinteiro no Porto, para onde se deslocava diariamente de comboio, e onde aprendeu a ler e a escrever num curso noturno. Nascia o Poeta Carpinteiro, que podia agora registar por escrito a sua poesia. O curso da sua vida mudou radicalmente, com o acesso à leitura e escrita, e o contacto com as lutas operárias e a ideologia anarquista.
+                    </p>
+
+                    <p class="text-[#2a2420] mb-6">
+                        A leitura das "obras dos grandes sábios" trouxe-lhe vasta cultura geral e política, e uma melhor compreensão do mundo, enformada também pelo contacto com os trabalhadores e as suas lutas. Sedento de justiça e com um espírito lutador, com as suas ações e com os seus versos não mais deixou de denunciar as injustiças e de lutar contra elas.
+                    </p>
+
+                    <p class="text-[#2a2420] mb-6">
+                        No final dos seus dias de trabalho, na sua própria casa, em Vilar, Joaquim Moreira da Silva, ocupava os serões ensinando os conterrâneos a ler a escrever. Criou mesmo um método de leitura, que publicou num folheto de cordel, e editou alguns outros folhetos didáticos.
+                    </p>
+
+                    <p class="text-[#2a2420] mb-6">
+                        Aos 23 anos casou com a camponesa Maria Rosa Marques. O primeiro filho do casal morreu com apenas 5 meses. O segundo, Alberto Moreira, tipógrafo de profissão e amante de literatura, editou várias obras do seu pai. Moreira da Silva teve três netas, que, com a sua esposa, ajudou a criar por terem ficado órfãs de mãe muito cedo.
+                    </p>
+
+                    <p class="text-[#2a2420] mb-6">
+                        Joaquim Moreira da Silva morreu em 12 de dezembro de 1960, com 74 anos. O caixão foi coberto com a bandeira da Associação Cultural e Recreativa Honra e Dever de Vilar, para a qual escrevera o hino. A sua morte foi noticiada em vários jornais: O Comércio do Porto, A República, O Século e O Norte Desportivo.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Obra Section -->
+        <section id="obra" class="py-16 md:py-24 bg-white/50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="reveal">
+                    <h2 class="section-header text-3xl md:text-4xl font-bold text-[#2a2420] mb-12">Obra</h2>
+                </div>
+
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <!-- Characteristics -->
+                    <div id="caracteristicas" class="content-card p-6 reveal" style="animation-delay: 0.1s">
+                        <h3 class="text-xl font-bold text-[#8b4513] mb-4">Características Formais</h3>
+                        <p class="text-[#6b5e52] text-sm leading-relaxed">
+                            As estruturas versificatórias correspondem às que caracterizam a poesia popular portuguesa: predominância de quadras ou sextilhas, rima cruzada e versos de sete sílabas. Há vários poemas de mote em que uma quadra é glosada em quatro décimas. A linguagem é muito simples, recorrendo frequentemente a plebeísmos, provérbios ou frases feitas.
+                        </p>
+                    </div>
+
+                    <!-- Classification -->
+                    <div id="classificacao" class="content-card p-6 reveal" style="animation-delay: 0.2s">
+                        <h3 class="text-xl font-bold text-[#2d5a3d] mb-4">Classificação Temática</h3>
+                        <ul class="text-sm text-[#6b5e52] space-y-1">
+                            <li>Crítica social</li>
+                            <li>Temas anticlericais</li>
+                            <li>Louvações</li>
+                            <li>Histórias sentimentais</li>
+                            <li>Temas históricos e políticos</li>
+                            <li>Desafios</li>
+                            <li>Mundos fantasiosos</li>
+                            <li>Obras didáticas</li>
+                            <li>Lendas</li>
+                            <li>Autobiografia</li>
+                            <li>Hinos</li>
+                        </ul>
+                    </div>
+
+                    <!-- Circulation -->
+                    <div id="circulacao" class="content-card p-6 reveal" style="animation-delay: 0.3s">
+                        <h3 class="text-xl font-bold text-[#b8860b] mb-4">Circulação e Distribuição</h3>
+                        <p class="text-[#6b5e52] text-sm leading-relaxed">
+                            Enquanto Moreira da Silva não aprendeu a escrever, os seus versos circulavam apenas oralmente. A partir daí, muitos foram editados em pequenos folhetos de cordel ou em folhas volantes. Estas publicações eram vendidas às pessoas conhecidas e a quem as procurava, ou em locais de maior circulação.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Relevance -->
+                <div id="relevancia" class="mt-16 reveal">
+                    <h3 class="text-2xl font-bold text-[#2a2420] mb-8">Relevância da Obra</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <blockquote class="content-card p-6 border-l-4 border-[#8b4513]">
+                            <p class="text-[#6b5e52] italic mb-4">"Foi ao longo da sua vida, tão pobre como sobressaltada, um poeta da causa social. Não poucas vezes alguns belos ritmos lhe desceram da pena para as muitas páginas que escreveu."</p>
+                            <footer class="text-sm font-semibold text-[#2a2420]">Ferreira de Castro (1898-1974)</footer>
+                        </blockquote>
+
+                        <blockquote class="content-card p-6 border-l-4 border-[#2d5a3d]">
+                            <p class="text-[#6b5e52] italic mb-4">"Moreira Cego, que com António Aleixo, Manuel Alves e outros poucos domina a poesia popular portuguesa do século, tem um sentido muito vincado do narrativo."</p>
+                            <footer class="text-sm font-semibold text-[#2a2420]">Fernando Assis Pacheco (1937-1995)</footer>
+                        </blockquote>
+
+                        <blockquote class="content-card p-6 border-l-4 border-[#b8860b]">
+                            <p class="text-[#6b5e52] italic mb-4">"O poeta-carpinteiro, por vezes ingénuo e por vezes utópico, frequentemente moralista e frequentemente irónico, é quase sempre um poeta inspirado."</p>
+                            <footer class="text-sm font-semibold text-[#2a2420]">Arnaldo Saraiva</footer>
+                        </blockquote>
+
+                        <blockquote class="content-card p-6 border-l-4 border-[#8b4513]">
+                            <p class="text-[#6b5e52] italic mb-4">"Uma obra em que alguns de nós talvez vejam apenas o que fomos como povo, mas em que outros tantos verão aquilo que nos define como humanos."</p>
+                            <footer class="text-sm font-semibold text-[#2a2420]">Francisco Topa</footer>
+                        </blockquote>
+                    </div>
+                </div>
+
+                              <!-- SECÇÃO: Livros Publicados Postumamente -->
+                <div id="livros" class="mt-16 reveal">
+                    <h3 class="text-2xl font-bold text-[#2a2420] mb-8">Livros Publicados Postumamente</h3>
+                    
+                    <!-- Grid ajustada para 2 colunas em tablets e 3 em desktops para melhor distribuição de 5 itens -->
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        
+                        <!-- Livro 1 -->
+                        <div class="content-card p-4 flex items-start gap-4">
+                            <div class="w-24 h-32 flex-shrink-0 rounded overflow-hidden bg-[#f5f1eb] shadow-sm border border-[#d4c8b8]">
+                                <img src="A-LIRA-DO-POVO.png" alt="Capa de A lira do povo" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <p class="font-semibold text-[#2a2420] text-lg">A lira do povo</p>
+				<p class="text-sm text-[#6b5e52] mt-1">Seleção e Organização: Alberto Moreira.</p><br>
+                                <p class="text-sm text-[#6b5e52] mt-1">1967 - Porto - Tipografia do Carvalhido</p>
+                            </div>
+                        </div> <!-- Fim do Cartão Livro 1 -->
+
+                        <!-- Livro 2 -->
+                        <div class="content-card p-4 flex items-start gap-4">
+                            <div class="w-24 h-32 flex-shrink-0 rounded overflow-hidden bg-[#f5f1eb] shadow-sm border border-[#d4c8b8]">
+                                <img src="POETAS_POPULARES_vol_2.png" alt="Capa de Poetas Populares vol.2" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <p class="font-semibold text-[#2a2420] text-lg">Poetas populares Volume 2 (1ª ed.)</p><br><br>
+                                <p class="text-sm text-[#6b5e52] mt-1">1977 - Lisboa: Edições Portugalmundo.</p>		
+				<p class="text-[10px] text-[#6b5e52] font-light mt-1">ISBN: 9789729288166</p>	
+                            </div>
+                        </div> <!-- Fim do Cartão Livro 2 -->
+
+                        <!-- Livro 3 -->
+                        <div class="content-card p-4 flex items-start gap-4">
+                            <div class="w-24 h-32 flex-shrink-0 rounded overflow-hidden bg-[#f5f1eb] shadow-sm border border-[#d4c8b8]">
+                                <img src="Antologia_Poética.jpg" alt="Capa de Antologia poética" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <p class="font-semibold text-[#2a2420] text-lg">Antologia poética</p>
+				<p class="text-sm text-[#6b5e52] mt-1">Seleção e Organização: Armanda Zenhas.</p><br>
+                                <p class="text-sm text-[#6b5e52] mt-1">1987 - Câmara Municipal de Vila do Conde</p>
+                            </div>
+                        </div> <!-- Fim do Cartão Livro 3 -->
+
+                        <!-- Livro 4 -->
+                        <div class="content-card p-4 flex items-start gap-4">
+                            <div class="w-24 h-32 flex-shrink-0 rounded overflow-hidden bg-[#f5f1eb] shadow-sm border border-[#d4c8b8]">
+                                <img src="Poesias.jpg" alt="Capa de Poesias" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <p class="font-semibold text-[#2a2420] text-lg">Poesias</p>
+				<p class="text-sm text-[#6b5e52] mt-1">Seleção e Organização: Armanda Zenhas.</p><br>
+                                <p class="text-sm text-[#6b5e52] mt-1">1998 - Câmara Municipal de Vila do Conde</p>
+                            </div>
+                        </div> <!-- Fim do Cartão Livro 4 -->
+
+                        <!-- Livro 5 -->
+                        <div class="content-card p-4 flex items-start gap-4">
+                            <div class="w-24 h-32 flex-shrink-0 rounded overflow-hidden bg-[#f5f1eb] shadow-sm border border-[#d4c8b8]">
+                                <img src="A_LIRA_DILETA.png" alt="Capa de A lira dileta e A lira da rebeldia" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <p class="font-semibold text-[#2a2420] text-lg">A lira dileta e A lira da rebeldia</p>
+				<p class="text-sm text-[#6b5e52] mt-1">Seleção e Organização: Armanda Zenhas.</p><br>
+                                <p class="text-sm text-[#6b5e52] mt-1">2024 - Opera Omnia.</p>
+				<p class="text-[10px] text-[#6b5e52] font-light mt-1">ISBN: 9789899192034</p>
+                            </div>
+                        </div> <!-- Fim do Cartão Livro 5 -->
+                        
+                    </div> <!-- Fim da Grid de Livros -->
+                </div> <!-- FIM DA SECÇÃO: Livros Publicados (#livros) -->
+   	    </div> <!-- Fim do container max-w-7xl -->
+        </section> <!-- Fim da Secção Obra (#obra) -->
+
+        <!-- Political Intervention -->
+        <section id="intervencao" class="py-16 md:py-24">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="reveal">
+                    <h2 class="section-header text-3xl md:text-4xl font-bold text-[#2a2420] mb-12">Intervenção Política e Social</h2>
+                </div>
+
+                <div class="reveal" style="animation-delay: 0.2s">
+                    <p class="text-[#2a2420] mb-6">
+                        Joaquim Moreira da Silva era um homem conhecido por ser justo, bom, altruísta, combativo e corajoso. Abraçou a ideologia anarquista e anticlerical, que marcou a sua obra e as suas ações.<br><br>  Lutou contra todas as injustiças, participando em lutas operárias, liderando ações de protesto, escrevendo poemas de denúncia. Por ocasião da I Guerra, liderou o assalto popular às tulhas de um lavrador, pretendendo levar o milho ao preço tabelado.
+                    </p>
+
+                  
+                    <p class="text-[#2a2420] mb-8">
+                        Sofreu perseguições da justiça e dos poderosos, foi preso e chegou a estar sem trabalho, mas manteve sempre a sua integridade.
+                    </p>
+
+                    <div class="poem-block">
+                        <p>Das minhas ações e obras,</p>
+                        <p>Pra mim a maior vantagem,</p>
+                        <p>É ter sido um moralista,</p>
+                        <p>Ter audácia e ter coragem;</p>
+                        <p>Marcando bem sem desdouro</p>
+                        <p>No mundo a minha passagem.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+            <!-- Education Section -->
+        <section id="educacao" class="py-16 md:py-24 bg-white/50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="reveal">
+                    <h2 class="section-header text-3xl md:text-4xl font-bold text-[#2a2420] mb-12">Paixão pela Educação</h2>
+                </div>
+
+                <!-- Intro Biográfica -->
+                <div class="max-w-4xl mx-auto reveal" style="animation-delay: 0.1s">
+                    <p class="text-[#2a2420] mb-6 text-lg leading-relaxed">
+                        Joaquim Moreira da Silva é uma figura singular da cultura popular e da história da educação. Operário e poeta, viveu numa época — o século XIX — em que o analfabetismo era ainda muito comum entre as classes trabalhadoras.  Tendo aprendido a ler e a escrever em escolas noturnas, frequentadas por trabalhadores que procuravam instrução depois de longas jornadas de trabalho,  compreendeu a importância libertadora do conhecimento que o marcou profundamente.
+                  
+                        Na sua oficina, ele mesmo organizou uma pequena escola na aldeia. O seu ideal aproximava-se do movimento pedagógico progressista da época, inspirado por pensadores como o catalão anarquista Francisco Ferrer, fundador da Escola Moderna, que defendia uma educação racional, livre e acessível a todos.                    </p>
+                  </p>
 </div>
 
-<div class="conteudo-rolavel" id="scrollContainer">
-  <div class="eventos-container"><div class="colunas-eventos" id="lista-eventos"></div></div>
-</div>
+               
 
-<!-- OVERLAY DE ZOOM -->
-<div id="zoom-container" class="imagem-ampliada-container">
-  <div class="imagem-ampliada-wrapper">
-    <img id="zoom-img" class="imagem-ampliada" src="" alt="">
-  </div>
-</div>
+                <!-- Sub-título: Reflexões e Escritos -->
+                <div class="max-w-4xl mx-auto mb-8 reveal">
+                    <h3 class="text-2xl font-bold text-[#2a2420] mb-6 text-center font-serif">Reflexões e Versos</h3>
+                    <p class="text-[#2a2420] mb-6 text-lg leading-relaxed ">Entre os seus textos encontram-se reflexões e versos que exaltam o valor da escola, do conhecimento e do trabalho.<br>
+A sua obra revela também uma visão muito moderna da educação como processo contínuo, defendendo aquilo que hoje chamamos educação ao longo da vida.
+                       </p>
+                </div>
+
+                               <!-- Bloco: A EDUCAÇÃO (Prosa) -->
+                <div class="max-w-3xl mx-auto mb-12 reveal" style="animation-delay: 0.4s">
+                    <div class="content-card p-6 bg-gradient-to-br from-[#faf8f5] to-[#f0ebe3] border border-[#d4c8b8]">
+
+                        <div class="prose prose-sm max-w-none text-[#2a2420] italic space-y-3 text-center">
+                  
+                        </div>
+                        <!-- Imagem do Manuscrito "A Educação" (50% largura, centrada) -->
+                        <div class="flex justify-center">
+                            <img src="manuscritos/a_educacao-2.png" alt="Manuscrito original de A Educação" class="w-1/2 h-auto object-contain rounded border border-[#d4c8b8]">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grid de Poemas -->
+                <div class="grid md:grid-cols-2 gap-6 mb-12">
+                    
+                    <!-- Poema 1 -->
+                    <div class="content-card p-6 flex flex-col items-center justify-center reveal" style="animation-delay: 0.6s">
+
+                        <div class="flex justify-center">
+                             <img src="manuscritos/A-Escola-e-Fonte-Sagrada.png" alt="Manuscrito original de A Escola é fonte sagrada" class="w-2/2 h-auto object-contain rounded border border-[#d4c8b8]">
+                        </div>
+                    </div>
+
+                    <!-- Poema 2 -->
+                    <div class="content-card p-6 flex flex-col items-center justify-center reveal" style="animation-delay: 0.6s">
+
+                        <div class="flex justify-center">
+                             <img src="manuscritos/A-Minha-Escola-2.png" alt="Manuscrito original A Minha Escola" class="w-2/2 h-auto object-contain rounded border border-[#d4c8b8]">
+                        </div>
+                    </div>
 
 
 
-<script>
-    // --- CONFIGURAÇÕES ---
-    const ANO_INICIAL = 1886; 
-    const ANO_FINAL = 1960; 
-    const TOTAL_ANOS = ANO_FINAL - ANO_INICIAL + 1; 
-    const LARGURA_SELETOR = 10; 
-    const TEMPO_INATIVIDADE_DEMO = 180000;
-    const DELAY_ENTRADA_ZOOM = 500; 
-    const DELAY_SAIDA_ZOOM = 500;    
-    
-    // ==========================================
-    // PROTEÇÃO JAVASCRIPT (Início)
-    // ==========================================
-    
-    // 1. Bloquear Botão Direito (Context Menu)
-    document.addEventListener('contextmenu', function(e) {
-      e.preventDefault();
-    }, false);
+                    <!-- Poema 3 -->
+                    <div class="content-card p-6 flex flex-col items-center justify-center reveal" style="animation-delay: 0.6s">
+ 
+                        <div class="flex justify-center">
+                             <img src="manuscritos/As-Letras-do-Alfabeto.png" alt="Manuscrito original de As Letras do Alfabeto" class="w-2/2 h-auto object-contain rounded border border-[#d4c8b8]">
+                        </div>
+                    </div>
 
-    // 2. Bloquear atalhos de teclado perigosos (DevTools, Guardar, Ver Código)
-    document.addEventListener('keydown', function(e) {
-      // Ctrl+S (Guardar)
-      if (e.ctrlKey && e.key === 's') { e.preventDefault(); }
-      // Ctrl+U (Ver código fonte)
-      if (e.ctrlKey && e.key === 'u') { e.preventDefault(); }
-      // Ctrl+Shift+I (DevTools)
-      if (e.ctrlKey && e.shiftKey && e.key === 'I') { e.preventDefault(); }
-      // F12 (DevTools)
-      if (e.key === 'F12') { e.preventDefault(); }
-      // Ctrl+P (Imprimir)
-      if (e.ctrlKey && e.key === 'p') { e.preventDefault(); }
-    }, false);
+                    <!-- Poema 4 -->
+                    <div class="content-card p-6 flex flex-col items-center justify-center reveal" style="animation-delay: 0.6s">
+                  
+                        <div class="flex justify-center">
+                             <img src="manuscritos/Da-Escola-e-do-Trabalho.png" alt="Manuscrito original da Escola e do Trabalho" class="w-2/2 h-auto object-contain rounded border border-[#d4c8b8]">
+                        </div>
+                    </div>
 
-    // 3. Bloquear arrastar (Drag and Drop)
-    document.addEventListener('dragstart', function(e) {
-      e.preventDefault();
-    }, false);
 
-    // ==========================================
-    // PROTEÇÃO JAVASCRIPT (Fim)
-    // ==========================================
+                    <!-- Poema 6 -->
+                    <!-- Adicionado md:col-span-2 para ocupar a linha toda e centrar o cartão -->
+                    <div class="content-card p-6 flex flex-col items-center justify-center reveal md:col-span-2" style="animation-delay: 0.6s">
+         
+                        <div class="flex justify-center">
+                             <!-- Corrigido w-2/2 para w-1/2 para manter a imagem reduzida -->
+                             <img src="manuscritos/Proletarios.png" alt="Manuscrito original Proletários" class="w-2/2 h-auto object-contain rounded border border-[#d4c8b8]">
+                        </div>
+                    </div>
 
-    // --- DADOS COMPLETOS ---
-    const eventos = {
-      historia: [
-        { idade: "0", "ano civil": 1886, "dia-mês": "", titulo: "Início da atividade anarquista em Portugal.", descricao: 'Em Lisboa, Antero de Quental formou (com Eça de Queirós, Guerra Junqueiro e Ramalho Ortigão), "O Cenáculo", um grupo de intelectuais anarquistas. <br>Mais na <a href="https://fr.wikipedia.org/wiki/Anarchisme_au_Portugal" target="_blank">Wikipedia</a>.' },
-        { idade: "5", "ano civil": 1891, "dia-mês": "", titulo: "Revolta do 31 de Janeiro contra a Monarquia no Porto", descricao: 'Mais na <a href="https://pt.wikipedia.org/wiki/Revolta_de_31_de_janeiro_de_1891" target="_blank">Wikipedia</a>.' },
-        { idade: "10", "ano civil": 1896, "dia-mês": "13.FEV.", titulo: "'Lei da Bomba' contra os Anarquistas", descricao: 'Mais na <a href="https://app.parlamento.pt/comunicar/V1/201905/57/artigos/art9.html" target="_blank">A.R.</a>.' },
-        { idade: "22", "ano civil": 1908, "dia-mês": "28.JAN.", titulo: "Regicídio", descricao: 'Mais na <a href="https://ensina.rtp.pt/artigo/regicidio-em-lisboa-1908/" target="_blank">RTP Ensina</a>.' },
-        { idade: "24", "ano civil": 1910, "dia-mês": "5.OUT.", titulo: "Implantação da República", descricao: 'Mais na <a href="https://ensina.rtp.pt/artigo/5-de-outubro-1910/" target="_blank">RTP Ensina</a>.' },
-        { idade: "25", "ano civil": 1911, "dia-mês": "20.ABR.", titulo: "Separação da Igreja do Estado", descricao: 'Mais na <a href="https://pt.wikipedia.org/wiki/Lei_da_Separa%C3%A7%C3%A3o_do_Estado_das_Igrejas" target="_blank">Wikipedia</a>.' },
-        { idade: "25", "ano civil": 1911, "dia-mês": "", titulo: "Explosão do Movimento Anarquista", descricao: "" },
-        { idade: "26", "ano civil": 1912, "dia-mês": "", titulo: "Fundação da Federação Anarquista do Norte", descricao: "" },
-        { idade: "27", "ano civil": 1913, "dia-mês": "", titulo: "Fundação da CULTUAL", descricao: "" },
-        { idade: "28", "ano civil": 1914, "dia-mês": "", titulo: "Início da 1.ª Grande Guerra [1914-1918]", descricao: "" },
-        { idade: "29", "ano civil": 1915, "dia-mês": "", titulo: "1.ª Grande Guerra [1914-1918]", descricao: "" },
-        { idade: "30", "ano civil": 1916, "dia-mês": "", titulo: "1.ª Grande Guerra [1914-1918]", descricao: "" },
-        { idade: "31", "ano civil": 1917, "dia-mês": "", titulo: "1.ª Grande Guerra [1914-1918]", descricao: "" },
-        { idade: "31", "ano civil": 1917, "dia-mês": "19.MAI.", titulo: "A revolta da Batata", descricao: 'Mais na <a href="https://ensina.rtp.pt/artigo/__trashed-17/" target="_blank">RTP Ensina</a>.' },
-        { idade: "32", "ano civil": 1918, "dia-mês": "", titulo: "Fim da 1.ª Grande Guerra [1914-1918]", descricao: "" },
-        { idade: "35", "ano civil": 1921, "dia-mês": "6.MAR.", titulo: "Fundação do Partido Comunista Português", descricao: 'Mais em <a href="https://www.pcp.pt/como-nasceu-partido-comunista-portugues" target="_blank">PCP</a>.' },
-        { idade: "35", "ano civil": 1921, "dia-mês": "", titulo: "Fundação da Internacional Sindical Vermelha [PROFITERN]", descricao: 'Mais em <a href="https://pt.wikipedia.org/wiki/Internacional_Vermelha_dos_Sindicatos" target="_blank">Wikipedia</a>.' },
-        { idade: "37", "ano civil": 1923, "dia-mês": "18.MAR.", titulo: "Criação da União Anarquista Portuguesa (UAP)", descricao: 'Com 20 grupos aderentes entre eles o de Vila do Conde.<br><a href="https://we.riseup.net/assets/160397/Edgar%20Rodrigues%20hist%C3%B3ria%20do%20movimento%20anarquista%20em%20portugal.pdf" target="_blank">Edgar Rodrigues, História do Movimento Anarquista em Portugal, pág.11</a>' },
-        { idade: "40", "ano civil": 1926, "dia-mês": "28.MAI.", titulo: "Golpe Militar de 28 de Maio – Ditadura", descricao: 'Mais na <a href="https://ensina.rtp.pt/artigo/golpe-28-de-maio-1926/" target="_blank">RTP Ensina</a>.' },
-        { idade: "41", "ano civil": 1927, "dia-mês": "25.JUL.", titulo: "Fundação da Federação Anarquista Ibérica – FAI", descricao: 'Mais na <a href="https://noticiasanarquistas.noblogs.org/post/2021/04/16/espanha-lancamento-historia-da-fai-o-anarquismo-organizado-de-julian-vadillo-munoz/" target="_blank">ANA</a>.' },
-        { idade: "47", "ano civil": 1933, "dia-mês": "11.ABR.", titulo: "Estado Novo – CENSURA", descricao: 'Mais na <a href="https://ensina.rtp.pt/artigo/censura-previa-a-mordaca-que-o-estado-novo-criou/" target="_blank">RTP Ensina</a>.' },
-        { idade: "48", "ano civil": 1934, "dia-mês": "", titulo: "Jornal 'Batalha' passa à clandestinidade", descricao: 'Mais em <a href="https://colectivolibertarioevora.wordpress.com/2019/02/22/a-batalha-100-anos-de-luta-por-um-mundo-novo-sem-explorados-nem-exploradores-sem-oprimidos-nen-opressores/" target="_blank">Portal Anarquista</a>.' },
-        { idade: "51", "ano civil": 1937, "dia-mês": "4.JUL.", titulo: "Atentado a Salazar perpetrado por anarquistas", descricao: 'Mais na <a href="https://ensina.rtp.pt/artigo/retratos-do-atentado-a-salazar/" target="_blank">RTP Ensina</a>.' }
-      ],
-      vida: [
-        { idade: "0", "ano civil": 1886, "dia-mês": "15.MAR.", titulo: "Nascimento de JOAQUIM MOREIRA DA SILVA", descricao: "" },
-        { idade: "7", "ano civil": 1893, "dia-mês": "", titulo: "Começa a trabalhar como moço de Lavoura", descricao: "" },
-        { idade: "18", "ano civil": 1904, "dia-mês": "", titulo: "Vai trabalhar para o Porto como aprendiz de carpinteiro", descricao: "" },
-        { idade: "18", "ano civil": 1904, "dia-mês": "", titulo: "Frequenta escola noturna Vasco da Gama, onde aprende a ler e escrever", descricao: "" },
-        { idade: "18", "ano civil": 1904, "dia-mês": "", titulo: "Inscreve-se na Associação (SINDICATO)", descricao: "" },
-        { idade: "23", "ano civil": 1909, "dia-mês": "10.JUL.", titulo: "Casa com a camponesa Maria Rosa Marques", descricao: "" },
-        { idade: "24", "ano civil": 1910, "dia-mês": "22.MAI.", titulo: "Nasce o primeiro filho", descricao: "" },
-        { idade: "24", "ano civil": 1910, "dia-mês": "13.OUT.", titulo: "Morte do primeiro filho", descricao: "" },
-        { idade: "26", "ano civil": 1912, "dia-mês": "17.FEV.", titulo: "Nascimento do filho Alberto Moreira", descricao: "" },
-        { idade: "30", "ano civil": 1916, "dia-mês": "5.MAR.", titulo: "JMS faz comício à saída da missa censurando a distribuição do milho", descricao: '<div class="imagem-evento"><img src="docs/informacao-do-regedor-mar1916.png" alt="Informação do regedor"></div><p>Informação do regedor para o administrador do concelho</p>' },
-        { idade: "31", "ano civil": 1917, "dia-mês": "5.FEV.", titulo: "O povo de Vilar saiu à rua em protesto contra a fome e tocou os sinos a rebate. Formou-se 'uma comissão'", descricao: "" },
-        { idade: "31", "ano civil": 1917, "dia-mês": "30.MAI.", titulo: "Assalto à 'Tulha' de Manuel Gonçalves Dias", descricao: "" },
-        { idade: "31", "ano civil": 1917, "dia-mês": "JUL.", titulo: "Julgamento do Assalto", descricao: "" },
-        { idade: "31", "ano civil": 1917, "dia-mês": "AGO.", titulo: "Juíz ordena a captura de JMS e restantes implicados", descricao: "" },
-        { idade: "31", "ano civil": 1917, "dia-mês": "2.SET.", titulo: "Comício em Vilar (no Alto da Pereira) para tratar da carestia do milho e o açambarcamento", descricao: "" },
-        { idade: "31", "ano civil": 1917, "dia-mês": "17.SET.", titulo: "Início do processo de audição dos réus", descricao: "" },
-        { idade: "31", "ano civil": 1917, "dia-mês": "27.SET.", titulo: "Emitido mandato de captura dos implicados", descricao: "" },
-        { idade: "31", "ano civil": 1917, "dia-mês": "23.OUT.", titulo: "JMS é ouvido pelo Juiz que lhe nomeia como advogado António Maria Pereira Júnior", descricao: "" },
-        { idade: "35", "ano civil": 1921, "dia-mês": "MAR.", titulo: "Moreira da Silva foi preso com outros anarquistas e sindicalistas", descricao: "" },
-        { idade: "35", "ano civil": 1921, "dia-mês": "4.SET.", titulo: "JMS é eleito em comício, para a Comissão que reclama o barateamento do preço do milho", descricao: '<div class="imagem-evento"><img src="docs/oficio-ao-administrador-set1921.png" alt="Ofício"></div><p>Em ofício da Comissão para o Administrador</p>' },
-        { idade: "35", "ano civil": 1922, "dia-mês": "", titulo: "Fotografia do poeta publicada em 'A Lira do Povo'", descricao: '<div class="imagem-evento"><img src="docs/JMS_aos_36_anos-2.jpg" alt="Fotografia"></div><p>O poeta aos 36 anos</p>' },
-        { idade: "48", "ano civil": 1934, "dia-mês": "22.NOV.", titulo: "Nascimento da primeira neta", descricao: "Margarida Rosa Moreira" },
-        { idade: "49", "ano civil": 1935, "dia-mês": "22.SET.", titulo: "Nascimento da segunda neta", descricao: "Helena Rosa Moreira" },
-        { idade: "49", "ano civil": 1935, "dia-mês": "22.OUT.", titulo: "Falecimento da segunda neta", descricao: "Helena Rosa Moreira" },
-        { idade: "50", "ano civil": 1936, "dia-mês": "MAR.", titulo: "JMS tem uma doença grave, pensa que vai morrer.", descricao: "" },
-        { idade: "50", "ano civil": 1936, "dia-mês": "MAI.", titulo: "Comemora o 1º de Maio", descricao: "Com volta ao Minho com outros anarquistas" },
-        { idade: "52", "ano civil": 1938, "dia-mês": "7.JAN.", titulo: "Nascimento da 3ª neta", descricao: "Helena Rosa Moreira (nome igual ao da que morreu)" },
-        { idade: "53", "ano civil": 1939, "dia-mês": "27.SET.", titulo: "Morte da 3ª neta", descricao: "Helena Rosa Moreira" },
-        { idade: "54", "ano civil": 1940, "dia-mês": "JAN.", titulo: "Nascimento da 4ª neta", descricao: "Helena Moreira da Silva" },
-        { idade: "56", "ano civil": 1942, "dia-mês": "23.JAN.", titulo: "Nascimento da 5ª neta", descricao: "Maria Rosa Moreira" },
-        { idade: "63", "ano civil": 1949, "dia-mês": "10.MAR.", titulo: "Morte da Esposa", descricao: "Maria Rosa de Jesus" },
-        { idade: "74", "ano civil": 1960, "dia-mês": "12.DEZ.", titulo: "Falecimento de JOAQUIM MOREIRA DA SILVA", descricao: "" }
-      ],
-      obra: [
-        { idade: "28", "ano civil": 1914, "dia-mês": "27.JAN.", titulo: "Grupo Anticlerical IV", descricao: '<div class="imagem-evento"><img src="docs/grupo-anti-clerical-iv.png" alt="Poema"></div>' },
-        { idade: "28", "ano civil": 1914, "dia-mês": "28.JAN.", titulo: "Grupo Anticlerical I", descricao: '<div class="imagem-evento"><img src="docs/grupo-anti-clerical-i.png" alt="Poema"></div>' },
-        { idade: "28", "ano civil": 1914, "dia-mês": "12.DEZ.", titulo: "Grupo Anticlerical III", descricao: '<div class="imagem-evento"><img src="docs/grupo-anti-clerical-iii.png" alt="Poema"></div>' },
-        { idade: "30", "ano civil": 1916, "dia-mês": "13.FEV.", titulo: "Ao povo de Vilar", descricao: '<div class="imagem-evento"><img src="docs/ao-povo-de-vilar.gif" alt="Poema"></div>' },
-        { idade: "30", "ano civil": 1916, "dia-mês": "23.ABR.", titulo: "À memória de Cristo", descricao: '<div class="imagem-evento"><img src="docs/a-memoria-de-cristo.png" alt="Poema"></div>' },
-        { idade: "32", "ano civil": 1918, "dia-mês": "15.AGO.", titulo: "O Milho a 30 réis", descricao: '<div class="imagem-evento"><img src="docs/o-milho-a-30-reis.png" alt="Poema"></div>' },
-        { idade: "32", "ano civil": 1918, "dia-mês": "8.SET.", titulo: "À memória de Joaquim da Silva Freitas", descricao: '<div class="imagem-evento"><img src="docs/a-memoria-de-joaquim-da-silva-freitas.png" alt="Poema"></div>' },
-        { idade: "33", "ano civil": 1919, "dia-mês": "24.JUN.", titulo: "Nas desfolhadas da aldeia", descricao: '<div class="imagem-evento"><img src="docs/nas-desfolhadas-daldeia.png" alt="Poema"></div>' },
-        { idade: "33", "ano civil": 1919, "dia-mês": "31.AGO.", titulo: "Uma viagem ao céu", descricao: '<div class="imagem-evento"><img src="docs/uma-viagem-ao-ceu.png" alt="Poema"></div>' },
-        { idade: "33", "ano civil": 1919, "dia-mês": "31.AGO.", titulo: "Uma viagem ao inferno", descricao: '<div class="imagem-evento"><img src="docs/uma-viagem-ao-inferno.png" alt="Poema"></div>' },
-        { idade: "33", "ano civil": 1919, "dia-mês": "21.SET.", titulo: "Ao mais alto caloteiro", descricao: '<div class="imagem-evento"><img src="docs/ao-mais-alto-caloteiro.png" alt="Poema"></div>' },
-        { idade: "33", "ano civil": 1919, "dia-mês": "28.SET.", titulo: "A nova aurora", descricao: '<div class="imagem-evento"><img src="docs/a-nova-aurora.png" alt="Poema"></div>' },
-        { idade: "33", "ano civil": 1919, "dia-mês": "12.OUT.", titulo: "Aos carpinteiros do Porto", descricao: '<div class="imagem-evento"><img src="docs/aos-carpinteiros-do-porto.png" alt="Poema"></div>' },
-        { idade: "33", "ano civil": 1919, "dia-mês": "20.NOV.", titulo: "Prá história dum Feiticeiro", descricao: '<div class="imagem-evento"><img src="docs/pra-historia-de-um-feiticeiro-lado-a-lado.png" alt="Poema"></div>' },
-        { idade: "33", "ano civil": 1919, "dia-mês": "7.DEZ.", titulo: "A História de um Feiticeiro", descricao: '<div class="imagem-evento"><img src="docs/a-historia-dum-feiticeiro.png" alt="Poema"></div>' },
-        { idade: "34", "ano civil": 1920, "dia-mês": "1.JAN.", titulo: "À memória de António Dias Fontes", descricao: '<div class="imagem-evento"><img src="docs/a-memoria-de-antonio-dias-fontes.png" alt="Poema"></div>' },
-        { idade: "34", "ano civil": 1920, "dia-mês": "18.JAN.", titulo: "Versos de gratidão", descricao: "" },
-        { idade: "34", "ano civil": 1920, "dia-mês": "15.FEV.", titulo: "A Alma dum caloteiro", descricao: '<div class="imagem-evento"><img src="docs/a-alma-dum-caloteiro.png" alt="Poema"></div>' },
-        { idade: "34", "ano civil": 1920, "dia-mês": "7.MAR.", titulo: "Libelos contra o verdugo", descricao: '<div class="imagem-evento"><img src="docs/libelos-contra-o-verdugo.png" alt="Poema"></div>' },
-        { idade: "34", "ano civil": 1920, "dia-mês": "25.MAR.", titulo: "Um sonho poético", descricao: '<div class="imagem-evento"><img src="docs/um-sonho-poetico.png" alt="Poema"></div>' },
-        { idade: "34", "ano civil": 1920, "dia-mês": "24.JUN.", titulo: "A excomunhão do Verdugo na corte celeste", descricao: "" },
-        { idade: "34", "ano civil": 1920, "dia-mês": "25.JUL.", titulo: "Nos serões da aldeia", descricao: "" },
-        { idade: "34", "ano civil": 1920, "dia-mês": "27.AGO.", titulo: "A história da costureira", descricao: '<div class="imagem-evento"><img src="docs/a-historia-da-costureira.png" alt="Poema"></div>' },
-        { idade: "34", "ano civil": 1920, "dia-mês": "18.DEZ.", titulo: "O assalto à Batalha", descricao: '<div class="imagem-evento"><img src="docs/o-assalto-a-batalha.png" alt="Poema"></div>' },
-        { idade: "35", "ano civil": 1921, "dia-mês": "1.JAN.", titulo: "As janeiras de Vilar", descricao: "" },
-        { idade: "35", "ano civil": 1921, "dia-mês": "15.JAN.", titulo: "O terror em Vilar", descricao: '<div class="imagem-evento"><img src="docs/o-terror-em-vilar.png" alt="Poema"></div>' },
-        { idade: "35", "ano civil": 1921, "dia-mês": "30.JAN.", titulo: "O Bruxedo em Vilar", descricao: '<div class="imagem-evento"><img src="docs/o-bruxedo-em-vilar.png" alt="Poema"></div>' },
-        { idade: "35", "ano civil": 1921, "dia-mês": "6.MAR.", titulo: "Ao povo de Mosteiró", descricao: "" },
-        { idade: "35", "ano civil": 1921, "dia-mês": "MAR.", titulo: "Na prisão – Recordações dos companheiros de luta", descricao: "" },
-        { idade: "35", "ano civil": 1921, "dia-mês": "17.ABR.", titulo: "Ao povo trabalhador – Para conheceres o Delfim da Silva", descricao: "" },
-        { idade: "35", "ano civil": 1921, "dia-mês": "24.JUN.", titulo: "Está desvendado o mistério do bruxedo de Vilar", descricao: '<div class="imagem-evento"><img src="docs/esta-desvendado-o-misterio.png" alt="Poema"></div>' },
-        { idade: "37", "ano civil": 1923, "dia-mês": "8.SET.", titulo: "Sonhos e Realidades", descricao: '<div class="imagem-evento"><img src="docs/sonhos-e-realidades.png" alt="Poema"></div>' },
-        { idade: "37", "ano civil": 1923, "dia-mês": "9.DEZ.", titulo: "Ao povo de Mosteiró", descricao: "" },
-        { idade: "38", "ano civil": 1924, "dia-mês": "JAN.", titulo: "Serenatas na Aldeia", descricao: "" },
-        { idade: "38", "ano civil": 1924, "dia-mês": "22.FEV.", titulo: "Os cinco Falsários", descricao: "" },
-        { idade: "38", "ano civil": 1924, "dia-mês": "14.SET.", titulo: "Na Freguesia de Gemunde – O Padre em Ação", descricao: "" },
-        { idade: "39", "ano civil": 1925, "dia-mês": "19.ABR.", titulo: "O compasso em Mosteiró", descricao: "" },
-        { idade: "39", "ano civil": 1925, "dia-mês": "30.AGO.", titulo: "Vilar do Pinheiro", descricao: "" },
-        { idade: "39", "ano civil": 1925, "dia-mês": "19.OUT.", titulo: "Carta aberta à Leopoldina", descricao: "" },
-        { idade: "39", "ano civil": 1925, "dia-mês": "13.DEZ.", titulo: "Os campos da Bruxaria", descricao: "" },
-        { idade: "39", "ano civil": 1925, "dia-mês": "", titulo: "A Noite de S. João", descricao: "" },
-        { idade: "40", "ano civil": 1926, "dia-mês": "8.JAN.", titulo: "Ao povo de Águas Santas e arredores", descricao: "" },
-        { idade: "40", "ano civil": 1926, "dia-mês": "MAR.", titulo: "Nas Horas Vagas", descricao: "" },
-        { idade: "40", "ano civil": 1926, "dia-mês": "", titulo: "No Vale de Josefá", descricao: '<div class="imagem-evento"><img src="docs/No-vale-de-josafa.png" alt="Poema"></div>' },
-        { idade: "41", "ano civil": 1927, "dia-mês": "AGO.", titulo: "Sacco e Vanzetti Morreram", descricao: "" },
-        { idade: "41", "ano civil": 1927, "dia-mês": "", titulo: "Problemas Recreativos", descricao: "" },
-        { idade: "42", "ano civil": 1928, "dia-mês": "MAI.", titulo: "Em louvor do Santo Preto", descricao: "" },
-        { idade: "44", "ano civil": 1930, "dia-mês": "26.ABR.", titulo: "Ao Povo de Vilar do Pinheiro e Arredores", descricao: "" },
-        { idade: "46", "ano civil": 1932, "dia-mês": "2.ABR.", titulo: "Ao Povo de Vilar do Pinheiro e Arredores", descricao: '<div class="imagem-evento"><img src="docs/ao-povo-de-vilar-do-pinheiro.jpg" alt="Poema"></div>' },
-        { idade: "50", "ano civil": 1936, "dia-mês": "29.MAR.", titulo: "Nas oras da Agonia", descricao: "" },
-        { idade: "50", "ano civil": 1936, "dia-mês": "12.ABR.", titulo: "Recuperando Melhoras", descricao: "" },
-        { idade: "52", "ano civil": 1938, "dia-mês": "27.SET.", titulo: "Despedidas de Helena Rosa Moreira", descricao: "" },
-        { idade: "59", "ano civil": 1945, "dia-mês": "", titulo: "A Guerra Universal", descricao: "" },
-        { idade: "60", "ano civil": 1946, "dia-mês": "MAR.", titulo: "Versos à bandeira do 'Honra e Dever'", descricao: "" },
-        { idade: "65", "ano civil": 1951, "dia-mês": "", titulo: "Viagem ao Paraíso", descricao: "" },
-        { idade: "68", "ano civil": 1954, "dia-mês": "", titulo: "Seis Contos Poéticos", descricao: "" },
-        { idade: "72", "ano civil": 1958, "dia-mês": "5.JUN.", titulo: "Fernando Moreira Graça", descricao: "" }
-      ]
-    };
+                </div>
 
-    // --- ESTADO ---
-    let currentIndex = 0;
-    let lastRenderedIndex = -1; 
-    let filtrosAtivos = { historia: true, vida: true, obra: true };
-    let larguraAnoPx = 0; 
-    let offsetEsquerdo = 60;
-    let inactivityTimer = null; 
-    let isDemoPlaying = false;
-    
-    // --- ELEMENTOS ZOOM ---
-    const zoomContainer = document.getElementById('zoom-container');
-    const zoomImg = document.getElementById('zoom-img');
-    let openTimer = null;     
-    let closeTimer = null;
+                <!-- Destaque Final (Conclusão) -->
+                <div class="max-w-3xl mx-auto reveal" style="animation-delay: 0.8s">
+                    <div class="content-card p-8 bg-[#2a2420] text-white">
+                        <p class="italic text-center leading-relaxed">
+                           Os textos de Joaquim Moreira da Silva revelam um forte ideal humanista: a convicção de que a educação é a chave para a liberdade, para a dignidade humana e para o progresso social. A sua voz, surgida do meio operário, recorda que a educação não é privilégio de poucos, mas um direito essencial de todos.
+                        </p>
+                    </div>
+                </div>
+        </section>
 
-    // --- ESTADO DO ZOOM (Pan & Zoom) ---
-    let zoomScale = 1;
-    let panX = 0;
-    let panY = 0;
-    let isDragging = false;
-    let lastX = 0;
-    let lastY = 0;
-    
-    // Variáveis para Pinch (Mobile)
-    let initialPinchDistance = 0;
-    let initialPinchScale = 1;
-    
-    // --- INICIALIZAÇÃO ---
-    function inicializar() {
-      calcularDimensoes(); 
-      criarEstruturaLinhaTempo(); 
-      criarRotulosEixos();
-      setTimeout(() => { 
-        calcularDimensoes(); 
-        posicionarSeletor(); 
-        atualizarEventos(); 
-        rodarDemonstracao(); 
-      }, 100);
-      adicionarListeners();
-    }
 
-    function calcularDimensoes() {
-      const barra = document.querySelector('.linha');
-      if (barra) larguraAnoPx = barra.offsetWidth / TOTAL_ANOS;
-      offsetEsquerdo = (window.innerWidth <= 768) ? 0 : 60;
-    }
-    
-    function criarRotulosEixos() {
-      const rIdade = document.getElementById('rotulos-idade-container');
-      const rAnos = document.getElementById('rotulos-anos-container');
-      rIdade.innerHTML = ''; 
-      rAnos.innerHTML = '';
-      [0, 10, 20, 30, 40, 50, 60, 70, 74].forEach(i => {
-        let s1 = document.createElement('span'); 
-        s1.innerText = i; 
-        s1.style.left = `${(i/TOTAL_ANOS)*100}%`; 
-        rIdade.appendChild(s1);
-        let s2 = document.createElement('span'); 
-        s2.innerText = ANO_INICIAL+i; 
-        s2.style.left = `${(i/TOTAL_ANOS)*100}%`; 
-        rAnos.appendChild(s2);
-      });
-    }
 
-    function criarEstruturaLinhaTempo() {
-      renderizarLinha(document.getElementById('linha-historia'), 'historia');
-      renderizarLinha(document.getElementById('linha-vida'), 'vida');
-      renderizarLinha(document.getElementById('linha-obra'), 'obra');
-    }
+        <!-- Iconography -->
+        <section id="iconografia" class="py-16 md:py-24 bg-white/50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="reveal">
+                    <h2 class="section-header text-3xl md:text-4xl font-bold text-[#2a2420] mb-12">Iconografia</h2>
+                </div>
 
-    function renderizarLinha(container, tipo) {
-      container.innerHTML = '';
-      for (let i = 0; i < TOTAL_ANOS; i++) {
-        const cel = document.createElement('div'); 
-        cel.className = `celula ${tipo}`;
-        const ano = ANO_INICIAL + i;
-        
-        const evs = eventos[tipo].filter(e => e["ano civil"] == ano);
-        
-        if (evs.length > 0) {
-          cel.classList.add('com-evento');
-          let texto = `ANO ${ano}\n----------------\n`;
-          evs.forEach(ev => {
-            texto += `• ${ev.titulo}\n`;
-          });
-          cel.title = texto.trim();
-        }
-        
-        container.appendChild(cel);
-      }
-    }
+                <!-- Summary Cards -->
+                <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 reveal" style="animation-delay: 0.1s">
+                    <div class="content-card p-6 text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-[#8b4513]/10 flex items-center justify-center">
+                            <svg class="w-8 h-8 text-[#8b4513]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        </div>
+                        <h3 class="font-semibold text-[#2a2420] mb-2">Fotografias</h3>
+                        <p class="text-sm text-[#6b5e52]">Registo fotográfico do poeta e do seu tempo</p>
+                    </div>
 
-    function adicionarListeners() {
-      const sel = document.getElementById('seletor');
-      sel.addEventListener('mousedown', iniciarArrasto);
-      document.addEventListener('mousemove', moverArrasto); 
-      document.addEventListener('mouseup', terminarArrasto);
-      sel.addEventListener('touchstart', iniciarArrasto, {passive: false});
-      document.addEventListener('touchmove', moverArrasto, {passive: false}); 
-      document.addEventListener('touchend', terminarArrasto);
-      document.getElementById('filtro-historia').onchange = (e) => { filtrosAtivos.historia = e.target.checked; atualizarEventos(true); }; 
-      document.getElementById('filtro-vida').onchange = (e) => { filtrosAtivos.vida = e.target.checked; atualizarEventos(true); };
-      document.getElementById('filtro-obra').onchange = (e) => { filtrosAtivos.obra = e.target.checked; atualizarEventos(true); };
-      window.addEventListener('resize', () => { calcularDimensoes(); posicionarSeletor(); });
-      ['mousedown', 'touchstart', 'scroll', 'keydown'].forEach(evt => {
-        document.getElementById('scrollContainer').addEventListener(evt, () => { pararDemo(); reiniciarTimerInatividade(); }, true);
-      });
-    }
+                    <div id="manuscritos" class="content-card p-6 text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-[#2d5a3d]/10 flex items-center justify-center">
+                            <svg class="w-8 h-8 text-[#2d5a3d]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        </div>
+                        <h3 class="font-semibold text-[#2a2420] mb-2">Manuscritos</h3>
+                        <p class="text-sm text-[#6b5e52]">Originais e documentos manuscritos</p>
+                    </div>
 
-    let arrastando = false; 
-    let startX = 0; 
-    let startIndex = 0;
-    
-    function iniciarArrasto(e) { 
-      e.preventDefault(); 
-      pararDemo(); 
-      arrastando = true; 
-      startX = e.clientX || e.touches[0].clientX; 
-      startIndex = currentIndex; 
-      document.getElementById('seletor').classList.add('sem-transicao'); 
-    }
-    
-    function moverArrasto(e) {
-      if(!arrastando) return; 
-      e.preventDefault(); 
-      const x = e.clientX || e.touches[0].clientX; 
-      const delta = x - startX; 
-      const anos = Math.round(delta / larguraAnoPx); 
-      let novo = startIndex + anos; 
-      novo = Math.max(0, Math.min(novo, TOTAL_ANOS - LARGURA_SELETOR)); 
-      if(novo !== currentIndex) { 
-        currentIndex = novo; 
-        posicionarSeletor(); 
-      } 
-    }
-    
-    function terminarArrasto() { 
-      arrastando = false; 
-      document.getElementById('seletor').classList.remove('sem-transicao'); 
-      atualizarEventos(); 
-      reiniciarTimerInatividade(); 
-    }
-    
-    function posicionarSeletor() { 
-      const l = offsetEsquerdo + (currentIndex * larguraAnoPx); 
-      const w = LARGURA_SELETOR * larguraAnoPx; 
-      const s = document.getElementById('seletor'); 
-      s.style.left=`${l}px`; 
-      s.style.width=`${w}px`; 
-      atualizarRotulosSeletor(); 
-    }
-    
-    function atualizarRotulosSeletor() { 
-      document.getElementById('sel-idade-inicio').innerText = currentIndex; 
-      document.getElementById('sel-idade-fim').innerText = currentIndex + LARGURA_SELETOR - 1; 
-      document.getElementById('sel-ano-inicio').innerText = ANO_INICIAL + currentIndex; 
-      document.getElementById('sel-ano-fim').innerText = ANO_INICIAL + currentIndex + LARGURA_SELETOR - 1; 
-    }
+                    <div id="noticias" class="content-card p-6 text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-[#b8860b]/10 flex items-center justify-center">
+                            <svg class="w-8 h-8 text-[#b8860b]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+                        </div>
+                        <h3 class="font-semibold text-[#2a2420] mb-2">Notícias</h3>
+                        <p class="text-sm text-[#6b5e52]">Recortes de imprensa da época</p>
+                    </div>
 
-    // --- RENDERIZAÇÃO CARDS ---
-    function atualizarEventos(forcar = false) {
-      if (currentIndex === lastRenderedIndex && !forcar) return;
+                    <div id="outros" class="content-card p-6 text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-[#8b4513]/10 flex items-center justify-center">
+                            <svg class="w-8 h-8 text-[#8b4513]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                        </div>
+                        <h3 class="font-semibold text-[#2a2420] mb-2">Outros</h3>
+                        <p class="text-sm text-[#6b5e52]">Documentos diversos e memorabilia</p>
+                    </div>
+                </div>
 
-      const anoInicio = ANO_INICIAL + currentIndex;
-      const anoFim = ANO_INICIAL + currentIndex + LARGURA_SELETOR - 1;
-      
-      const scrollPositions = {};
-      const colH = document.querySelector('.coluna-historia');
-      const colV = document.querySelector('.coluna-vida');
-      const colO = document.querySelector('.coluna-obra');
-      if(colH) scrollPositions['historia'] = colH.scrollTop;
-      if(colV) scrollPositions['vida'] = colV.scrollTop;
-      if(colO) scrollPositions['obra'] = colO.scrollTop;
+                                <!-- Photo Gallery Section -->
+                <div id="fotografias" class="mt-16 pt-12 border-t border-[#d4c8b8] reveal">
+                    <h3 class="text-2xl font-bold text-[#2a2420] mb-8">Galeria de Fotografias</h3>
+                    <p class="text-[#6b5e52] mb-8">Registo fotográfico do poeta e do seu tempo.</p>
+                    
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        
+                        <!-- Photo 1: O Poeta na velhice -->
+                        <div class="content-card overflow-hidden group">
+                            <div class="aspect-w-4 aspect-h-5 bg-[#f5f1eb]">
+                                <!-- Nome do ficheiro: JMS-IDOSO.jpeg -->
+                                <img src="JMS-IDOSO.jpeg"  alt="O poeta na velhice" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-150">
+                            </div>
+                            <div class="p-4">
+                              <p class="text-sm text-center text-[#6b5e52] mt-1">Joaquim Moreira da Silva idoso.</p>
+                            </div>
+                        </div>
 
-      const lista = document.getElementById('lista-eventos'); 
-      lista.innerHTML = '';
-      
-      const cols = [
-        { t: 'historia', a: filtrosAtivos.historia },
-        { t: 'vida', a: filtrosAtivos.vida },
-        { t: 'obra', a: filtrosAtivos.obra }
-      ];
+                        <!-- Photo 2: Acompanhado -->
+                        <div class="content-card overflow-hidden group">
+                            <div class="aspect-w-4 aspect-h-5 bg-[#f5f1eb]">
+                                <!-- Nome do ficheiro: JMS-ACOMPANHADO.jpeg -->
+                                <img src="JMS-ACOMPANHADO.jpeg" alt="O poeta acompanhado" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-150">
+                            </div>
+                            <div class="p-4">
 
-      cols.forEach(c => {
-        const col = document.createElement('div'); 
-        col.className = `coluna-evento coluna-${c.t}`; 
-        if(!c.a) col.classList.add('coluna-oculta');
-        
-        const evs = eventos[c.t].filter(e => e["ano civil"] >= anoInicio && e["ano civil"] <= anoFim).sort((a,b) => a["ano civil"] - b["ano civil"]);
-        evs.forEach(ev => col.appendChild(criarCard(ev, c.t)));
-        lista.appendChild(col);
-      });
+                                <p class="text-sm text-center text-[#6b5e52] mt-1">Joaquim Moreira da Silva com o filho Alberto (ao centro).</p>
+  			        <p class="text-sm text-center text-[#6b5e52] mt-1">e outro companheiro/familiar não identificado.</p>
+                            </div>
+                        </div>
 
-      setTimeout(() => {
-        const newColH = document.querySelector('.coluna-historia');
-        const newColV = document.querySelector('.coluna-vida');
-        const newColO = document.querySelector('.coluna-obra');
-        if(newColH && scrollPositions['historia'] !== undefined) newColH.scrollTop = scrollPositions['historia'];
-        if(newColV && scrollPositions['vida'] !== undefined) newColV.scrollTop = scrollPositions['vida'];
-        if(newColO && scrollPositions['obra'] !== undefined) newColO.scrollTop = scrollPositions['obra'];
-      }, 0); 
+                        <!-- Photo 3: Com Bengala -->
+                        <div class="content-card overflow-hidden group">
+                            <div class="aspect-w-4 aspect-h-5 bg-[#f5f1eb]">
+                                <!-- Nome do ficheiro: JMS-COM-BENGALA.jpeg -->
+                                <img src="JMS-COM-BENGALA.jpeg" alt="O poeta na última fase da vida" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-120">
+                            </div>
+                            <div class="p-4">
+                                <p class="text-sm text-center text-[#6b5e52] mt-1">O poeta com bengala.</p>
+                            </div>
+                        </div>
 
-      lastRenderedIndex = currentIndex;
-    }
+                        <!-- Photo 4: Com Filho e Bisneto -->
+                        <div class="content-card overflow-hidden group">
+                            <div class="aspect-w-4 aspect-h-5 bg-[#f5f1eb]">
+                                <!-- Nome do ficheiro: 15_JMS-com-filho-e-bisneto.jpg -->
+                                <img src="15_JMS-com-filho-e- bisneto.jpg" alt="O poeta com ofilho e bisneto" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-120">
+                            </div>
+                            <div class="p-4">
+                                <p class="text-sm text-center text-[#6b5e52] mt-1">Com os filhos Alberto, Maria Rosa e bisneto Fernando.</p>
+                            </div>
+                        </div>
 
-    function criarCard(ev, tipo) {
-      const d = document.createElement('div'); 
-      d.className = `evento ${tipo}`;
-      let data = ev["ano civil"]; 
-      if(ev["dia-mês"]) data = `${ev["dia-mês"]} ${ev["ano civil"]}`;
-      
-      d.innerHTML = `
-        <div class="evento-cabecalho"><span>${ev.idade} anos</span><span>${data}</span></div>
-        <h4 class="evento-titulo">${ev.titulo}</h4>
-        <div class="evento-conteudo"><div class="evento-descricao">${ev.descricao || ''}</div></div>
-      `;
+                        <!-- Photo 5: Casa do Poeta -->
+                        <div class="content-card overflow-hidden group">
+                            <div class="aspect-w-4 aspect-h-5 bg-[#f5f1eb]">
+                                <!-- Nome do ficheiro: CASA-JMS.jpeg -->
+                                <img src="CASA-JMS.jpeg" alt="Casa de Joaquim Moreira da Silva" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-120">
+                            </div>
+                            <div class="p-4">
+                                <p class="text-sm text-center text-[#6b5e52] mt-1">Rua e casa onde residiu em Vilar, Vila do Conde.</p>
+                            </div>
+                        </div>
 
-      const conteudo = d.querySelector('.evento-conteudo');
-      const img = conteudo.querySelector('img');
-      const textNode = conteudo.querySelector('.evento-descricao');
+                         <!-- Photo 6: Monumento -->
+                         <div class="content-card overflow-hidden group">
+                            <div class="aspect-w-4 aspect-h-5 bg-[#f5f1eb]">
+                                <!-- Nome do ficheiro: JMS-CAMPA.jpeg -->
+                                <img src="JMS-CAMPA.jpeg" alt="Monumento ao poeta" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-120">
+                            </div>
+                            <div class="p-4">
+                                <h4 class=" text-center font-semibold text-[#2a2420]">Monumento Funerário</h4>
+                                <p class="text-sm text-center text-[#6b5e52] mt-1">Livro aberto em honra do poeta.</p>
+                            </div>
+                        </div>
 
-      if(img) {
-        img.classList.add('zoom-trigger');
-        
-        let alignClass = 'align-center'; 
-        if (tipo === 'obra') alignClass = 'align-right';
-        
-        // Nota: Como o CSS pointer-events: none foi aplicado globalmente para proteção,
-        // O JS abaixo garante que o wrapper ou a imagem reajam ao mouse via JS.
-        // Como as imagens têm pointer-events: none no CSS, o evento de clique é capturado pelo wrapper ou pelo documento.
-        // No entanto, para o zoom funcionar, precisamos que o evento chegue ao elemento.
-        // Vamos forçar pointer-events: auto via JS no momento da interação se necessário,
-        // ou simplesmente confiar no fato de que 'pointer-events: none' no CSS impede o menu de contexto,
-        // mas o evento de clique no pai pode ser usado.
-        // Alternativamente, removemos pointer-events: none do CSS e dependemos apenas do JS contextmenu.
-        // Optei por manter pointer-events: none no CSS (impede arrastar e menu contexto direto)
-        // e usar um wrapper ou captura de eventos no container.
-        // Mas o código atual liga o evento diretamente à imagem (img.addEventListener).
-        // Se img tem pointer-events: none, o addEventListener não dispara.
-        // Solução: Removi pointer-events: none do CSS para não quebrar o zoom, e uso JS para bloquear o menu.
-        
-        // Correção: No CSS fornecido acima, não coloquei pointer-events: none na imagem genérica,
-        // coloquei user-drag: none. O zoom deve funcionar normalmente.
-        
-        img.addEventListener('mouseenter', () => {
-          clearTimeout(openTimer); 
-          clearTimeout(closeTimer);
-          openTimer = setTimeout(() => abrirZoom(img, alignClass), DELAY_ENTRADA_ZOOM);
+                    </div>
+                </div>
+
+        <!-- Chronology -->
+        <section id="cronologia" class="py-16 md:py-24">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="reveal">
+                    <h2 class="section-header text-3xl md:text-4xl font-bold text-[#2a2420] mb-8">Cronologia</h2>
+                </div>
+
+                <!-- Filters -->
+                <div class="flex flex-wrap gap-3 mb-12 reveal" style="animation-delay: 0.1s">
+                    <button class="filter-btn vida active" data-filter="vida">Vida Pessoal</button>
+                    <button class="filter-btn obra active" data-filter="obra">Obra  [datada]</button>
+                    <button class="filter-btn evento active" data-filter="evento">Eventos Históricos</button>
+                </div>
+
+                <!-- Timeline -->
+                <div class="timeline" id="timeline">
+                    <!-- Timeline items will be rendered by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Imprensa -->
+        <section id="imprensa" class="py-16 md:py-24 bg-white/50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="reveal">
+                    <h2 class="section-header text-3xl md:text-4xl font-bold text-[#2a2420] mb-12">Na Imprensa</h2>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8 reveal" style="animation-delay: 0.2s">
+                    <div>
+                        <h3 class="text-xl font-bold text-[#8b4513] mb-4">Nível Nacional</h3>
+                        <ul class="space-y-3 text-sm text-[#6b5e52]">
+                            <li class="flex gap-3">
+                                <span class="text-[#8b4513] font-semibold whitespace-nowrap">1960</span>
+                                <span>Morreu «O Poeta-Carpinteiro» - O Comércio do Porto</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="text-[#8b4513] font-semibold whitespace-nowrap">1961</span>
+                                <span>Justa Homenagem a um Poeta do Povo - A República</span>
+                            </li>
+                <li class="flex gap-3">
+                                <span class="text-[#8b4513] font-semibold whitespace-nowrap">1961</span>
+                                <span>Figura do Nobre Povo ... É Digno de Votiva Homenagem - Norte Desportivo</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="text-[#8b4513] font-semibold whitespace-nowrap">1983</span>
+                                <span>Joaquim Moreira da Silva - o "poeta carpinteiro" - A Batalha</span>
+                            </li>
+                  <li class="flex gap-3">
+                                <span class="text-[#8b4513] font-semibold whitespace-nowrap">1985</span>
+                                <span>O Poeta Carpinteiro - JN</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="text-[#8b4513] font-semibold whitespace-nowrap">1988</span>
+                                <span>Moreira Cego, o anarquista - O Jornal Ilustrado</span>
+                            </li>
+                 <li class="flex gap-3">
+                                <span class="text-[#8b4513] font-semibold whitespace-nowrap">2000</span>
+                                <span>o Porto na vida e obra do Poeta-Anarquista - O Tripeiro</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-bold text-[#2d5a3d] mb-4">Nível Local</h3>
+                        <ul class="space-y-3 text-sm text-[#6b5e52]">
+                 <li class="flex gap-3">
+                                <span class="text-[#2d5a3d] font-semibold whitespace-nowrap">1960</span>
+                                <span>Notícia da morte do poeta - Renovação</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="text-[#2d5a3d] font-semibold whitespace-nowrap">1980</span>
+                                <span>Dois poetas populares do concelho - Voz do Ave</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="text-[#2d5a3d] font-semibold whitespace-nowrap">1986</span>
+                                <span>"O Poeta Carpinteiro" - Jornal de Vila do Conde</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="text-[#2d5a3d] font-semibold whitespace-nowrap">1998</span>
+                                <span>Honra e Dever homenageia Carpinteiro - Viva Vila do Conde</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="text-[#2d5a3d] font-semibold whitespace-nowrap">2002</span>
+                                <span>Joaquim Moreira da Silva O Poeta Carpinteiro - A Voz da Póvoa</span>
+                            </li>
+                 <li class="flex gap-3">
+                                <span class="text-[#2d5a3d] font-semibold whitespace-nowrap">2022</span>
+                                <span>Queima do Judas Homenageia o poeta Joaquim Moreira da Silva - A Voz da Póvoa</span>
+                            </li>
+                <li class="flex gap-3">
+                                <span class="text-[#2d5a3d] font-semibold whitespace-nowrap">2023</span>
+                                <span>Há 137 anos nascia o 'Poeta Carpinteiro' - rádio Ondaviva</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Scientific Events -->
+        <section id="eventos" class="py-16 md:py-24">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="reveal">
+                    <h2 class="section-header text-3xl md:text-4xl font-bold text-[#2a2420] mb-12">Eventos Científicos</h2>
+                </div>
+
+                <div class="space-y-6 reveal" style="animation-delay: 0.2s">
+                    <div class="content-card p-6">
+                        <p class="text-[#8b4513] font-semibold mb-2">1986</p>
+                        <p class="text-[#2a2420]">Comunicação "Joaquim Moreira da Silva - o Poeta Carpinteiro", Armanda Zenhas - Congresso Comunicação-Inquietação, Escola Secundária de Soares dos Reis, Porto</p>
+                    </div>
+                    <div class="content-card p-6">
+                        <p class="text-[#8b4513] font-semibold mb-2">1987</p>
+                        <p class="text-[#2a2420]">Comunicação "Incidências culturais no poeta popular Joaquim Moreira da Silva", Armanda Zenhas - I Congresso Português de Literaturas Marginais, FLUP</p>
+                    </div>
+                    <div class="content-card p-6">
+                        <p class="text-[#8b4513] font-semibold mb-2">2006</p>
+                        <p class="text-[#2a2420]">Comunicações de Armanda Zenhas e Francisco Topa - II Congresso Português de Literaturas Marginais, FLUP</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+            <!-- Tributes -->
+        <section id="homenagens" class="py-16 md:py-24 bg-white/50">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="reveal">
+                    <h2 class="section-header text-3xl md:text-4xl font-bold text-[#2a2420] mb-12">Homenagens</h2>
+                </div>
+
+                <div class="grid sm:grid-cols-2 gap-6 reveal" style="animation-delay: 0.2s">
+                    
+                    <!-- Cartão 1: Ruas -->
+                    <div class="content-card p-6">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-full bg-[#8b4513] flex items-center justify-center">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                            </div>
+                            <h3 class="font-semibold text-[#2a2420]">Ruas Joaquim Moreira da Silva</h3>
+                        </div>
+                        <p class="text-sm text-[#6b5e52]">Atribuição do nome do poeta a ruas da freguesia de Vilar (1991) e cidade de Vila do Conde (1995)</p>
+                    </div>
+
+                    <!-- Cartão 2: Biblioteca -->
+                    <div class="content-card p-6">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-full bg-[#2d5a3d] flex items-center justify-center">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                            </div>
+                            <h3 class="font-semibold text-[#2a2420]">Biblioteca</h3>
+                        </div>
+                        <p class="text-sm text-[#6b5e52]">Biblioteca Joaquim Moreira da Silva na União de Freguesias de Vilar e Mosteiró (2016)</p>
+                    </div>
+
+                    <!-- Cartão 3: Queima do Judas -->
+                    <div class="content-card p-6">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-full bg-[#b8860b] flex items-center justify-center">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/></svg>
+                            </div>
+                            <h3 class="font-semibold text-[#2a2420]">Queima do Judas</h3>
+                        </div>
+                        <p class="text-sm text-[#6b5e52]">Poeta homenageado Joaquim Moreira da Silva.<br>Associação Cultural Nuvem Voadora (2022)</p>
+                    </div>
+
+                    <!-- Cartão 4: 50 Anos 25 de Abril -->
+                    <div class="content-card p-6">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-full bg-[#b8860b] flex items-center justify-center">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/></svg>
+                            </div>
+                            <h3 class="font-semibold text-[#2a2420]">Comemorações dos 50 anos do 25 de Abril</h3>
+                        </div>
+                        <p class="text-sm text-[#6b5e52]">Lançamento de “A lira dileta e A lira da rebeldia - Antologia poética” (2024)</p>
+                    </div>
+
+                    <!-- Cartão 5: Romagem Anual -->
+                    <div class="content-card p-6">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-full bg-[#8b4513] flex items-center justify-center">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+                            </div>
+                            <h3 class="font-semibold text-[#2a2420]">Romagem Anual</h3>
+                        </div>
+                        <p class="text-sm text-[#6b5e52]">Romagem ao cemitério na data da morte do poeta, pela Associação Honra e Dever de Vilar e U.F. Vilar e Mosteiró</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+        <!-- External Links -->
+        <section id="ligacoes" class="py-16 md:py-24">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="reveal">
+                    <h2 class="section-header text-3xl md:text-4xl font-bold text-[#2a2420] mb-12">Ligações Externas</h2>
+                </div>
+
+                <div class="grid gap-4 reveal" style="animation-delay: 0.2s">
+                    <!-- 1. Projecto Vercial (Literatura/Base de Dados -> Ícone de Universidade/Escola) -->
+                    <a href="https://vercial.utad.pt/jmsilva.htm" target="_blank" rel="noopener noreferrer" class="content-card p-4 flex items-center gap-4 hover:border-[#8b4513] border-2 border-transparent transition-colors">
+                        <div class="w-12 h-12 rounded-lg bg-[#8b4513]/10 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-[#2d5a3d]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg> 
+                        </div>
+                        <div>
+                            <p class="font-semibold text-[#2a2420]">Projecto Vercial</p>
+                            <p class="text-sm text-[#6b5e52]">UTAD - Universidade de Trás-os-Montes e Alto Douro</p>
+                        </div>
+                        <svg class="w-5 h-5 text-[#8b4513] ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    </a>
+
+                    <!-- 2. Filme UCP (Vídeo -> Ícone de Câmera) -->
+                    <a href="https://ciencia.ucp.pt/pt/publications/falar-de-joaquim-moreira-da-silva-o-poeta-carpinteiro/" target="_blank" rel="noopener noreferrer" class="content-card p-4 flex items-center gap-4 hover:border-[#b8860b] border-2 border-transparent transition-colors">
+                        <div class="w-12 h-12 rounded-lg bg-[#b8860b]/10 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-[#b8860b]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-[#2a2420]">Filme: Falar de Joaquim Moreira da Silva</p>
+                            <p class="text-sm text-[#6b5e52]">Realização de Jaime Neves (1999) - UCP</p>
+                        </div>
+                        <svg class="w-5 h-5 text-[#b8860b] ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    </a>
+
+                    <!-- 3. Casa Comum (Evento/Livro -> Ícone de Livro) -->
+                    <a href="https://www.up.pt/casacomum/eventos/a-lira-dileta-e-a-lira-da-rebeldia-de-joaquim-moreira-da-silva/" target="_blank" rel="noopener noreferrer" class="content-card p-4 flex items-center gap-4 hover:border-[#8b4513] border-2 border-transparent transition-colors">
+                        <div class="w-12 h-12 rounded-lg bg-[#8b4513]/10 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-[#8b4513]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-[#2a2420]">"A Lira Dileta e A Lira da Rebeldia"</p>
+                            <p class="text-sm text-[#6b5e52]">Casa Comum - Universidade do Porto</p>
+                        </div>
+                        <svg class="w-5 h-5 text-[#8b4513] ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    </a>
+
+                    <!-- 4. MOSCA (Arquivo -> Ícone de Universidade/Escola -->
+                    <a href="#" class="content-card p-4 flex items-center gap-4 hover:border-[#2d5a3d] border-2 border-transparent transition-colors">
+                        <div class="w-12 h-12 rounded-lg bg-[#2d5a3d]/10 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-[#2d5a3d]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>  
+                        </div>
+                        <div>
+                            <p class="font-semibold text-[#2a2420]">Arquivo Histórico-Social - Projeto MOSCA</p>
+                            <p class="text-sm text-[#6b5e52]">Universidade de Évora</p>
+                        </div>
+                        <svg class="w-5 h-5 text-[#2d5a3d] ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    </a>
+
+                    <!-- 5.  (PDF/Documento -> Ícone de Livro) -->
+                    <a href="https://www.marxists.org/portugues/rodrigues_edgar/ano/mes/93.pdf" target="_blank" rel="noopener noreferrer" class="content-card p-4 flex items-center gap-4 hover:border-[#dc2626] border-2 border-transparent transition-colors">
+                        <div class="w-12 h-12 rounded-lg bg-[#dc2626]/10 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-[#b8860b]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg> 
+                        </div>
+                        <div>
+                            <p class="font-semibold text-[#2a2420]">História do Movimento Anarquista em Portugal</p>
+                            <p class="text-sm text-[#6b5e52]">Eduardo Rodrigues (PDF)</p>
+                        </div>
+                        <svg class="w-5 h-5 text-[#dc2626] ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    </a>
+
+                    <!-- 6. A IDEIA (Revista -> Ícone de Jornal) -->
+                    <a href="https://aideiablog.wordpress.com/2025/04/11/joaquim-moreira-da-silva-poeta-da-anarquia/" target="_blank" rel="noopener noreferrer" class="content-card p-4 flex items-center gap-4 hover:border-[#8b4513] border-2 border-transparent transition-colors">
+                        <div class="w-12 h-12 rounded-lg bg-[#8b4513]/10 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-[#8b4513]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-[#2a2420]">A IDEIA - Revista de Cultura Libertária</p>
+                            <p class="text-sm text-[#6b5e52]">Artigo: Joaquim Moreira da Silva, poeta da Anarquia</p>
+                        </div>
+                        <svg class="w-5 h-5 text-[#8b4513] ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    </a>
+
+                    <!-- 7. Federação Anarquista (Globo/Web -> Ícone de Globo) -->
+                    <a href="https://www.federacaoanarquista.com.br/joaquim-moreira-da-silva-poeta-da-anarquia/" target="_blank" rel="noopener noreferrer" class="content-card p-4 flex items-center gap-4 hover:border-[#2d5a3d] border-2 border-transparent transition-colors">
+                        <div class="w-12 h-12 rounded-lg bg-[#2d5a3d]/10 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-6 h-6 text-[#2d5a3d]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 002 2h1a2 2 0 002 2v2a2 2 0 002 2v2a2 2 0 002 2v2m5.555-14H19a2 2 0 012 2v2a2 2 0 01-2 2h-1.465M15 21h3a2 2 0 002-2v-2m-3-14a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> 
+                        </div>
+                        <div>
+                            <p class="font-semibold text-[#2a2420]">Joaquim Moreira da Silva, poeta da Anarquia</p>
+                            <p class="text-sm text-[#6b5e52]">Federação Anarquista</p>
+                        </div>
+                        <svg class="w-5 h-5 text-[#2d5a3d] ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    </a>
+
+                    <!-- 8. Biblioteca Gaia (Catálogo -> Ícone de Livros) -->
+                    <a href="https://opac.cm-gaia.pt/cgi-bin/koha/opac-detail.pl?biblionumber=102176&query_desc=su%3ALiteratura%20portuguesa%20-%20poesia%20and%20location%3ABPMVNG" target="_blank" rel="noopener noreferrer" class="content-card p-4 flex items-center gap-4 hover:border-[#b8860b] border-2 border-transparent transition-colors">
+                        <div class="w-12 h-12 rounded-lg bg-[#b8860b]/10 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-[#b8860b]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg> 
+                        </div>
+                        <div>
+                            <p class="font-semibold text-[#2a2420]">O Porto na vida e obra do Poeta-Anarquista</p>
+                            <p class="text-sm text-[#6b5e52]">Biblioteca Pública Municipal de Gaia</p>
+                        </div>
+                        <svg class="w-5 h-5 text-[#b8860b] ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    </a>
+
+                    <!-- 9. CM Vila do Conde (Notícia -> Ícone de Edifício/Notícia) -->
+                    <a href="https://www.cm-viladoconde.pt/comunicacao/gabinete-de-comunicacao/noticias/noticia/netas-de-joaquim-moreira-da-silva-depositam-manuscrito-do-avo-na-biblioteca-municipal-jose-regio" target="_blank" rel="noopener noreferrer" class="content-card p-4 flex items-center gap-4 hover:border-[#8b4513] border-2 border-transparent transition-colors">
+                        <div class="w-12 h-12 rounded-lg bg-[#8b4513]/10 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-[#8b4513]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-[#2a2420]">Netas de JMS depositam manuscrito na Biblioteca José Régio</p>
+                            <p class="text-sm text-[#6b5e52]">Câmara Municipal de Vila do Conde</p>
+                        </div>
+                        <svg class="w-5 h-5 text-[#8b4513] ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    </a>
+
+                    <!-- 10. EPVC (Escola -> Ícone de Chapéu de Formatura/Escola) -->
+                    <a href="https://epvc.pt/2024/05/06/epvc-celebra-vida-e-obra-do-poeta-carpinteiro-joaquim-moreira-da-silva/" target="_blank" rel="noopener noreferrer" class="content-card p-4 flex items-center gap-4 hover:border-[#2d5a3d] border-2 border-transparent transition-colors">
+                        <div class="w-12 h-12 rounded-lg bg-[#2d5a3d]/10 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-[#2d5a3d]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg> 
+                        </div>
+                        <div>
+                            <p class="font-semibold text-[#2a2420]">EPVC celebra vida e obra do Poeta Carpinteiro</p>
+                            <p class="text-sm text-[#6b5e52]">Escola Profissional de Vila do Conde</p>
+                        </div>
+                        <svg class="w-5 h-5 text-[#2d5a3d] ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    </a>
+
+                    <!-- 11. Blog Leonel (Blog -> Ícone de Pincel/Edição) -->
+                    <a href="https://leonel1952.blogspot.com/2010/12/vilar-terra-do-poeta-carpinteiro.html" target="_blank" rel="noopener noreferrer" class="content-card p-4 flex items-center gap-4 hover:border-[#b8860b] border-2 border-transparent transition-colors">
+                        <div class="w-12 h-12 rounded-lg bg-[#b8860b]/10 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-[#b8860b]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-[#2a2420]">Vilar - Terra do Poeta Carpinteiro</p>
+                            <p class="text-sm text-[#6b5e52]">Blog: Escrita NAIF</p>
+                        </div>
+                        <svg class="w-5 h-5 text-[#b8860b] ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    </a>
+
+                </div>
+            </div>
+        </section>
+        <!-- FIM DA SECÇÃO: Ligações Externas -->
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#2a2420] text-[#f5f1eb] py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <h4 class="font-serif text-xl font-semibold mb-4">Joaquim Moreira da Silva</h4>
+                    <p class="text-[#a09080] text-sm">Carpinteiro da Palavra.</p>
+                    <p class="text-[#a09080] text-sm">Uma vida dedicada à poesia e à justiça social.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Navegação</h4>
+                    <ul class="space-y-2 text-sm text-[#a09080]">
+                        <li><a href="#obra" class="hover:text-white transition-colors">Obra</a></li>
+                        <li><a href="#intervencao" class="hover:text-white transition-colors">Intervenção Cívica</a></li>
+                        <li><a href="#cronologia" class="hover:text-white transition-colors">Cronologia</a></li>
+                        <li><a href="#homenagens" class="hover:text-white transition-colors">Homenagens</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Recursos</h4>
+                    <ul class="space-y-2 text-sm text-[#a09080]">
+                        <li><a href="#imprensa" class="hover:text-white transition-colors">Imprensa</a></li>
+                        <li><a href="#eventos" class="hover:text-white transition-colors">Eventos Científicos</a></li>
+                        <li><a href="#ligacoes" class="hover:text-white transition-colors">Ligações Externas</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-[#3a3430] pt-8 text-center text-sm text-[#a09080]">
+                <p>2026 Joaquim Moreira da Silva. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- DADOS COMPLETOS DA TIMELINE ---
+        const eventos = {
+            historia: [
+                { idade: "0", "ano civil": 1886, "dia-mês": "", 	titulo: "Início da atividade anarquista em Portugal.", descricao: 'Em Lisboa, Antero de Quental formou (com Eça de Queirós, Guerra Junqueiro e Ramalho Ortigão), "O Cenáculo", um grupo de intelectuais anarquistas. <br>Mais na <a href="https://pt.wikipedia.org/wiki/Anarquismo_em_Portugal" target="_blank">Wikipedia</a>.' },
+                { idade: "5", "ano civil": 1891, "dia-mês": "", 	titulo: "Revolta do 31 de Janeiro contra a Monarquia no Porto", descricao: 'Mais na <a href="https://pt.wikipedia.org/wiki/Revolta_de_31_de_janeiro_de_1891" target="_blank">Wikipedia</a>.' },
+                { idade: "10", "ano civil": 1896, "dia-mês": "13.FEV.", titulo: "'Lei da Bomba' contra os Anarquistas", descricao: 'Mais na <a href="https://app.parlamento.pt/comunicar/V1/201905/57/artigos/art9.html" target="_blank">A.R.</a>.' },
+                { idade: "22", "ano civil": 1908, "dia-mês": "28.JAN.", titulo: "Regicídio", descricao: 'Mais na <a href="https://ensina.rtp.pt/artigo/regicidio-em-lisboa-1908/" target="_blank">RTP Ensina</a>.' },
+                { idade: "24", "ano civil": 1910, "dia-mês": "5.OUT.", 	titulo: "Implantação da República", descricao: 'Mais na <a href="https://ensina.rtp.pt/artigo/5-de-outubro-1910/" target="_blank">RTP Ensina</a>.' },
+                { idade: "25", "ano civil": 1911, "dia-mês": "20.ABR.", titulo: "Separação da Igreja do Estado", descricao: 'Mais na <a href="https://pt.wikipedia.org/wiki/Lei_da_Separa%C3%A7%C3%A3o_do_Estado_das_Igrejas" target="_blank">Wikipedia</a>.' },
+                { idade: "25", "ano civil": 1911, "dia-mês": "", 	titulo: "Explosão do Movimento Anarquista", descricao: "" },
+                { idade: "26", "ano civil": 1912, "dia-mês": "", 	titulo: "Fundação da Federação Anarquista do Norte", descricao: "" },
+                { idade: "27", "ano civil": 1913, "dia-mês": "", 	titulo: "Fundação da CULTUAL", descricao: "" },
+                { idade: "28", "ano civil": 1914, "dia-mês": "", 	titulo: "Início da 1.ª Grande Guerra [1914-1918]", descricao: "" },
+                { idade: "29", "ano civil": 1915, "dia-mês": "", 	titulo: "1.ª Grande Guerra [1914-1918]", descricao: "" },
+                { idade: "30", "ano civil": 1916, "dia-mês": "", 	titulo: "1.ª Grande Guerra [1914-1918]", descricao: "" },
+                { idade: "31", "ano civil": 1917, "dia-mês": "",        titulo: "1.ª Grande Guerra [1914-1918]", descricao: "" },
+                { idade: "31", "ano civil": 1917, "dia-mês": "19.MAI.", titulo: "A revolta da Batata", descricao: 'Mais na <a href="https://ensina.rtp.pt/artigo/__trashed-17/" target="_blank">RTP Ensina</a>.' },
+                { idade: "32", "ano civil": 1918, "dia-mês": "",        titulo: "Fim da 1.ª Grande Guerra [1914-1918]", descricao: "" },
+                { idade: "35", "ano civil": 1921, "dia-mês": "6.MAR.",  titulo: "Fundação do Partido Comunista Português", descricao: 'Mais em <a href="https://www.pcp.pt/como-nasceu-partido-comunista-portugues" target="_blank">PCP</a>.' },
+                { idade: "35", "ano civil": 1921, "dia-mês": "",        titulo: "Fundação da Internacional Sindical Vermelha [PROFITERN]", descricao: 'Mais em <a href="https://pt.wikipedia.org/wiki/Internacional_Vermelha_dos_Sindicatos" target="_blank">Wikipedia</a>.' },
+                { idade: "37", "ano civil": 1923, "dia-mês": "18.MAR.", titulo: "Criação da União Anarquista Portuguesa (UAP)", descricao: 'Com 20 grupos aderentes entre eles o de Vila do Conde.<br><a href="https://we.riseup.net/assets/160397/Edgar%20Rodrigues%20hist%C3%B3ria%20do%20movimento%20anarquista%20em%20portugal.pdf" target="_blank">Edgar Rodrigues, História do Movimento Anarquista em Portugal, pág.11</a>' },
+                { idade: "40", "ano civil": 1926, "dia-mês": "28.MAI.", titulo: "Golpe Militar de 28 de Maio – Ditadura", descricao: 'Mais na <a href="https://ensina.rtp.pt/artigo/golpe-28-de-maio-1926/" target="_blank">RTP Ensina</a>.' },
+                { idade: "41", "ano civil": 1927, "dia-mês": "25.JUL.", titulo: "Fundação da Federação Anarquista Ibérica – FAI", descricao: 'Mais na <a href="https://noticiasanarquistas.noblogs.org/post/2021/04/16/espanha-lancamento-historia-da-fai-o-anarquismo-organizado-de-julian-vadillo-munoz/" target="_blank">ANA</a>.' },
+                { idade: "47", "ano civil": 1933, "dia-mês": "11.APR.", titulo: "Estado Novo – CENSURA", descricao: 'Mais na <a href="https://ensina.rtp.pt/artigo/censura-previa-a-mordaca-que-o-estado-novo-criou/" target="_blank">RTP Ensina</a>.' },
+                { idade: "48", "ano civil": 1934, "dia-mês": "",        titulo: "Jornal 'Batalha' passa à clandestinidade", descricao: 'Mais em <a href="https://colectivolibertarioevora.wordpress.com/2019/02/22/a-batalha-100-anos-de-luta-por-um-mundo-novo-sem-explorados-nem-exploradores-sem-oprimidos-nen-opressores/" target="_blank">Portal Anarquista</a>.' },
+                { idade: "51", "ano civil": 1937, "dia-mês": "4.JUL.",  titulo: "Atentado a Salazar perpetrado por anarquistas", descricao: 'Mais na <a href="https://ensina.rtp.pt/artigo/retratos-do-atentado-a-salazar/" target="_blank">RTP Ensina</a>.' }
+            ],
+            vida: [
+                { idade: "0", "ano civil": 1886, "dia-mês": "15.MAR.",  titulo: "Nascimento de JOAQUIM MOREIRA DA SILVA", descricao: "" },
+                { idade: "7", "ano civil": 1893, "dia-mês": "",         titulo: "Com 7 anos, começa a trabalhar como moço de Lavoura", descricao: "" },
+                { idade: "18", "ano civil": 1904, "dia-mês": "",        titulo: "Aos 18 anos, vai trabalhar para o Porto como aprendiz de carpinteiro", descricao: "" },
+                { idade: "18", "ano civil": 1904, "dia-mês": "",        titulo: "Frequenta escola noturna Vasco da Gama, onde aprende a ler e escrever", descricao: "" },
+                { idade: "18", "ano civil": 1904, "dia-mês": "",        titulo: "Inscreve-se na Associação (SINDICATO)", descricao: "" },
+                { idade: "23", "ano civil": 1909, "dia-mês": "10.JUL.", titulo: "Casa com a camponesa Maria Rosa Marques", descricao: "" },
+                { idade: "24", "ano civil": 1910, "dia-mês": "22.MAI.", titulo: "Nasce o primeiro filho", descricao: "" },
+                { idade: "24", "ano civil": 1910, "dia-mês": "13.OUT.", titulo: "Morte do primeiro filho", descricao: "" },
+                { idade: "26", "ano civil": 1912, "dia-mês": "17.FEV.", titulo: "Nascimento do filho Alberto Moreira", descricao: "" },
+                { idade: "30", "ano civil": 1916, "dia-mês": "5.MAR.", 	titulo: "JMS faz comício à saída da missa censurando a distribuição do milho", descricao: '<div class="imagem-evento"><img src="docs/informacao-do-regedor-mar1916.png" alt="Informação do regedor"></div><p>Informação do regedor para o administrador do concelho</p>' },
+                { idade: "31", "ano civil": 1917, "dia-mês": "5.FEV.", 	titulo: "O povo de Vilar saiu à rua em protesto contra a fome e tocou os sinos a rebate. Formou-se 'uma comissão'. JMS foi um dos eleitos.", descricao: "" },
+                { idade: "31", "ano civil": 1917, "dia-mês": "30.MAI.", titulo: "Assalto à 'Tulha' de Manuel Gonçalves Dias", descricao: "" },
+                { idade: "31", "ano civil": 1917, "dia-mês": "5.JUN.",  titulo: "Juíz ordena a captura de JMS e restantes implicados", descricao: "" },              
+                { idade: "31", "ano civil": 1917, "dia-mês": "AGO.",    titulo: "No auto de interrogatório várias testemunhas afirmam que <br><i>'Que quem dirigiu todo o movimento, tanto do assalto como da distribuição, foi o arguido Joaquim da Silva Moreira'</i><br> e outro que <br><i>'ouviu Joaquim Moreira dizer que não se tivesse medo, porque o milho era para ser vendido ao povo, e não para ser guardado.</>'", descricao: "" },
+                { idade: "31", "ano civil": 1917, "dia-mês": "2.SET.", 	titulo: "Comício em Vilar (no Alto da Pereira) para tratar da carestia do milho e o açambarcamento", descricao: "" },
+                { idade: "31", "ano civil": 1917, "dia-mês": "27.SET.", titulo: "Emitido mandato de captura dos implicados", descricao: "" },
+                { idade: "31", "ano civil": 1917, "dia-mês": "23.OUT.", titulo: "JMS é ouvido pelo Juiz que lhe nomeia como advogado António Maria Pereira Júnior<br> (Republicano, ex-administrador do concelho e tio de José Régio)", descricao: "" },
+                { idade: "33", "ano civil": 1919, "dia-mês": "6.AGO.", 	titulo: "JMS paga 5$06 referente a multa de 40 dias a dez centavos, por dia, em substituição de igual tempo de prisão ", descricao: "" },         
+                { idade: "35", "ano civil": 1921, "dia-mês": "MAR.", 	titulo: "Moreira da Silva foi preso com outros anarquistas e sindicalistas", descricao: "" },
+                { idade: "35", "ano civil": 1921, "dia-mês": "4.SET.", 	titulo: "JMS é eleito em comício, para a Comissão que reclama o barateamento do preço do milho", descricao: '<div class="imagem-evento"><img src="docs/oficio-ao-administrador-set1921.png" alt="Ofício"></div><p>Em ofício da Comissão para o Administrador</p>' },
+                { idade: "36", "ano civil": 1922, "dia-mês": "", 	titulo: "Fotografia do poeta publicada em 'A Lira do Povo'", descricao: '<div class="imagem-evento"><img src="docs/JMS_aos_36_anos-2.png" alt="Fotografia"></div><p>O poeta aos 36 anos (retocada)</p>' },
+                { idade: "48", "ano civil": 1934, "dia-mês": "22.NOV.", titulo: "Nascimento da primeira neta", descricao: "Margarida Rosa Moreira" },
+                { idade: "49", "ano civil": 1935, "dia-mês": "22.SET.", titulo: "Nascimento da segunda neta", descricao: "Helena Rosa Moreira" },
+                { idade: "49", "ano civil": 1935, "dia-mês": "22.OUT.", titulo: "Falecimento da segunda neta", descricao: "Helena Rosa Moreira" },
+                { idade: "50", "ano civil": 1936, "dia-mês": "MAR.", 	titulo: "JMS tem uma doença grave, pensa que vai morrer.", descricao: "" },
+                { idade: "50", "ano civil": 1936, "dia-mês": "MAI.", 	titulo: "Comemora o 1º de Maio", descricao: "sexta-feira, faz uma volta ao Minho com outros anarquistas" },
+                { idade: "52", "ano civil": 1938, "dia-mês": "7.JAN.", 	titulo: "Nascimento da 3ª neta", descricao: "Helena Rosa Moreira (nome igual ao da que morreu)" },
+                { idade: "53", "ano civil": 1939, "dia-mês": "27.SET.", titulo: "Morte da 3ª neta", descricao: "Helena Rosa Moreira" },
+                { idade: "54", "ano civil": 1940, "dia-mês": "JAN.", 	titulo: "Nascimento da 4ª neta", descricao: "Helena Moreira da Silva" },
+                { idade: "56", "ano civil": 1942, "dia-mês": "23.JAN.", titulo: "Nascimento da 5ª neta", descricao: "Maria Rosa Moreira" },
+                { idade: "63", "ano civil": 1949, "dia-mês": "10.MAR.", titulo: "Morte da Esposa", descricao: "Maria Rosa de Jesus" },
+                { idade: "74", "ano civil": 1960, "dia-mês": "12.DEZ.", titulo: "Falecimento de JOAQUIM MOREIRA DA SILVA", descricao: "" }
+            ],
+            obra: [
+                { idade: "28", "ano civil": 1914, "dia-mês": "27.JAN.", titulo: "Grupo Anticlerical IV", descricao: '<div class="imagem-evento"><img src="docs/grupo-anti-clerical-iv.png" alt="Poema"></div>' },
+                { idade: "28", "ano civil": 1914, "dia-mês": "28.JAN.", titulo: "Grupo Anticlerical I", descricao: '<div class="imagem-evento"><img src="docs/grupo-anti-clerical-i.png" alt="Poema"></div>' },
+                { idade: "28", "ano civil": 1914, "dia-mês": "12.DEZ.", titulo: "Grupo Anticlerical III", descricao: '<div class="imagem-evento"><img src="docs/grupo-anti-clerical-iii.png" alt="Poema"></div>' },
+                { idade: "30", "ano civil": 1916, "dia-mês": "13.FEV.", titulo: "Ao povo de Vilar", descricao: '<div class="imagem-evento"><img src="docs/ao-povo-de-vilar.gif" alt="Poema"></div>' },
+                { idade: "30", "ano civil": 1916, "dia-mês": "23.ABR.", titulo: "À memória de Cristo", descricao: '<div class="imagem-evento"><img src="docs/a-memoria-de-cristo.png" alt="Poema"></div>' },
+                { idade: "32", "ano civil": 1918, "dia-mês": "15.AGO.", titulo: "O Milho a 30 réis", descricao: '<div class="imagem-evento"><img src="docs/o-milho-a-30-reis.png" alt="Poema"></div>' },
+                { idade: "32", "ano civil": 1918, "dia-mês": "8.SET.", 	titulo: "À memória de Joaquim da Silva Freitas", descricao: '<div class="imagem-evento"><img src="docs/a-memoria-de-joaquim-da-silva-freitas.png" alt="Poema"></div>' },
+                { idade: "33", "ano civil": 1919, "dia-mês": "24.JUN.", titulo: "Nas desfolhadas da aldeia", descricao: '<div class="imagem-evento"><img src="docs/nas-desfolhadas-daldeia.png" alt="Poema"></div>' },
+                { idade: "33", "ano civil": 1919, "dia-mês": "31.AGO.", titulo: "Uma viagem ao céu", descricao: '<div class="imagem-evento"><img src="docs/uma-viagem-ao-ceu.png" alt="Poema"></div>' },
+                { idade: "33", "ano civil": 1919, "dia-mês": "31.AGO.", titulo: "Uma viagem ao inferno", descricao: '<div class="imagem-evento"><img src="docs/uma-viagem-ao-inferno.png" alt="Poema"></div>' },
+                { idade: "33", "ano civil": 1919, "dia-mês": "21.SET.", titulo: "Ao mais alto caloteiro", descricao: '<div class="imagem-evento"><img src="docs/ao-mais-alto-caloteiro.png" alt="Poema"></div>' },
+                { idade: "33", "ano civil": 1919, "dia-mês": "28.SET.", titulo: "A nova aurora", descricao: '<div class="imagem-evento"><img src="docs/a-nova-aurora.png" alt="Poema"></div>' },
+                { idade: "33", "ano civil": 1919, "dia-mês": "12.OUT.", titulo: "Aos carpinteiros do Porto", descricao: '<div class="imagem-evento"><img src="docs/aos-carpinteiros-do-porto.png" alt="Poema"></div>' },
+                { idade: "33", "ano civil": 1919, "dia-mês": "20.NOV.", titulo: "Prá história dum Feiticeiro", descricao: '<div class="imagem-evento"><img src="docs/pra-historia-de-um-feiticeiro-lado-a-lado.png" alt="Poema"></div>' },
+                { idade: "33", "ano civil": 1919, "dia-mês": "7.DEZ.", 	titulo: "A História de um Feiticeiro", descricao: '<div class="imagem-evento"><img src="docs/a-historia-dum-feiticeiro.png" alt="Poema"></div>' },
+                { idade: "34", "ano civil": 1920, "dia-mês": "1.JAN.", 	titulo: "À memória de António Dias Fontes", descricao: '<div class="imagem-evento"><img src="docs/a-memoria-de-antonio-dias-fontes.png" alt="Poema"></div>' },
+                { idade: "34", "ano civil": 1920, "dia-mês": "18.JAN.", titulo: "Versos de gratidão", descricao: "" },
+                { idade: "34", "ano civil": 1920, "dia-mês": "15.FEV.", titulo: "A Alma dum caloteiro", descricao: '<div class="imagem-evento"><img src="docs/a-alma-dum-caloteiro.png" alt="Poema"></div>' },
+                { idade: "34", "ano civil": 1920, "dia-mês": "7.MAR.", 	titulo: "Libelos contra o verdugo", descricao: '<div class="imagem-evento"><img src="docs/libelos-contra-o-verdugo.png" alt="Poema"></div>' },
+                { idade: "34", "ano civil": 1920, "dia-mês": "25.MAR.", titulo: "Um sonho poético", descricao: '<div class="imagem-evento"><img src="docs/um-sonho-poetico.png" alt="Poema"></div>' },
+                { idade: "34", "ano civil": 1920, "dia-mês": "24.JUN.", titulo: "A excomunhão do Verdugo na corte celeste", descricao: "" },
+                { idade: "34", "ano civil": 1920, "dia-mês": "25.JUL.", titulo: "Nos serões da aldeia", descricao: "" },
+                { idade: "34", "ano civil": 1920, "dia-mês": "27.AGO.", titulo: "A história da costureira", descricao: '<div class="imagem-evento"><img src="docs/a-historia-da-costureira.png" alt="Poema"></div>' },
+                { idade: "34", "ano civil": 1920, "dia-mês": "18.DEZ.", titulo: "O assalto à Batalha", descricao: '<div class="imagem-evento"><img src="docs/o-assalto-a-batalha.png" alt="Poema"></div>' },
+                { idade: "35", "ano civil": 1921, "dia-mês": "1.JAN.", 	titulo: "As janeiras de Vilar", descricao: "" },
+                { idade: "35", "ano civil": 1921, "dia-mês": "15.JAN.", titulo: "O terror em Vilar", descricao: '<div class="imagem-evento"><img src="docs/o-terror-em-vilar.png" alt="Poema"></div>' },
+                { idade: "35", "ano civil": 1921, "dia-mês": "30.JAN.", titulo: "O Bruxedo em Vilar", descricao: '<div class="imagem-evento"><img src="docs/o-bruxedo-em-vilar.png" alt="Poema"></div>' },
+                { idade: "35", "ano civil": 1921, "dia-mês": "6.MAR.", 	titulo: "Ao povo de Mosteiró", descricao: "" },
+                { idade: "35", "ano civil": 1921, "dia-mês": "MAR.", 	titulo: "Na prisão – Recordações dos companheiros de luta", descricao: "" },
+                { idade: "35", "ano civil": 1921, "dia-mês": "17.ABR.", titulo: "Ao povo trabalhador – Para conheceres o Delfim da Silva", descricao: "" },
+                { idade: "35", "ano civil": 1921, "dia-mês": "24.JUN.", titulo: "Está desvendado o mistério do bruxedo de Vilar", descricao: '<div class="imagem-evento"><img src="docs/esta-desvendado-o-misterio.png" alt="Poema"></div>' },
+                { idade: "37", "ano civil": 1923, "dia-mês": "8.SET.", 	titulo: "Sonhos e Realidades", descricao: '<div class="imagem-evento"><img src="docs/sonhos-e-realidades.png" alt="Poema"></div>' },
+                { idade: "37", "ano civil": 1923, "dia-mês": "9.DEZ.", 	titulo: "Ao povo de Mosteiró", descricao: "" },
+                { idade: "38", "ano civil": 1924, "dia-mês": "JAN.", 	titulo: "Serenatas na Aldeia", descricao: "" },
+                { idade: "38", "ano civil": 1924, "dia-mês": "22.FEV.", titulo: "Os cinco Falsários", descricao: "" },
+                { idade: "38", "ano civil": 1924, "dia-mês": "14.SET.", titulo: "Na Freguesia de Gemunde – O Padre em Ação", descricao: "" },
+                { idade: "39", "ano civil": 1925, "dia-mês": "19.ABR.", titulo: "O compasso em Mosteiró", descricao: "" },
+                { idade: "39", "ano civil": 1925, "dia-mês": "30.AGO.", titulo: "Vilar do Pinheiro", descricao: "" },
+                { idade: "39", "ano civil": 1925, "dia-mês": "19.OUT.", titulo: "Carta aberta à Leopoldina", descricao: "" },
+                { idade: "39", "ano civil": 1925, "dia-mês": "13.DEZ.", titulo: "Os campos da Bruxaria", descricao: "" },
+                { idade: "39", "ano civil": 1925, "dia-mês": "", 	titulo: "A Noite de S. João", descricao: "" },
+                { idade: "40", "ano civil": 1926, "dia-mês": "8.JAN.", 	titulo: "Ao povo de Águas Santas e arredores", descricao: "" },
+                { idade: "40", "ano civil": 1926, "dia-mês": "MAR.", 	titulo: "Nas Horas Vagas", descricao: "" },
+                { idade: "40", "ano civil": 1926, "dia-mês": "", 	titulo: "No Vale de Josefá", descricao: '<div class="imagem-evento"><img src="docs/No-vale-de-josafa.png" alt="Poema"></div>' },
+                { idade: "41", "ano civil": 1927, "dia-mês": "AGO.", 	titulo: "Sacco e Vanzetti Morreram", descricao: "" },
+                { idade: "41", "ano civil": 1927, "dia-mês": "", 	titulo: "Problemas Recreativos", descricao: "" },
+                { idade: "42", "ano civil": 1928, "dia-mês": "MAI.", 	titulo: "Em louvor do Santo Preto", descricao: "" },
+                { idade: "44", "ano civil": 1930, "dia-mês": "26.ABR.", titulo: "Ao Povo de Vilar do Pinheiro e Arredores", descricao: "" },
+                { idade: "46", "ano civil": 1932, "dia-mês": "2.ABR.", 	titulo: "Ao Povo de Vilar do Pinheiro e Arredores", descricao: '<div class="imagem-evento"><img src="docs/ao-povo-de-vilar-do-pinheiro.jpg" alt="Poema"></div>' },
+                { idade: "50", "ano civil": 1936, "dia-mês": "29.MAR.", titulo: "Nas oras da Agonia", descricao: "" },
+                { idade: "50", "ano civil": 1936, "dia-mês": "12.ABR.", titulo: "Recuperando Melhoras", descricao: "" },
+                { idade: "52", "ano civil": 1938, "dia-mês": "27.SET.", titulo: "Despedidas de Helena Rosa Moreira", descricao: "" },
+                { idade: "59", "ano civil": 1945, "dia-mês": "", 	titulo: "A Guerra Universal", descricao: "" },
+                { idade: "60", "ano civil": 1946, "dia-mês": "MAR.", 	titulo: "Versos à bandeira do 'Honra e Dever'", descricao: "" },
+                { idade: "65", "ano civil": 1951, "dia-mês": "", 	titulo: "Viagem ao Paraíso", descricao: "" },
+                { idade: "68", "ano civil": 1954, "dia-mês": "", 	titulo: "Seis Contos Poéticos", descricao: "" },
+                { idade: "72", "ano civil": 1958, "dia-mês": "5.JUN.", 	titulo: "Fernando Moreira Graça", descricao: "" }
+            ]
+        };
+
+        // --- PROCESSAMENTO E RENDERIZAÇÃO ---
+        const typeMap = { 'historia': 'evento', 'vida': 'vida', 'obra': 'obra' };
+        let timelineData = [];
+
+        Object.keys(eventos).forEach(category => {
+            eventos[category].forEach(item => {
+                timelineData.push({
+                    year: item["ano civil"], date: item["dia-mês"], title: item.titulo,
+                    description: item.descricao, type: typeMap[category] || category, age: item.idade
+                });
+            });
         });
 
-        img.addEventListener('mouseleave', () => {
-          clearTimeout(openTimer);
+        timelineData.sort((a, b) => a.year - b.year);
+
+        let activeFilters = { vida: true, obra: true, evento: true };
+        const timelineContainer = document.getElementById('timeline');
+
+        function initTimeline() {
+            if (!timelineContainer) return;
+            timelineContainer.innerHTML = '';
+            
+            timelineData.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = `timeline-item ${item.type}`;
+                div.dataset.type = item.type; 
+                div.style.animationDelay = `${index * 0.05}s`;
+                
+                div.innerHTML = `
+                    <div class="flex items-center gap-4 mb-2">
+                        <span class="text-xl font-bold text-[#8b4513]">${item.year}</span>
+                        ${item.date ? `<span class="text-sm text-[#6b5e52]">${item.date}</span>` : ''}
+                        ${item.age && item.age !== "0" ? `<span class="text-xs font-semibold text-gray-500 ml-2">(Idade: ${item.age})</span>` : ''}
+                    </div>
+                    <p class="text-[#2a2420] font-semibold">${item.title}</p>
+                    ${item.description ? `<div class="timeline-desc text-sm text-[#6b5e52] mt-2 prose prose-sm max-w-none">${item.description}</div>` : ''}
+                `;
+                timelineContainer.appendChild(div);
+            });
+            initImageFeatures();
+        }
+
+        function filterTimeline() {
+            timelineContainer.querySelectorAll('.timeline-item').forEach(item => {
+                if (activeFilters[item.dataset.type]) item.classList.remove('hidden-item');
+                else item.classList.add('hidden-item');
+            });
+        }
+
+        function initImageFeatures() {
+            const images = timelineContainer.querySelectorAll('.imagem-evento');
+            
+            images.forEach(container => {
+                const img = container.querySelector('img');
+                if (!img) return;
+                const parentItem = container.closest('.timeline-item');
+
+                // Orientação
+                if (img.complete) checkOrientation(img, container);
+                else img.onload = () => checkOrientation(img, container);
+
+                let currentScale = 1;
+                
+                // --- PROTEÇÃO CONTRA CÓPIA ---
+                // Bloqueia o menu de contexto (botão direito)
+                container.addEventListener('contextmenu', e => e.preventDefault());
+
+                // Zoom Logic
+                container.addEventListener('mouseenter', () => {
+                    container.classList.add('expanded');
+                    if(parentItem) parentItem.classList.add('item-zoom-active');
+                });
+
+                container.addEventListener('mouseleave', () => {
+                    container.classList.remove('expanded');
+                    if(parentItem) parentItem.classList.remove('item-zoom-active');
+                    currentScale = 1;
+                    img.style.transform = `scale(1)`;
+                    img.style.transformOrigin = 'center center';
+                });
+
+                container.addEventListener('mousemove', (e) => {
+                    if (currentScale <= 1) return;
+                    const rect = container.getBoundingClientRect();
+                    const x = ((e.clientX - rect.left) / rect.width) * 100;
+                    const y = ((e.clientY - rect.top) / rect.height) * 100;
+                    img.style.transformOrigin = `${x}% ${y}%`;
+                });
+
+                container.addEventListener('wheel', (e) => {
+                    e.preventDefault();
+                    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+                    currentScale *= delta;
+                    currentScale = Math.min(Math.max(currentScale, 1), 5);
+
+                    const rect = container.getBoundingClientRect();
+                    const x = ((e.clientX - rect.left) / rect.width) * 100;
+                    const y = ((e.clientY - rect.top) / rect.height) * 100;
+                    
+                    img.style.transformOrigin = `${x}% ${y}%`;
+                    img.style.transform = `scale(${currentScale})`;
+                }, { passive: false });
+            });
+        }
+
+        function checkOrientation(img, container) {
+            if (img.naturalWidth > img.naturalHeight) container.classList.add('landscape');
+            else container.classList.remove('landscape');
+        }
+
+        // Event Listeners
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                activeFilters[btn.dataset.filter] = !activeFilters[btn.dataset.filter];
+                btn.classList.toggle('active');
+                filterTimeline();
+            });
         });
 
-        img.addEventListener('click', () => {
-          clearTimeout(openTimer);
-          abrirZoom(img, alignClass);
+        // Mobile & Reveal Logic (abreviado para economia de espaço, mantenha o seu original se preferir)
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const closeMobileMenuBtn = document.getElementById('closeMobileMenu');
+        const mobileMenu = document.getElementById('mobileMenu');
+        if(mobileMenuBtn && mobileMenu) mobileMenuBtn.addEventListener('click', () => { mobileMenu.classList.add('open'); document.body.style.overflow = 'hidden'; });
+        if(closeMobileMenuBtn && mobileMenu) closeMobileMenuBtn.addEventListener('click', () => { mobileMenu.classList.remove('open'); document.body.style.overflow = ''; });
+        if(mobileMenu) mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => { mobileMenu.classList.remove('open'); document.body.style.overflow = ''; }));
+        document.querySelectorAll('.mobile-dropdown-toggle').forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                if(toggle.nextElementSibling) toggle.nextElementSibling.classList.toggle('hidden');
+                if(toggle.querySelector('svg')) toggle.querySelector('svg').classList.toggle('rotate-180');
+            });
         });
-      } else if (textNode && textNode.innerText.trim() !== "") {
-        textNode.classList.add('zoom-trigger', 'text-trigger');
-        textNode.addEventListener('click', () => alert(textNode.innerText));
-      }
+        const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); }); }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-      return d;
-    }
+        initTimeline();
 
-    // --- ZOOM (Mouse e Touch) ---
-    
-    function abrirZoom(imgElement, alignClass) {
-      clearTimeout(openTimer);
-      clearTimeout(closeTimer);
-      
-      zoomScale = 1;
-      panX = 0;
-      panY = 0;
-      isDragging = false;
-      updateZoomTransform();
-      
-      zoomImg.src = imgElement.src;
-      zoomImg.alt = imgElement.alt;
-      
-      zoomContainer.classList.remove('align-center', 'align-right');
-      zoomContainer.classList.add(alignClass);
-      zoomContainer.classList.add('visible');
-      
-      zoomImg.onmouseenter = () => clearTimeout(closeTimer);
-      zoomImg.onmouseleave = () => scheduleClose(DELAY_SAIDA_ZOOM);
-      
-      zoomContainer.onclick = (e) => {
-        if(!isDragging) fecharZoom();
-      };
-
-      zoomImg.onwheel = handleWheel;
-      zoomImg.onmousedown = startDrag;
-      
-      zoomImg.addEventListener('touchstart', handleTouchStart, { passive: false });
-      zoomImg.addEventListener('touchmove', handleTouchMove, { passive: false });
-      zoomImg.addEventListener('touchend', handleTouchEnd);
-    }
-
-    function handleWheel(e) {
-      e.preventDefault();
-      const delta = e.deltaY > 0 ? -0.2 : 0.2;
-      const newScale = Math.min(Math.max(1, zoomScale + delta), 4);
-      if (newScale === zoomScale) return;
-      const imgRect = zoomImg.getBoundingClientRect();
-      const currentCenterX = imgRect.left + imgRect.width / 2;
-      const currentCenterY = imgRect.top + imgRect.height / 2;
-      const mouseX = e.clientX;
-      const mouseY = e.clientY;
-      const scaleRatio = newScale / zoomScale;
-      panX += (mouseX - currentCenterX) * (1 - scaleRatio);
-      panY += (mouseY - currentCenterY) * (1 - scaleRatio);
-      zoomScale = newScale;
-      updateZoomTransform();
-    }
-    
-    function handleTouchStart(e) {
-      if (e.touches.length === 2) {
-        e.preventDefault();
-        initialPinchDistance = getPinchDistance(e.touches);
-        initialPinchScale = zoomScale;
-        const midPoint = getPinchMidPoint(e.touches);
-        lastX = midPoint.x;
-        lastY = midPoint.y;
-      } else if (e.touches.length === 1 && zoomScale > 1) {
-        isDragging = false;
-        lastX = e.touches[0].clientX;
-        lastY = e.touches[0].clientY;
-      }
-    }
-
-    function handleTouchMove(e) {
-      if (e.touches.length === 2) {
-        e.preventDefault(); 
-        const currentDistance = getPinchDistance(e.touches);
-        const newScale = initialPinchScale * (currentDistance / initialPinchDistance);
-        zoomScale = Math.min(Math.max(1, newScale), 4);
-        const midPoint = getPinchMidPoint(e.touches);
-        panX += (midPoint.x - lastX);
-        panY += (midPoint.y - lastY);
-        lastX = midPoint.x;
-        lastY = midPoint.y;
-        updateZoomTransform();
-      } else if (e.touches.length === 1 && zoomScale > 1) {
-        const dx = e.touches[0].clientX - lastX;
-        const dy = e.touches[0].clientY - lastY;
-        if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
-           isDragging = true;
-           zoomImg.classList.add('dragging');
-        }
-        if(isDragging) {
-           panX += dx;
-           panY += dy;
-           lastX = e.touches[0].clientX;
-           lastY = e.touches[0].clientY;
-           updateZoomTransform();
-        }
-      }
-    }
-
-    function handleTouchEnd(e) {
-      if (e.touches.length < 2) {
-        initialPinchDistance = 0;
-      }
-      if (e.touches.length === 0) {
-        zoomImg.classList.remove('dragging');
-        setTimeout(() => { isDragging = false; }, 10);
-      }
-    }
-
-    function getPinchDistance(touches) {
-      return Math.hypot(
-        touches[0].clientX - touches[1].clientX,
-        touches[0].clientY - touches[1].clientY
-      );
-    }
-
-    function getPinchMidPoint(touches) {
-      return {
-        x: (touches[0].clientX + touches[1].clientX) / 2,
-        y: (touches[0].clientY + touches[1].clientY) / 2
-      };
-    }
-
-    function startDrag(e) {
-      if(zoomScale <= 1) return;
-      e.preventDefault();
-      isDragging = false;
-      lastX = e.clientX;
-      lastY = e.clientY;
-      
-      const onMouseMove = (moveEvent) => {
-        if (Math.abs(moveEvent.clientX - lastX) > 5 || Math.abs(moveEvent.clientY - lastY) > 5) {
-          isDragging = true;
-          zoomImg.classList.add('dragging');
-          const dx = moveEvent.clientX - lastX;
-          const dy = moveEvent.clientY - lastY;
-          panX += dx;
-          panY += dy;
-          updateZoomTransform();
-          lastX = moveEvent.clientX;
-          lastY = moveEvent.clientY;
-        }
-      };
-      
-      const onMouseUp = () => {
-        zoomImg.classList.remove('dragging');
-        document.removeEventListener('mousemove', onMouseMove);
-        document.removeEventListener('mouseup', onMouseUp);
-        setTimeout(() => { isDragging = false; }, 10);
-      };
-      
-      document.addEventListener('mousemove', onMouseMove);
-      document.addEventListener('mouseup', onMouseUp);
-    }
-
-    function updateZoomTransform() {
-      zoomImg.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomScale})`;
-    }
-
-    function scheduleClose(delay) {
-      clearTimeout(closeTimer);
-      closeTimer = setTimeout(fecharZoom, delay);
-    }
-
-    function fecharZoom() {
-      zoomContainer.classList.remove('visible');
-      clearTimeout(closeTimer);
-      zoomImg.onwheel = null;
-      zoomImg.onmousedown = null;
-      zoomImg.removeEventListener('touchstart', handleTouchStart);
-      zoomImg.removeEventListener('touchmove', handleTouchMove);
-      zoomImg.removeEventListener('touchend', handleTouchEnd);
-      zoomScale = 1; 
-      panX = 0; 
-      panY = 0;
-    }
-
-    // --- DEMO ---
-    function reiniciarTimerInatividade() { 
-      clearTimeout(inactivityTimer); 
-      inactivityTimer = setTimeout(rodarDemonstracao, TEMPO_INATIVIDADE_DEMO); 
-    }
-    
-    function rodarDemonstracao() {
-      if(isDemoPlaying) return; 
-      isDemoPlaying = true;
-      document.getElementById('seletor').classList.remove('sem-transicao');
-      currentIndex = 0; 
-      posicionarSeletor(); 
-      atualizarEventos();
-      document.getElementById('demoHand').classList.add('visible', 'pulse');
-      setTimeout(() => { 
-        if(!isDemoPlaying) return; 
-        document.getElementById('demoHand').classList.remove('pulse'); 
-        currentIndex = 35; 
-        posicionarSeletor(); 
-        atualizarEventos(); 
-      }, 1000);
-      setTimeout(() => { 
-        if(!isDemoPlaying) return; 
-        currentIndex = 10; 
-        posicionarSeletor(); 
-        atualizarEventos(); 
-      }, 3500);
-      setTimeout(() => { 
-        if(!isDemoPlaying) return; 
-        currentIndex = Math.floor((TOTAL_ANOS - LARGURA_SELETOR) / 2); 
-        posicionarSeletor(); 
-        atualizarEventos(); 
-      }, 6000);
-      setTimeout(() => { pararDemo(); }, 8500);
-    }
-    
-    function pararDemo() { 
-      isDemoPlaying = false; 
-      document.getElementById('demoHand').classList.remove('visible', 'pulse'); 
-      reiniciarTimerInatividade(); 
-    }
-
-    document.addEventListener('DOMContentLoaded', inicializar);
-
-</script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    </script>
 </body>
 </html>
