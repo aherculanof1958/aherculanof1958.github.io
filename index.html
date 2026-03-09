@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -289,6 +288,17 @@
         /* --- PROTEÇÃO FOTOS GALERIA --- */
         /* Impede arrastar, selecionar e interagir com a imagem */
         #fotografias img {
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+        }
+
+        /* --- PROTEÇÃO MANUSCRITOS --- */
+        /* Impede interação com imagens que tenham "manuscritos/" no src */
+        img[src*="manuscritos/"] {
             pointer-events: none;
             user-select: none;
             -webkit-user-drag: none;
@@ -1665,6 +1675,15 @@ A sua obra revela também uma visão muito moderna da educação como processo c
         if (galeriaFotos) {
             galeriaFotos.addEventListener('contextmenu', e => e.preventDefault());
         }
+
+        // --- PROTEÇÃO MANUSCRITOS ---
+        const imagensManuscritos = document.querySelectorAll('img[src*="manuscritos/"]');
+        imagensManuscritos.forEach(img => {
+            // Bloqueia o menu de contexto no elemento que envolve a imagem
+            if(img.parentElement) {
+                img.parentElement.addEventListener('contextmenu', e => e.preventDefault());
+            }
+        });
     </script>
 </body>
 </html>
