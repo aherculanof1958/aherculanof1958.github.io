@@ -168,6 +168,7 @@
             box-shadow: 0 8px 30px rgba(0,0,0,0.1);
         }
 
+        /* ===== TIMELINE ===== */
         .timeline {
             position: relative;
             padding-left: 40px;
@@ -183,9 +184,48 @@
             background: linear-gradient(to bottom, var(--accent), var(--green-dark));
         }
 
+        /* Separador de ano em destaque */
+        .timeline-year-separator {
+            position: relative;
+            margin-bottom: 8px;
+            margin-top: 32px;
+            padding-left: 30px;
+        }
+
+        .timeline-year-separator:first-child {
+            margin-top: 0;
+        }
+
+        .timeline-year-separator span {
+            display: inline-block;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            background: var(--bg);
+            padding: 6px 20px;
+            border: 2px solid var(--accent);
+            border-radius: 8px;
+            letter-spacing: 0.02em;
+        }
+
+        .timeline-year-separator::before {
+            content: '';
+            position: absolute;
+            left: -32px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            background: var(--accent);
+            border-radius: 50%;
+            z-index: 1;
+            box-shadow: 0 0 0 4px var(--bg);
+        }
+
         .timeline-item {
             position: relative;
-            margin-bottom: 32px;
+            margin-bottom: 28px;
             padding-left: 30px;
             opacity: 0;
             transform: translateX(-20px);
@@ -273,24 +313,6 @@
             -o-user-drag: none;
         }
 
-        #fotografias img {
-            pointer-events: none;
-            user-select: none;
-            -webkit-user-drag: none;
-            -khtml-user-drag: none;
-            -moz-user-drag: none;
-            -o-user-drag: none;
-        }
-
-        img[src*="manuscritos/"] {
-            pointer-events: none;
-            user-select: none;
-            -webkit-user-drag: none;
-            -khtml-user-drag: none;
-            -moz-user-drag: none;
-            -o-user-drag: none;
-        }
-
         @keyframes slideIn {
             to {
                 opacity: 1;
@@ -298,6 +320,7 @@
             }
         }
 
+        /* ===== FILTER BUTTONS ===== */
         .filter-btn {
             padding: 8px 20px;
             border-radius: 24px;
@@ -328,6 +351,7 @@
         .filter-btn.evento.active { background: #dc2626; color: white; }
         .filter-btn.evento.active:hover { background: #b91c1c; }
 
+        /* ===== MOBILE MENU ===== */
         .mobile-menu {
             position: fixed;
             top: 0;
@@ -345,6 +369,7 @@
             transform: translateX(0);
         }
 
+        /* ===== SCROLL REVEAL ===== */
         .reveal {
             opacity: 0;
             transform: translateY(30px);
@@ -356,6 +381,26 @@
             transform: translateY(0);
         }
 
+        /* ===== PROTEÇÃO DE IMAGENS ===== */
+        #fotografias img {
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+        }
+
+        img[src*="manuscritos/"] {
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+        }
+
+        /* ===== FOCUS & A11Y ===== */
         a:focus-visible,
         button:focus-visible {
             outline: 2px solid var(--accent);
@@ -371,48 +416,16 @@
             html { scroll-behavior: auto; }
         }
 
+        /* ===== SCROLLBAR ===== */
         ::-webkit-scrollbar { width: 10px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 5px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
-
-        /* Year separator in timeline */
-        .timeline-year-separator {
-            position: relative;
-            margin-bottom: 24px;
-            margin-top: 16px;
-            padding-left: 30px;
-        }
-
-        .timeline-year-separator span {
-            display: inline-block;
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--accent);
-            background: var(--bg);
-            padding: 4px 16px;
-            border: 2px solid var(--accent);
-            border-radius: 8px;
-        }
-
-        .timeline-year-separator::before {
-            content: '';
-            position: absolute;
-            left: -32px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 16px;
-            height: 16px;
-            background: var(--accent);
-            border-radius: 50%;
-            z-index: 1;
-        }
     </style>
 </head>
 <body class="bg-pattern">
 
-    <!-- Navigation -->
+    <!-- ========== NAVIGATION ========== -->
     <header class="fixed top-0 left-0 right-0 z-50 bg-[#f5f1eb]/95 backdrop-blur-md border-b border-[#d4c8b8]">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16 md:h-20">
@@ -481,7 +494,7 @@
         </nav>
     </header>
 
-    <!-- Mobile Menu Panel -->
+    <!-- ========== MOBILE MENU ========== -->
     <div id="mobileMenu" class="mobile-menu lg:hidden">
         <div class="p-6">
             <div class="flex justify-between items-center mb-8">
@@ -538,6 +551,7 @@
         </div>
     </div>
 
+    <!-- ========== CONTEÚDO PRINCIPAL ========== -->
     <main id="topo" class="pt-16 md:pt-20">
         
         <!-- Hero Section -->
@@ -714,7 +728,7 @@
                     </div>
                 </div>
 
-                <!-- Manuscrito Digital -->
+                  <!-- NOVA SECÇÃO: Manuscrito Digital -->
                 <div id="manuscrito-digital" class="mt-16 reveal">
                     <h3 class="text-2xl font-bold text-[#2a2420] mb-8">Manuscrito Original</h3>
                     
@@ -734,73 +748,79 @@
                         </a>
                     </div>
                 </div>
+                <!-- FIM DA NOVA SECÇÃO -->
 
-                <!-- Livros Publicados -->
+                              <!-- SECÇÃO: Livros Publicados Postumamente -->
                 <div id="livros" class="mt-16 reveal">
                     <h3 class="text-2xl font-bold text-[#2a2420] mb-8">Livros Publicados Postumamente</h3>
                     
                     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         
+                        <!-- Livro 1 -->
                         <div class="content-card p-4 flex items-start gap-4">
                             <div class="w-24 h-32 flex-shrink-0 rounded overflow-hidden bg-[#f5f1eb] shadow-sm border border-[#d4c8b8]">
                                 <img src="livros/A-LIRA-DO-POVO.png" alt="Capa de A lira do povo" class="w-full h-full object-cover">
                             </div>
                             <div class="flex flex-col justify-center">
                                 <p class="font-semibold text-[#2a2420] text-lg">A lira do povo</p>
-                                <p class="text-sm text-[#6b5e52] mt-1">Seleção e Organização: Alberto Moreira.</p>
+                <p class="text-sm text-[#6b5e52] mt-1">Seleção e Organização: Alberto Moreira.</p><br>
                                 <p class="text-sm text-[#6b5e52] mt-1">1967 - Porto - Tipografia do Carvalhido</p>
                             </div>
-                        </div>
+                        </div> <!-- Fim do Cartão Livro 1 -->
 
+                        <!-- Livro 2 -->
                         <div class="content-card p-4 flex items-start gap-4">
                             <div class="w-24 h-32 flex-shrink-0 rounded overflow-hidden bg-[#f5f1eb] shadow-sm border border-[#d4c8b8]">
                                 <img src="livros/POETAS_POPULARES_vol_2.png" alt="Capa de Poetas Populares vol.2" class="w-full h-full object-cover">
                             </div>
                             <div class="flex flex-col justify-center">
-                                <p class="font-semibold text-[#2a2420] text-lg">Poetas populares Volume 2 (1.ª ed.)</p>
-                                <p class="text-sm text-[#6b5e52] mt-1">1977 - Lisboa: Edições Portugalmundo.</p>
-                                <p class="text-[10px] text-[#6b5e52] font-light mt-1">ISBN: 9789729288166</p>
+                                <p class="font-semibold text-[#2a2420] text-lg">Poetas populares Volume 2 (1ª ed.)</p><br><br>
+                                <p class="text-sm text-[#6b5e52] mt-1">1977 - Lisboa: Edições Portugalmundo.</p>		
+                <p class="text-[10px] text-[#6b5e52] font-light mt-1">ISBN: 9789729288166</p>	
                             </div>
-                        </div>
+                        </div> <!-- Fim do Cartão Livro 2 -->
 
+                        <!-- Livro 3 -->
                         <div class="content-card p-4 flex items-start gap-4">
                             <div class="w-24 h-32 flex-shrink-0 rounded overflow-hidden bg-[#f5f1eb] shadow-sm border border-[#d4c8b8]">
                                 <img src="livros/Antologia_Poética.jpg" alt="Capa de Antologia poética" class="w-full h-full object-cover">
                             </div>
                             <div class="flex flex-col justify-center">
                                 <p class="font-semibold text-[#2a2420] text-lg">Antologia poética</p>
-                                <p class="text-sm text-[#6b5e52] mt-1">Seleção e Organização: Armanda Zenhas.</p>
+                <p class="text-sm text-[#6b5e52] mt-1">Seleção e Organização: Armanda Zenhas.</p><br>
                                 <p class="text-sm text-[#6b5e52] mt-1">1987 - Câmara Municipal de Vila do Conde</p>
                             </div>
-                        </div>
+                        </div> <!-- Fim do Cartão Livro 3 -->
 
+                        <!-- Livro 4 -->
                         <div class="content-card p-4 flex items-start gap-4">
                             <div class="w-24 h-32 flex-shrink-0 rounded overflow-hidden bg-[#f5f1eb] shadow-sm border border-[#d4c8b8]">
                                 <img src="livros/Poesias.jpg" alt="Capa de Poesias" class="w-full h-full object-cover">
                             </div>
                             <div class="flex flex-col justify-center">
                                 <p class="font-semibold text-[#2a2420] text-lg">Poesias</p>
-                                <p class="text-sm text-[#6b5e52] mt-1">Seleção e Organização: Armanda Zenhas.</p>
+                <p class="text-sm text-[#6b5e52] mt-1">Seleção e Organização: Armanda Zenhas.</p><br>
                                 <p class="text-sm text-[#6b5e52] mt-1">1998 - Câmara Municipal de Vila do Conde</p>
                             </div>
-                        </div>
+                        </div> <!-- Fim do Cartão Livro 4 -->
 
+                        <!-- Livro 5 -->
                         <div class="content-card p-4 flex items-start gap-4">
                             <div class="w-24 h-32 flex-shrink-0 rounded overflow-hidden bg-[#f5f1eb] shadow-sm border border-[#d4c8b8]">
                                 <img src="livros/A_LIRA_DILETA.png" alt="Capa de A lira dileta e A lira da rebeldia" class="w-full h-full object-cover">
                             </div>
                             <div class="flex flex-col justify-center">
                                 <p class="font-semibold text-[#2a2420] text-lg">A lira dileta e A lira da rebeldia</p>
-                                <p class="text-sm text-[#6b5e52] mt-1">Seleção e Organização: Armanda Zenhas.</p>
+                <p class="text-sm text-[#6b5e52] mt-1">Seleção e Organização: Armanda Zenhas.</p><br>
                                 <p class="text-sm text-[#6b5e52] mt-1">2024 - Opera Omnia.</p>
-                                <p class="text-[10px] text-[#6b5e52] font-light mt-1">ISBN: 9789899192034</p>
+                <p class="text-[10px] text-[#6b5e52] font-light mt-1">ISBN: 9789899192034</p>
                             </div>
-                        </div>
+                        </div> <!-- Fim do Cartão Livro 5 -->
                         
-                    </div>
-                </div>
-           </div>
-        </section>
+                    </div> <!-- Fim da Grid de Livros -->
+                </div> <!-- FIM DA SECÇÃO: Livros Publicados (#livros) -->
+           </div> <!-- Fim do container max-w-7xl -->
+        </section> <!-- Fim da Secção Obra (#obra) -->
 
         <!-- Political Intervention -->
         <section id="intervencao" class="py-16 md:py-24">
@@ -811,13 +831,10 @@
 
                 <div class="reveal" style="animation-delay: 0.2s">
                     <p class="text-[#2a2420] mb-6">
-                        Joaquim Moreira da Silva era um homem conhecido por ser justo, bom, altruísta, combativo e corajoso. Abraçou a ideologia anarquista e anticlerical, que marcou a sua obra e as suas ações.
+                        Joaquim Moreira da Silva era um homem conhecido por ser justo, bom, altruísta, combativo e corajoso. Abraçou a ideologia anarquista e anticlerical, que marcou a sua obra e as suas ações.<br><br>  Lutou contra todas as injustiças, participando em lutas operárias, liderando ações de protesto, escrevendo poemas de denúncia. Por ocasião da I Guerra, liderou o assalto popular às tulhas de um lavrador, pretendendo levar o milho ao preço tabelado.
                     </p>
 
-                    <p class="text-[#2a2420] mb-6">
-                        Lutou contra todas as injustiças, participando em lutas operárias, liderando ações de protesto, escrevendo poemas de denúncia. Por ocasião da I Guerra, liderou o assalto popular às tulhas de um lavrador, pretendendo levar o milho ao preço tabelado.
-                    </p>
-
+                  
                     <p class="text-[#2a2420] mb-8">
                         Sofreu perseguições da justiça e dos poderosos, foi preso e chegou a estar sem trabalho, mas manteve sempre a sua integridade.
                     </p>
@@ -834,7 +851,8 @@
             </div>
         </section>
 
-        <!-- Education Section -->
+
+            <!-- Education Section -->
         <section id="educacao" class="py-16 md:py-24 bg-white/50">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="reveal">
@@ -844,26 +862,31 @@
                 <!-- Intro Biográfica -->
                 <div class="max-w-4xl mx-auto reveal" style="animation-delay: 0.1s">
                     <p class="text-[#2a2420] mb-6 text-lg leading-relaxed">
-                        Joaquim Moreira da Silva é uma figura singular da cultura popular e da história da educação. Operário e poeta, viveu numa época — o século XIX — em que o analfabetismo era ainda muito comum entre as classes trabalhadoras. Tendo aprendido a ler e a escrever em escolas noturnas, frequentadas por trabalhadores que procuravam instrução depois de longas jornadas de trabalho, compreendeu a importância libertadora do conhecimento que o marcou profundamente.
+                        Joaquim Moreira da Silva é uma figura singular da cultura popular e da história da educação. Operário e poeta, viveu numa época — o século XIX — em que o analfabetismo era ainda muito comum entre as classes trabalhadoras.  Tendo aprendido a ler e a escrever em escolas noturnas, frequentadas por trabalhadores que procuravam instrução depois de longas jornadas de trabalho,  compreendeu a importância libertadora do conhecimento que o marcou profundamente.
                     </p>
                     <!-- CORREÇÃO 2: removido o </p> órfão que estava aqui -->
                     <p class="text-[#2a2420] mb-6 text-lg leading-relaxed">
-                        Na sua oficina, ele mesmo organizou uma pequena escola na aldeia. O seu ideal aproximava-se do movimento pedagógico progressista da época, inspirado por pensadores como o catalão anarquista Francisco Ferrer, fundador da Escola Moderna, que defendia uma educação racional, livre e acessível a todos.
-                    </p>
+                        Na sua oficina, ele mesmo organizou uma pequena escola na aldeia. O seu ideal aproximava-se do movimento pedagógico progressista da época, inspirado por pensadores como o catalão anarquista Francisco Ferrer, fundador da Escola Moderna, que defendia uma educação racional, livre e acessível a todos.                    </p>
                 </div>
+
+               
 
                 <!-- Sub-título: Reflexões e Escritos -->
                 <div class="max-w-4xl mx-auto mb-8 reveal">
                     <h3 class="text-2xl font-bold text-[#2a2420] mb-6 text-center font-serif">Reflexões e Versos</h3>
-                    <p class="text-[#2a2420] mb-6 text-lg leading-relaxed">
-                        Entre os seus textos encontram-se reflexões e versos que exaltam o valor da escola, do conhecimento e do trabalho.<br>
-                        A sua obra revela também uma visão muito moderna da educação como processo contínuo, defendendo aquilo que hoje chamamos educação ao longo da vida.
-                    </p>
+                    <p class="text-[#2a2420] mb-6 text-lg leading-relaxed ">Entre os seus textos encontram-se reflexões e versos que exaltam o valor da escola, do conhecimento e do trabalho.<br>
+A sua obra revela também uma visão muito moderna da educação como processo contínuo, defendendo aquilo que hoje chamamos educação ao longo da vida.
+                       </p>
                 </div>
 
-                <!-- Bloco: A EDUCAÇÃO (Prosa) -->
+                               <!-- Bloco: A EDUCAÇÃO (Prosa) -->
                 <div class="max-w-3xl mx-auto mb-12 reveal" style="animation-delay: 0.4s">
                     <div class="content-card p-6 bg-gradient-to-br from-[#faf8f5] to-[#f0ebe3] border border-[#d4c8b8]">
+
+                        <div class="prose prose-sm max-w-none text-[#2a2420] italic space-y-3 text-center">
+                  
+                        </div>
+                        <!-- Imagem do Manuscrito "A Educação" (50% largura, centrada) -->
                         <div class="flex justify-center">
                             <img src="manuscritos/a_educacao-2.png" alt="Manuscrito original de A Educação" class="w-1/2 h-auto object-contain rounded border border-[#d4c8b8]">
                         </div>
@@ -873,33 +896,38 @@
                 <!-- Grid de Poemas -->
                 <div class="grid md:grid-cols-2 gap-6 mb-12">
                     
+                    <!-- Poema 1 -->
                     <div class="content-card p-6 flex flex-col items-center justify-center reveal" style="animation-delay: 0.6s">
                         <div class="flex justify-center">
                              <img src="manuscritos/A-Minha-Escola-2.png" alt="Manuscrito original A Minha Escola" class="w-full h-auto object-contain rounded border border-[#d4c8b8]">
                         </div>
                     </div>
 
+                    <!-- Poema 2 -->
                     <div class="content-card p-6 flex flex-col items-center justify-center reveal" style="animation-delay: 0.6s">
                         <div class="flex justify-center">
                              <img src="manuscritos/A-Escola-e-Fonte-Sagrada.png" alt="Manuscrito original de A Escola é fonte sagrada" class="w-full h-auto object-contain rounded border border-[#d4c8b8]">
                         </div>
                     </div>
 
+                    <!-- Poema 3 (Novo) -->
                     <div class="content-card p-6 flex flex-col items-center justify-center reveal" style="animation-delay: 0.6s">
                         <div class="flex justify-center">
                              <img src="manuscritos/As-Letras-do-Alfabeto_sao_imenso_farol.png" alt="Manuscrito original As Letras do Alfabeto são imenso farol" class="w-full h-auto object-contain rounded border border-[#d4c8b8]">
                         </div>
                     </div>
 
+                    <!-- Poema 4 -->
                     <div class="content-card p-6 flex flex-col items-center justify-center reveal" style="animation-delay: 0.6s">
                         <div class="flex justify-center">
                              <img src="manuscritos/As-Letras-do-Alfabeto.png" alt="Manuscrito original de As Letras do Alfabeto" class="w-full h-auto object-contain rounded border border-[#d4c8b8]">
                         </div>
                     </div>
 
-                    <!-- CORREÇÃO 3: tag <img> completada em vez de cortada a meio -->
+                    <!-- Poema 5 -->
                     <div class="content-card p-6 flex flex-col items-center justify-center reveal" style="animation-delay: 0.6s">
                         <div class="flex justify-center">
+                             <!-- CORREÇÃO 3: tag <img> completada em vez de cortada a meio -->
                              <img src="manuscritos/Da-Escola-e-do-Trabalho.png" alt="Manuscrito original da Escola e do Trabalho" class="w-full h-auto object-contain rounded border border-[#d4c8b8]">
                         </div>
                     </div>
@@ -908,7 +936,36 @@
             </div>
         </section>
 
-        <!-- Cronologia / Timeline -->
+
+        <!-- ====================================================================
+             CRONOLOGIA — Com separadores de ano em destaque + ordenação por data
+             ====================================================================
+             
+             FORMATO DE CADA EVENTO:
+             <div class="timeline-item TIPO" data-date="YYYY-MM-DD">
+                 <div class="timeline-desc">
+                     <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 COR-DO-TIPO">TIPO</span>
+                     <h4 class="font-bold text-lg">Data apresentada</h4>
+                     <p class="text-[#6b5e52]">Descrição do evento.</p>
+                     <!-- Opcional: imagem associada ao evento -->
+                     <div class="imagem-evento">
+                         <img src="CAMINHO/DA/IMAGEM.png" alt="descrição">
+                     </div>
+                     <!-- Opcional: ligação externa -->
+                     <a href="URL" target="_blank" ...>Texto do link</a>
+                 </div>
+             </div>
+
+             TIPOS: vida | obra | evento
+             CORES DO BADGE:
+               vida   → bg-purple-100 text-purple-700
+               obra   → bg-green-100 text-green-800
+               evento → bg-red-100 text-red-700
+
+             O data-date DEVE estar no formato YYYY-MM-DD para que a 
+             ordenação por data funcione corretamente dentro de cada ano.
+             Se não souber o dia/mês exato, use 01 para ambos.
+        ==================================================================== -->
         <section id="cronologia" class="py-16 md:py-24">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="reveal">
@@ -923,466 +980,66 @@
                     <button class="filter-btn evento" data-filter="evento" onclick="filterAndSortTimeline('evento', this)">História</button>
                 </div>
 
-                <!-- Container da Timeline -->
+                <!-- Container da Timeline — os separadores de ano são gerados automaticamente -->
                 <div id="timeline-container" class="timeline reveal" style="animation-delay: 0.2s">
 
-                    <!-- 
-                        FORMATO DO data-date: "YYYY-MM-DD"
-                        Dentro do mesmo ano, os eventos são ordenados pelo dia.mês.
-                        Substitua estes exemplos pelos seus dados reais,
-                        mantendo o atributo data-date com a data exata.
+                    <!--
+                        ╔══════════════════════════════════════════════════════════╗
+                        ║  COLE AQUI OS SEUS EVENTOS DA TIMELINE ORIGINAL.       ║
+                        ║  Adicione data-date="YYYY-MM-DD" a cada .timeline-item ║
+                        ║  para que a ordenação por data dentro do ano funcione.  ║
+                        ║                                                       ║
+                        ║  Exemplo com imagem:                                   ║
+                        ║  <div class="timeline-item vida" data-date="1917-02-14">║
+                        ║    <div class="timeline-desc">                        ║
+                        ║      <span class="inline-block px-3 py-1 rounded-full ║
+                        ║        text-xs font-bold mb-2 bg-purple-100           ║
+                        ║        text-purple-700">Vida</span>                   ║
+                        ║      <h4 class="font-bold text-lg">14 de Fevereiro</h4>║
+                        ║      <p class="text-[#6b5e52]">Descrição...</p>        ║
+                        ║      <div class="imagem-evento">                      ║
+                        ║        <img src="fotos/exemplo.png" alt="...">        ║
+                        ║      </div>                                           ║
+                        ║    </div>                                             ║
+                        ║  </div>                                               ║
+                        ║                                                       ║
+                        ║  Exemplo com ligação externa:                          ║
+                        ║  <div class="timeline-item obra" data-date="2024-01-01"║
+                        ║    <div class="timeline-desc">                        ║
+                        ║      <span class="inline-block px-3 py-1 rounded-full ║
+                        ║        text-xs font-bold mb-2 bg-green-100            ║
+                        ║        text-green-800">Obra</span>                    ║
+                        ║      <h4 class="font-bold text-lg">2024</h4>           ║
+                        ║      <p class="text-[#6b5e52]">Descrição...</p>        ║
+                        ║      <a href="https://..." target="_blank"             ║
+                        ║        class="text-[#2d5a3d] underline hover:no-      ║
+                        ║        underline font-semibold">Ver publicação</a>    ║
+                        ║    </div>                                             ║
+                        ║  </div>                                               ║
+                        ╚══════════════════════════════════════════════════════════╝
                     -->
 
-                    <div class="timeline-item vida" data-date="1886-03-15">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-purple-100 text-purple-700">Vida</span>
-                            <h4 class="font-bold text-lg">15 de Março de 1886</h4>
-                            <p class="text-[#6b5e52]">Nasce em Vilar, Vila do Conde, filho de família humilde de trabalhadores rurais.</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item vida" data-date="1893-01-01">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-purple-100 text-purple-700">Vida</span>
-                            <h4 class="font-bold text-lg">1893</h4>
-                            <p class="text-[#6b5e52]">Com apenas 7 anos, sem nunca ter frequentado a escola, começa a trabalhar como moço de lavoura.</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item vida" data-date="1893-06-15">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-purple-100 text-purple-700">Vida</span>
-                            <h4 class="font-bold text-lg">1893 (meados do ano)</h4>
-                            <p class="text-[#6b5e52]">Cega de um olho num acidente com uma foicinha, o que lhe vale a alcunha de "Moreira Cego".</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item vida" data-date="1904-01-01">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-purple-100 text-purple-700">Vida</span>
-                            <h4 class="font-bold text-lg">1904</h4>
-                            <p class="text-[#6b5e52]">Aos 18 anos, aprende a arte de carpinteiro no Porto, para onde se desloca diariamente de comboio.</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item vida" data-date="1904-09-01">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-purple-100 text-purple-700">Vida</span>
-                            <h4 class="font-bold text-lg">Setembro de 1904</h4>
-                            <p class="text-[#6b5e52]">Inicia um curso noturno no Porto, onde aprende a ler e a escrever. Neste contacto com o meio operário urbano, aproxima-se da ideologia anarquista.</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item evento" data-date="1910-10-05">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-red-100 text-red-700">História</span>
-                            <h4 class="font-bold text-lg">5 de Outubro de 1910</h4>
-                            <p class="text-[#6b5e52]">Proclamação da República Portuguesa. Moreira da Silva, já alfabetizado e envolvido nas lutas operárias, acompanha com entusiasmo os acontecimentos.</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item vida" data-date="1909-06-15">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-purple-100 text-purple-700">Vida</span>
-                            <h4 class="font-bold text-lg">15 de Junho de 1909</h4>
-                            <p class="text-[#6b5e52]">Casa com a camponesa Maria Rosa Marques, em Vilar.</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item vida" data-date="1910-12-01">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-purple-100 text-purple-700">Vida</span>
-                            <h4 class="font-bold text-lg">Dezembro de 1910</h4>
-                            <p class="text-[#6b5e52]">Nasce o primeiro filho do casal, que viria a falecer com apenas 5 meses.</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item obra" data-date="1912-03-01">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-green-100 text-green-800">Obra</span>
-                            <h4 class="font-bold text-lg">Março de 1912</h4>
-                            <p class="text-[#6b5e52]">Edita os seus primeiros folhetos de cordel com poesia de intervenção social, começando a circular os seus versos por escrito.</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item evento" data-date="1914-07-28">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-red-100 text-red-700">História</span>
-                            <h4 class="font-bold text-lg">28 de Julho de 1914</h4>
-                            <p class="text-[#6b5e52]">Início da I Guerra Mundial. Os efeitos da guerra fazem-se sentir em Portugal com a carestia de vida e a escassez de alimentos.</p>
-                        </div>
-                    </div>
-
-                    <!-- 
-                        EXEMPLO CHAVE: Ano de 1917 com múltiplos tipos de evento.
-                        Os data-date garantem a ordenação correta por dia.mês
-                        independentemente do tipo (vida, obra, evento).
-                    -->
-
-                    <div class="timeline-item vida" data-date="1917-02-14">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-purple-100 text-purple-700">Vida</span>
-                            <h4 class="font-bold text-lg">14 de Fevereiro de 1917</h4>
-                            <p class="text-[#6b5e52]">Face à carestia extrema, Moreira da Silva organiza e lidera o assalto popular às tulhas de um lavrador de Vilar, pretendendo levar o milho ao preço tabelado.</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item evento" data-date="1917-03-10">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-red-100 text-red-700">História</span>
-                            <h4 class="font-bold text-lg">10 de Março de 1917</h4>
-                            <p class="text-[#6b5e52]">Greve geral em Portugal contra a carestia de vida. O movimento operário ganha força em todo o país.</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item obra" data-date="1917-05-20">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-green-100 text-green-800">Obra</span>
-                            <h4 class="font-bold text-lg">20 de Maio de 1917</h4>
-                            <p class="text-[#6b5e52]">Escreve e distribui um folheto de cordel denunciando a especulação dos preços dos alimentos durante a guerra.</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item vida" data-date="1917-06-08">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-purple-100 text-purple-700">Vida</span>
-                            <h4 class="font-bold text-lg">8 de Junho de 1917</h4>
-                            <p class="text-[#6b5e52]">É preso na sequência do assalto às tulhas, sofrendo perseguição pelas autoridades locais.</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item evento" data-date="1917-11-07">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-red-100 text-red-700">História</span>
-                            <h4 class="font-bold text-lg">7 de Novembro de 1917</h4>
-                            <p class="text-[#6b5e52]">Revolução Russa. Os acontecimentos na Rússia reforçam as esperanças dos trabalhadores portugueses e inspiram a obra do poeta.</p>
-                        </div>
-                    </div>
-
-                    <!-- Fim do exemplo 1917 -->
-
-                    <div class="timeline-item vida" data-date="1918-01-15">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-purple-100 text-purple-700">Vida</span>
-                            <h4 class="font-bold text-lg">15 de Janeiro de 1918</h4>
-                            <p class="text-[#6b5e52]">Nasce Alberto Moreira, segundo filho, que viria a ser tipógrafo e o principal editor da obra do pai.</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item obra" data-date="1920-04-01">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-green-100 text-green-800">Obra</span>
-                            <h4 class="font-bold text-lg">Abril de 1920</h4>
-                            <p class="text-[#6b5e52]">Publica um folheto didático com o seu método próprio de leitura, destinado a ensinar conterrâneos analfabetos.</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item evento" data-date="1926-05-28">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-red-100 text-red-700">História</span>
-                            <h4 class="font-bold text-lg">28 de Maio de 1926</h4>
-                            <p class="text-[#6b5e52]">Golpe militar de 28 de Maio. O fim da Primeira República traz um período de maior repressão sobre os movimentos operários.</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item vida" data-date="1926-08-10">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-purple-100 text-purple-700">Vida</span>
-                            <h4 class="font-bold text-lg">10 de Agosto de 1926</h4>
-                            <p class="text-[#6b5e52]">Após o golpe, Moreira da Silva enfrenta dificuldades no emprego devido às suas convicções políticas e à sua ação de contestação.</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item obra" data-date="1928-01-01">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-green-100 text-green-800">Obra</span>
-                            <h4 class="font-bold text-lg">1928</h4>
-                            <p class="text-[#6b5e52]">Compõe o hino da Associação Cultural e Recreativa Honra e Dever de Vilar.</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item evento" data-date="1933-03-16">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-red-100 text-red-700">História</span>
-                            <h4 class="font-bold text-lg">16 de Março de 1933</h4>
-                            <p class="text-[#6b5e52]">Entrada em vigor da Constituição de 1933, que institucionaliza o Estado Novo de Salazar. A censura e a repressão política intensificam-se.</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item obra" data-date="1935-07-01">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-green-100 text-green-800">Obra</span>
-                            <h4 class="font-bold text-lg">Julho de 1935</h4>
-                            <p class="text-[#6b5e52]">Reúne e organiza o seu manuscrito principal, que intitula "A Minha Vida e Minhas Obras", composto por dezenas de poemas autobiográficos e de intervenção.</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item vida" data-date="1940-03-15">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-purple-100 text-purple-700">Vida</span>
-                            <h4 class="font-bold text-lg">15 de Março de 1940</h4>
-                            <p class="text-[#6b5e52]">Completa 54 anos. As três netas, órfãs de mãe muito cedo, passam a viver com o avô, que ajuda a criá-las.</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item obra" data-date="1945-11-01">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-green-100 text-green-800">Obra</span>
-                            <h4 class="font-bold text-lg">Novembro de 1945</h4>
-                            <p class="text-[#6b5e52]">Continua a escrever poesia nos seus serões, após o trabalho na carpintaria, e a ensinar os conterrâneos a ler e escrever.</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item vida" data-date="1955-01-01">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-purple-100 text-purple-700">Vida</span>
-                            <h4 class="font-bold text-lg">A partir de 1955</h4>
-                            <p class="text-[#6b5e52]">Já idoso, reduz a atividade de carpinteiro mas continua a escrever e a ensinar. O seu filho Alberto começa a preparar a edição póstuma da obra do pai.</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item vida" data-date="1960-12-12">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-purple-100 text-purple-700">Vida</span>
-                            <h4 class="font-bold text-lg">12 de Dezembro de 1960</h4>
-                            <p class="text-[#6b5e52]">Morre em Vilar, Vila do Conde, com 74 anos. O caixão é coberto com a bandeira da Associação Honra e Dever de Vilar. A morte é noticiada no Comércio do Porto, A República, O Século e O Norte Desportivo.</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item obra" data-date="1967-01-01">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-green-100 text-green-800">Obra</span>
-                            <h4 class="font-bold text-lg">1967</h4>
-                            <p class="text-[#6b5e52]">Publicação póstuma de "A Lira do Povo", selecionado e organizado por Alberto Moreira, na Tipografia do Carvalhido, Porto.</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item obra" data-date="1977-01-01">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-green-100 text-green-800">Obra</span>
-                            <h4 class="font-bold text-lg">1977</h4>
-                            <p class="text-[#6b5e52]">Inclusão na antologia "Poetas Populares", Volume 2, editada por Portugalmundo, Lisboa.</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item obra" data-date="1987-01-01">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-green-100 text-green-800">Obra</span>
-                            <h4 class="font-bold text-lg">1987</h4>
-                            <p class="text-[#6b5e52]">Publicação de "Antologia Poética", selecionada e organizada por Armanda Zenhas, pela Câmara Municipal de Vila do Conde.</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item obra" data-date="1998-01-01">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-green-100 text-green-800">Obra</span>
-                            <h4 class="font-bold text-lg">1998</h4>
-                            <p class="text-[#6b5e52]">Publicação de "Poesias", selecionada e organizada por Armanda Zenhas, pela Câmara Municipal de Vila do Conde.</p>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item obra" data-date="2024-01-01">
-                        <div class="timeline-desc">
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 bg-green-100 text-green-800">Obra</span>
-                            <h4 class="font-bold text-lg">2024</h4>
-                            <p class="text-[#6b5e52]">Publicação de "A Lira Dileta e A Lira da Rebeldia", selecionada e organizada por Armanda Zenhas, pela Opera Omnia. ISBN: 9789899192034.</p>
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </section>
 
-        <!-- Iconografia: Fotografias -->
-        <section id="fotografias" class="py-16 md:py-24 bg-white/50">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="reveal">
-                    <h2 class="section-header text-3xl md:text-4xl font-bold text-[#2a2420] mb-12">Fotografias</h2>
-                </div>
-                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 reveal">
-                    <div class="content-card overflow-hidden">
-                        <img src="fotos/JMS_aos_36_anos-2.png" alt="Joaquim Moreira da Silva aos 36 anos" class="w-full h-64 object-cover">
-                        <div class="p-4">
-                            <p class="font-semibold text-[#2a2420]">O Poeta aos 36 anos</p>
-                            <p class="text-sm text-[#6b5e52]">c. 1922 (retocada digitalmente)</p>
-                        </div>
-                    </div>
-                    <div class="content-card overflow-hidden">
-                        <img src="fotos/JMS_idoso.png" alt="Joaquim Moreira da Silva idoso" class="w-full h-64 object-cover">
-                        <div class="p-4">
-                            <p class="font-semibold text-[#2a2420]">O Poeta na velhice</p>
-                            <p class="text-sm text-[#6b5e52]">Anos 1950</p>
-                        </div>
-                    </div>
-                    <div class="content-card overflow-hidden">
-                        <img src="fotos/casa_vilar.png" alt="Casa em Vilar" class="w-full h-64 object-cover">
-                        <div class="p-4">
-                            <p class="font-semibold text-[#2a2420]">Casa do poeta em Vilar</p>
-                            <p class="text-sm text-[#6b5e52]">Vila do Conde</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
 
-        <!-- Iconografia: Manuscritos -->
-        <section id="manuscritos" class="py-16 md:py-24">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="reveal">
-                    <h2 class="section-header text-3xl md:text-4xl font-bold text-[#2a2420] mb-12">Manuscritos</h2>
-                </div>
-                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 reveal">
-                    <div class="content-card overflow-hidden p-4">
-                        <img src="manuscritos/A-Minha-Escola-2.png" alt="Manuscrito A Minha Escola" class="w-full h-auto object-contain rounded border border-[#d4c8b8]">
-                        <p class="font-semibold text-[#2a2420] mt-3 text-center">A Minha Escola</p>
-                    </div>
-                    <div class="content-card overflow-hidden p-4">
-                        <img src="manuscritos/A-Escola-e-Fonte-Sagrada.png" alt="Manuscrito A Escola é Fonte Sagrada" class="w-full h-auto object-contain rounded border border-[#d4c8b8]">
-                        <p class="font-semibold text-[#2a2420] mt-3 text-center">A Escola é Fonte Sagrada</p>
-                    </div>
-                    <div class="content-card overflow-hidden p-4">
-                        <img src="manuscritos/a_educacao-2.png" alt="Manuscrito A Educação" class="w-full h-auto object-contain rounded border border-[#d4c8b8]">
-                        <p class="font-semibold text-[#2a2420] mt-3 text-center">A Educação (prosa)</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Iconografia: Notícias -->
-        <section id="noticias" class="py-16 md:py-24 bg-white/50">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="reveal">
-                    <h2 class="section-header text-3xl md:text-4xl font-bold text-[#2a2420] mb-12">Notícias</h2>
-                </div>
-                <div class="grid sm:grid-cols-2 gap-6 reveal">
-                    <div class="content-card overflow-hidden">
-                        <img src="noticias/comercio_porto_1960.png" alt="Notícia no Comércio do Porto" class="w-full h-64 object-cover">
-                        <div class="p-4">
-                            <p class="font-semibold text-[#2a2420]">O Comércio do Porto</p>
-                            <p class="text-sm text-[#6b5e52]">Notícia do falecimento, Dezembro 1960</p>
-                        </div>
-                    </div>
-                    <div class="content-card overflow-hidden">
-                        <img src="noticias/o_seculo_1960.png" alt="Notícia no O Século" class="w-full h-64 object-cover">
-                        <div class="p-4">
-                            <p class="font-semibold text-[#2a2420]">O Século</p>
-                            <p class="text-sm text-[#6b5e52]">Notícia do falecimento, Dezembro 1960</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Iconografia: Outros -->
-        <section id="outros" class="py-16 md:py-24">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="reveal">
-                    <h2 class="section-header text-3xl md:text-4xl font-bold text-[#2a2420] mb-12">Outros Documentos</h2>
-                </div>
-                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 reveal">
-                    <div class="content-card overflow-hidden p-4">
-                        <img src="outros/metodo_leitura.png" alt="Método de leitura" class="w-full h-auto object-contain rounded border border-[#d4c8b8]">
-                        <p class="font-semibold text-[#2a2420] mt-3 text-center">Método de Leitura (folheto de cordel)</p>
-                    </div>
-                    <div class="content-card overflow-hidden p-4">
-                        <img src="outros/hino_honra_dever.png" alt="Hino da Honra e Dever" class="w-full h-auto object-contain rounded border border-[#d4c8b8]">
-                        <p class="font-semibold text-[#2a2420] mt-3 text-center">Hino da Associação Honra e Dever</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Imprensa -->
-        <section id="imprensa" class="py-16 md:py-24 bg-white/50">
-            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="reveal">
-                    <h2 class="section-header text-3xl md:text-4xl font-bold text-[#2a2420] mb-12">Imprensa</h2>
-                </div>
-                <div class="space-y-6 reveal">
-                    <div class="content-card p-6">
-                        <h3 class="text-lg font-bold text-[#2a2420] mb-2">O Comércio do Porto</h3>
-                        <p class="text-[#6b5e52]">Noticiou o falecimento do poeta em dezembro de 1960, destacando a sua vida de trabalho e dedicação à poesia.</p>
-                    </div>
-                    <div class="content-card p-6">
-                        <h3 class="text-lg font-bold text-[#2a2420] mb-2">A República</h3>
-                        <p class="text-[#6b5e52]">Publicou nota sobre a morte de Moreira da Silva, referindo a sua ação cívica e a sua obra poética.</p>
-                    </div>
-                    <div class="content-card p-6">
-                        <h3 class="text-lg font-bold text-[#2a2420] mb-2">O Século</h3>
-                        <p class="text-[#6b5e52]">Registou o passing do "Poeta Carpinteiro" de Vila do Conde.</p>
-                    </div>
-                    <div class="content-card p-6">
-                        <h3 class="text-lg font-bold text-[#2a2420] mb-2">O Norte Desportivo</h3>
-                        <p class="text-[#6b5e52]">Publicou nota sobre o falecimento, salientando a ligação do poeta à terra natal.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Eventos Científicos -->
-        <section id="eventos" class="py-16 md:py-24">
-            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="reveal">
-                    <h2 class="section-header text-3xl md:text-4xl font-bold text-[#2a2420] mb-12">Eventos Científicos</h2>
-                </div>
-                <div class="space-y-6 reveal">
-                    <div class="content-card p-6 border-l-4 border-[#2d5a3d]">
-                        <p class="text-sm text-[#b8860b] font-semibold mb-1">2024</p>
-                        <h3 class="text-lg font-bold text-[#2a2420] mb-2">Lançamento de "A Lira Dileta e A Lira da Rebeldia"</h3>
-                        <p class="text-[#6b5e52]">Apresentação da mais recente antologia da obra do Poeta Carpinteiro, pela Opera Omnia, com seleção e organização de Armanda Zenhas.</p>
-                    </div>
-                    <div class="content-card p-6 border-l-4 border-[#2d5a3d]">
-                        <p class="text-sm text-[#b8860b] font-semibold mb-1">1998</p>
-                        <h3 class="text-lg font-bold text-[#2a2420] mb-2">Sessão de homenagem — Câmara Municipal de Vila do Conde</h3>
-                        <p class="text-[#6b5e52]">Sessão evocativa do poeta, com a presença de investigadores e familiares, aquando da publicação de "Poesias".</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Homenagens -->
-        <section id="homenagens" class="py-16 md:py-24 bg-white/50">
-            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="reveal">
-                    <h2 class="section-header text-3xl md:text-4xl font-bold text-[#2a2420] mb-12">Homenagens</h2>
-                </div>
-                <div class="space-y-6 reveal">
-                    <div class="content-card p-6">
-                        <h3 class="text-lg font-bold text-[#2a2420] mb-2">Associação Cultural e Recreativa Honra e Dever de Vilar</h3>
-                        <p class="text-[#6b5e52]">O caixão do poeta foi coberto com a bandeira desta associação, para a qual escreveu o hino — reconhecimento da sua ligação à comunidade.</p>
-                    </div>
-                    <div class="content-card p-6">
-                        <h3 class="text-lg font-bold text-[#2a2420] mb-2">Câmara Municipal de Vila do Conde</h3>
-                        <p class="text-[#6b5e52]">Publicou duas antologias da obra do poeta (1987 e 1998), contribuindo para a preservação e divulgação do seu legado.</p>
-                    </div>
-                    <div class="content-card p-6">
-                        <h3 class="text-lg font-bold text-[#2a2420] mb-2">Alberto Moreira (filho)</h3>
-                        <p class="text-[#6b5e52]">Tipógrafo e amante de literatura, dedicou-se à edição e preservação da obra do pai, publicando "A Lira do Povo" em 1967.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Ligações Externas -->
-        <section id="ligacoes" class="py-16 md:py-24">
-            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="reveal">
-                    <h2 class="section-header text-3xl md:text-4xl font-bold text-[#2a2420] mb-12">Ligações Externas</h2>
-                </div>
-                <div class="space-y-4 reveal">
-                    <a href="https://heyzine.com/flip-book/11bf503fef.html#page/1" target="_blank" rel="noopener noreferrer" class="content-card p-6 flex items-center gap-4 group">
-                        <div class="w-12 h-12 rounded-full bg-[#2d5a3d]/10 flex items-center justify-center flex-shrink-0">
-                            <svg class="w-6 h-6 text-[#2d5a3d]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-                        </div>
-                        <div class="flex-1">
-                            <p class="font-semibold text-[#2a2420] group-hover:text-[#2d5a3d] transition-colors">Manuscrito Original — Versão Digital Interativa</p>
-                            <p class="text-sm text-[#6b5e52]">heyzine.com</p>
-                        </div>
-                        <svg class="w-5 h-5 text-[#6b5e52] group-hover:text-[#2d5a3d] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                    </a>
-                </div>
-            </div>
-        </section>
+        <!-- ====================================================================
+             PONTO DE CORTADO DO SEU FICHEIRO ORIGINAL
+             
+             Cole aqui TODO o conteúdo que vinha depois da secção da Educação
+             no seu ficheiro original — incluindo:
+             - Fotografias (#fotografias)
+             - Manuscritos (#manuscritos)  
+             - Notícias (#noticias)
+             - Outros (#outros)
+             - Imprensa (#imprensa)
+             - Eventos Científicos (#eventos)
+             - Homenagens (#homenagens)
+             - Ligações Externas (#ligacoes)
+             - O </main> de fecho
+             - O <footer> completo
+             ==================================================================== -->
 
     </main>
 
@@ -1442,7 +1099,6 @@
             document.body.style.overflow = '';
         });
 
-        // Fechar menu ao clicar em link
         mobileMenu.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
                 mobileMenu.classList.remove('open');
@@ -1450,7 +1106,6 @@
             });
         });
 
-        // Mobile dropdown toggles
         document.querySelectorAll('.mobile-dropdown-toggle').forEach(btn => {
             btn.addEventListener('click', () => {
                 const content = btn.nextElementSibling;
@@ -1458,6 +1113,13 @@
                 content.classList.toggle('hidden');
                 arrow.classList.toggle('rotate-180');
             });
+        });
+
+        mobileMenu.addEventListener('click', (e) => {
+            if (e.target === mobileMenu) {
+                mobileMenu.classList.remove('open');
+                document.body.style.overflow = '';
+            }
         });
 
         // =============================================
@@ -1474,24 +1136,17 @@
         document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
         // =============================================
-        // TIMELINE FILTER + SORT BY DATE
+        // TIMELINE: FILTRO + ORDENAÇÃO POR DATA + SEPARADORES DE ANO
         // =============================================
-        let activeFilter = 'todos';
-
         function filterAndSortTimeline(filterType, clickedBtn) {
-            activeFilter = filterType;
             const container = document.getElementById('timeline-container');
             const allItems = Array.from(container.querySelectorAll('.timeline-item'));
 
-            // Atualizar estado visual dos botões
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            if (clickedBtn) {
-                clickedBtn.classList.add('active');
-            }
+            // Atualizar botões ativos
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            if (clickedBtn) clickedBtn.classList.add('active');
 
-            // Filtrar: mostrar/esconder
+            // 1) Filtrar: mostrar/esconder conforme o tipo
             allItems.forEach(item => {
                 if (filterType === 'todos' || item.classList.contains(filterType)) {
                     item.classList.remove('hidden-item');
@@ -1500,55 +1155,68 @@
                 }
             });
 
-            // Obter itens visíveis
+            // 2) Obter apenas os itens visíveis
             const visibleItems = allItems.filter(item => !item.classList.contains('hidden-item'));
 
-            // Ordenar por data (data-date: "YYYY-MM-DD")
+            // 3) Ordenar por data (formato YYYY-MM-DD)
             visibleItems.sort((a, b) => {
                 const dateA = a.getAttribute('data-date') || '9999-99-99';
                 const dateB = b.getAttribute('data-date') || '9999-99-99';
                 return dateA.localeCompare(dateB);
             });
 
-            // Re-inserir no DOM na ordem correta
-            visibleItems.forEach(item => {
-                container.appendChild(item);
-            });
+            // 4) Limpar o container e re-inserir com separadores de ano
+            container.innerHTML = '';
+            let lastYear = null;
+            let animIndex = 0;
 
-            // Re-trigger animações com delay escalonado
-            visibleItems.forEach((item, index) => {
-                // Resetar animação
+            visibleItems.forEach(item => {
+                const fullDate = item.getAttribute('data-date') || '';
+                const year = fullDate.substring(0, 4);
+
+                // Inserir separador de ano quando muda
+                if (year !== lastYear && year !== '9999') {
+                    const separator = document.createElement('div');
+                    separator.className = 'timeline-year-separator';
+                    separator.innerHTML = '<span>' + year + '</span>';
+                    container.appendChild(separator);
+                    lastYear = year;
+                }
+
+                // Resetar animação do item
                 item.style.animation = 'none';
                 item.style.opacity = '0';
                 item.style.transform = 'translateX(-20px)';
+                container.appendChild(item);
 
-                // Forçar reflow
+                // Forçar reflow e re-animar com delay escalonado
                 void item.offsetHeight;
-
-                // Re-aplicar animação com delay
-                item.style.animation = `slideIn 0.6s ease ${index * 0.05}s forwards`;
+                item.style.animation = 'slideIn 0.6s ease ' + (animIndex * 0.05) + 's forwards';
+                animIndex++;
             });
         }
 
+        // Executar ao carregar a página (para gerar separadores de ano iniciais)
+        document.addEventListener('DOMContentLoaded', () => {
+            filterAndSortTimeline('todos', document.querySelector('.filter-btn.todos'));
+        });
+
         // =============================================
-        // IMAGE ZOOM (timeline thumbnails)
+        // IMAGE ZOOM (miniaturas na timeline)
         // =============================================
         document.addEventListener('click', (e) => {
             const imgContainer = e.target.closest('.imagem-evento');
 
             if (imgContainer) {
-                // Se já está expandido, fechar
                 if (imgContainer.classList.contains('expanded')) {
                     imgContainer.classList.remove('expanded');
                     imgContainer.closest('.timeline-item').classList.remove('item-zoom-active');
                     const innerImg = imgContainer.querySelector('img');
-                    if (innerImg) {
-                        innerImg.style.transform = '';
-                    }
+                    if (innerImg) innerImg.style.transform = '';
                     return;
                 }
 
-                // Fechar qualquer outro que esteja expandido
+                // Fechar outros zooms abertos
                 document.querySelectorAll('.imagem-evento.expanded').forEach(open => {
                     open.classList.remove('expanded');
                     open.closest('.timeline-item').classList.remove('item-zoom-active');
@@ -1556,7 +1224,6 @@
                     if (innerImg) innerImg.style.transform = '';
                 });
 
-                // Expandir o clicado
                 imgContainer.classList.add('expanded');
                 imgContainer.closest('.timeline-item').classList.add('item-zoom-active');
                 return;
@@ -1585,23 +1252,12 @@
             const x = (e.clientX - rect.left) / rect.width - 0.5;
             const y = (e.clientY - rect.top) / rect.height - 0.5;
 
-            img.style.transform = `translate(${-x * 40}px, ${-y * 40}px)`;
-        });
-
-        // =============================================
-        // FECHAR MENU MOBILE AO CLICAR FORA
-        // =============================================
-        mobileMenu.addEventListener('click', (e) => {
-            if (e.target === mobileMenu) {
-                mobileMenu.classList.remove('open');
-                document.body.style.overflow = '';
-            }
+            img.style.transform = 'translate(' + (-x * 40) + 'px, ' + (-y * 40) + 'px)';
         });
     </script>
 
 </body>
 </html>
-
 
 
 
